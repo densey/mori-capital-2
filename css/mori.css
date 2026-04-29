@@ -542,11 +542,11 @@ body {
     gap: 18px;
 }
 .footer-logo img {
-    height: 56px !important;
+    height: 64px !important;
     width: auto !important;
-    background: #fff;
-    padding: 8px 14px;
-    border-radius: 4px;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
 }
 .footer-social-links ul li a {
     background: rgba(255,255,255,.08) !important;
