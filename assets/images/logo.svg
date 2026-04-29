@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 90" width="320" height="90">
+  <defs>
+    <style>
+      .mori-text { font-family: 'Georgia', 'Times New Roman', serif; font-weight: 700; }
+      .mori-sub { font-family: 'Georgia', 'Times New Roman', serif; font-weight: 400; letter-spacing: 4px; }
+    </style>
+  </defs>
+  <!-- Stylized rearing horse silhouette -->
+  <g transform="translate(8, 8) scale(0.85)">
+    <path d="M40 75 C 38 70, 35 65, 33 60 C 30 55, 28 48, 30 42 C 31 38, 34 35, 38 33 C 40 32, 42 30, 42 27 C 41 23, 38 20, 36 17 C 34 14, 33 10, 35 7 C 37 4, 41 3, 44 5 C 47 7, 49 11, 51 14 C 53 17, 55 19, 58 19 C 61 19, 64 17, 66 14 C 67 12, 67 9, 69 8 C 71 7, 73 9, 73 11 C 73 14, 71 17, 69 20 C 67 23, 65 26, 64 30 C 63 34, 64 38, 66 42 C 68 46, 70 50, 70 55 C 70 60, 68 65, 65 69 C 62 73, 58 76, 53 78 C 49 79, 44 78, 40 75 Z"
+          fill="#2C3E50"/>
+    <!-- Mane flowing -->
+    <path d="M50 12 C 54 8, 58 6, 62 8 C 60 12, 56 14, 52 13 Z" fill="#2C3E50"/>
+    <!-- Tail flowing -->
+    <path d="M40 75 C 35 78, 30 80, 26 76 C 28 73, 32 71, 36 72 Z" fill="#2C3E50"/>
+  </g>
+  <!-- Mori text -->
+  <text x="92" y="50" class="mori-text" font-size="38" fill="#1B3A5C">Mori</text>
+  <text x="170" y="50" class="mori-text" font-size="38" fill="#7A8B99">Capital</text>
+  <text x="293" y="32" font-size="11" fill="#7A8B99" font-family="Georgia, serif">&#174;</text>
+  <text x="92" y="72" class="mori-sub" font-size="11" fill="#7A8B99">MANAGEMENT</text>
+</svg>
