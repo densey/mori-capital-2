@@ -6,12 +6,12 @@
 
 /* ----- Palette override -------------------------------------------------- */
 :root {
-    --primary-color:           #1B3A5C !important;
+    --primary-color:           #1B3A5C !important;   /* dark navy for headings / dark sections */
     --secondary-color:         #F5F7FA !important;
     --bg-color:                #FFFFFF !important;
     --text-color:              #5A6B7B !important;
-    --accent-color:            #2980B9 !important;
-    --accent-secondary-color:  #122842 !important;
+    --accent-color:            #1ABC9C !important;   /* Mori brand teal */
+    --accent-secondary-color:  #16A085 !important;   /* deeper teal for hover */
     --divider-color:           #1B3A5C1A !important;
 }
 
