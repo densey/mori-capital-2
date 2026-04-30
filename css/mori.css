@@ -10,8 +10,8 @@
     --secondary-color:         #F5F7FA !important;
     --bg-color:                #FFFFFF !important;
     --text-color:              #5A6B7B !important;
-    --accent-color:            #1ABC9C !important;   /* Mori brand teal */
-    --accent-secondary-color:  #16A085 !important;   /* deeper teal for hover */
+    --accent-color:            #1ABC9C !important;   /* Mori brand teal — CTAs, labels, links */
+    --accent-secondary-color:  #122842 !important;   /* deeper navy — sticky header, dark sections */
     --divider-color:           #1B3A5C1A !important;
 }
 
