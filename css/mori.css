@@ -19,6 +19,24 @@ body {
     font-family: 'Inter', 'DM Sans', 'Google Sans', system-ui, sans-serif !important;
 }
 
+/* ----- Hero — fit within viewport on laptops --------------------------- */
+.hero {
+    min-height: clamp(560px, 90vh, 820px) !important;
+    padding-top: clamp(120px, 14vh, 160px) !important;
+    padding-bottom: clamp(60px, 8vh, 100px) !important;
+}
+.hero .section-title h1 {
+    font-size: clamp(28px, 3.4vw, 44px) !important;
+    line-height: 1.12em !important;
+    letter-spacing: -0.01em;
+}
+.hero .section-title-content p {
+    font-size: 15.5px !important;
+    line-height: 1.55 !important;
+    margin-bottom: 18px;
+}
+.hero .section-row { row-gap: 18px; }
+
 /* ----- Team item — fit longer titles on one line with social icons ------ */
 .team-item-content h2 {
     font-size: 20px !important;
