@@ -19,6 +19,14 @@ body {
     font-family: 'Inter', 'DM Sans', 'Google Sans', system-ui, sans-serif !important;
 }
 
+/* ----- Hero video — crop baked-in letterbox bars ------------------------- */
+.hero .hero-bg-video video {
+    object-fit: cover !important;
+    object-position: center center;
+    transform: scale(1.18);
+    transform-origin: center center;
+}
+
 /* ----- Logo prominence (header / footer) --------------------------------- */
 .main-header .navbar-brand img {
     height: 64px;
