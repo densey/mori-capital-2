@@ -52,17 +52,25 @@ body {
 .team-social-list ul { flex-shrink: 0; }
 
 /* ----- Logo prominence (header / footer) --------------------------------- */
+.main-header .navbar {
+    padding: 14px 0 !important;
+}
 .main-header .navbar-brand img {
-    height: 64px;
+    height: 80px;
     width: auto;
-    max-width: 280px;
+    max-width: 320px;
 }
 .header-sticky.fixed-header .navbar-brand img,
-.header-sticky.sticky .navbar-brand img {
-    height: 54px;
+.header-sticky.sticky .navbar-brand img,
+.header-sticky.active .navbar-brand img {
+    height: 64px;
+    transition: height .25s ease;
 }
+.header-sticky.active .navbar { padding: 10px 0 !important; }
+
 @media (max-width: 991px) {
-    .main-header .navbar-brand img { height: 52px; }
+    .main-header .navbar { padding: 12px 0 !important; }
+    .main-header .navbar-brand img { height: 60px; }
 }
 .footer-logo img {
     height: 64px;
