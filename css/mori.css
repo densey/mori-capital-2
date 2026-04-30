@@ -116,6 +116,290 @@ body {
 ::selection { background-color: var(--accent-color); color: #fff; filter: none; }
 
 /* ==========================================================================
+   Investor Gate Modal (first-visit disclaimer)
+   ========================================================================== */
+.mori-gate {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(8, 18, 33, .82);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease, visibility .25s ease;
+}
+.mori-gate.show { opacity: 1; visibility: visible; }
+.mori-gate__panel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 30px 80px rgba(8, 18, 33, .35);
+    width: 100%;
+    max-width: 560px;
+    max-height: 92vh;
+    overflow-y: auto;
+    padding: 36px 36px 28px;
+    transform: translateY(16px);
+    transition: transform .3s ease;
+}
+.mori-gate.show .mori-gate__panel { transform: translateY(0); }
+.mori-gate__logo {
+    display: block;
+    height: 52px;
+    margin: 0 auto 22px;
+}
+.mori-gate__eyebrow {
+    text-align: center;
+    color: var(--accent-color);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+.mori-gate__title {
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0 0 14px;
+}
+.mori-gate__intro {
+    color: var(--text-color);
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+    text-align: left;
+}
+.mori-gate__check {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #F5F7FA;
+    border: 1px solid var(--divider-color);
+    font-size: 13px;
+    color: var(--text-color);
+    line-height: 1.5;
+    cursor: pointer;
+    margin-bottom: 12px;
+}
+.mori-gate__check input {
+    margin-top: 3px;
+    accent-color: var(--accent-color);
+    flex-shrink: 0;
+}
+.mori-gate__buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 18px;
+}
+.mori-gate__btn {
+    padding: 13px 16px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13.5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .2s ease;
+    text-align: center;
+    line-height: 1.2;
+}
+.mori-gate__btn--primary {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+}
+.mori-gate__btn--primary:hover { background: var(--accent-secondary-color); border-color: var(--accent-secondary-color); }
+.mori-gate__btn--primary:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+.mori-gate__btn--secondary {
+    background: #fff;
+    color: var(--primary-color);
+    border-color: var(--divider-color);
+}
+.mori-gate__btn--secondary:hover { background: #F5F7FA; border-color: var(--primary-color); }
+.mori-gate__decline {
+    display: block;
+    margin: 14px auto 0;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
+    text-align: center;
+}
+.mori-gate__decline:hover { color: var(--primary-color); }
+.mori-gate__msg-decline {
+    background: #FFF6E0;
+    border: 1px solid #F5C76A;
+    color: #6F4F00;
+    padding: 16px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.55;
+    margin-top: 14px;
+    display: none;
+}
+.mori-gate.declined .mori-gate__msg-decline { display: block; }
+.mori-gate.declined .mori-gate__buttons,
+.mori-gate.declined .mori-gate__decline,
+.mori-gate.declined .mori-gate__check { display: none; }
+@media (max-width: 480px) {
+    .mori-gate__panel { padding: 26px 22px 22px; }
+    .mori-gate__title { font-size: 19px; }
+    .mori-gate__buttons { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   Cookie Consent Banner
+   ========================================================================== */
+.mori-cookie {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: 720px;
+    margin: 0 auto;
+    z-index: 9000;
+    background: var(--accent-secondary-color);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+    padding: 18px 20px;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    transform: translateY(140%);
+    transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+    flex-wrap: wrap;
+}
+.mori-cookie.show { transform: translateY(0); }
+.mori-cookie__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(26, 188, 156, .18);
+    color: var(--accent-color);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+.mori-cookie__text {
+    flex: 1;
+    min-width: 240px;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, .9);
+}
+.mori-cookie__text a {
+    color: #fff;
+    text-decoration: underline;
+}
+.mori-cookie__text a:hover { color: var(--accent-color); }
+.mori-cookie__actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+.mori-cookie__btn {
+    padding: 9px 16px;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 12.5px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .2s ease;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+.mori-cookie__btn--accept {
+    background: var(--accent-color);
+    color: #fff;
+    border-color: var(--accent-color);
+}
+.mori-cookie__btn--accept:hover { background: #16A085; border-color: #16A085; }
+.mori-cookie__btn--decline {
+    background: transparent;
+    color: rgba(255, 255, 255, .85);
+    border-color: rgba(255, 255, 255, .25);
+}
+.mori-cookie__btn--decline:hover { background: rgba(255, 255, 255, .08); color: #fff; }
+@media (max-width: 600px) {
+    .mori-cookie { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; }
+    .mori-cookie__actions { justify-content: stretch; }
+    .mori-cookie__btn { flex: 1; }
+    .mori-cookie__icon { display: none; }
+}
+
+/* ==========================================================================
+   Latest Insights / Views
+   ========================================================================== */
+.mori-insights .insight-card {
+    background: #fff;
+    border: 1px solid var(--divider-color);
+    border-radius: 12px;
+    padding: 28px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    text-decoration: none;
+}
+.mori-insights .insight-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-color);
+    box-shadow: 0 18px 40px rgba(27, 58, 92, .12);
+}
+.mori-insights .insight-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+.mori-insights .insight-meta .date { color: var(--text-color); font-weight: 500; letter-spacing: 0.05em; text-transform: none; }
+.mori-insights .insight-card h3 {
+    font-size: 19px;
+    line-height: 1.35;
+    color: var(--primary-color);
+    margin: 0;
+    font-weight: 600;
+}
+.mori-insights .insight-card p {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-color);
+    margin: 0;
+    flex: 1;
+}
+.mori-insights .insight-link {
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+}
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
 

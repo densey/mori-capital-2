@@ -621,6 +621,68 @@
     <!-- Awards Section End -->
 
 
+    <!-- Latest Insights Section Start -->
+    <div class="mori-insights" style="padding:80px 0;background:#FFFFFF;">
+        <div class="container">
+            <div class="row section-row align-items-end">
+                <div class="col-xl-6">
+                    <div class="section-title">
+                        <span class="section-sub-title wow fadeInUp">Mori Views</span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque">Latest insights &amp; market commentary</h2>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <div class="section-content-btn">
+                        <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
+                            <p>Quarterly outlooks, fund factsheets and shareholder communications from our portfolio managers.</p>
+                        </div>
+                        <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
+                            <a class="btn-default" href="insights.html">All Mori Views</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top:24px;">
+                <div class="col-xl-4 col-md-6">
+                    <a href="insights/q1-2026-eemea-outlook.html" class="insight-card wow fadeInUp">
+                        <div class="insight-meta">
+                            <span>Outlook</span>
+                            <span class="date">15 Apr 2026</span>
+                        </div>
+                        <h3>Q1 2026 EEMEA Outlook: Selective opportunities amid divergence</h3>
+                        <p>Why Eastern European equities continue to offer compelling valuations and where we see asymmetric upside in the Turkish market.</p>
+                        <span class="insight-link">Read more <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></span>
+                    </a>
+                </div>
+                <div class="col-xl-4 col-md-6">
+                    <a href="insights/ottoman-fund-q4-factsheet.html" class="insight-card wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="insight-meta">
+                            <span>Factsheet</span>
+                            <span class="date">31 Mar 2026</span>
+                        </div>
+                        <h3>Mori Ottoman Fund &mdash; Q4 2025 Factsheet</h3>
+                        <p>Quarterly performance review, top holdings, sector allocation and portfolio manager commentary for the Mori Ottoman Fund.</p>
+                        <span class="insight-link">Download PDF <i class="fa-regular fa-file-pdf" style="font-size:11px;"></i></span>
+                    </a>
+                </div>
+                <div class="col-xl-4 col-md-6">
+                    <a href="insights/shareholder-notice-2026.html" class="insight-card wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="insight-meta">
+                            <span>Shareholder Notice</span>
+                            <span class="date">22 Feb 2026</span>
+                        </div>
+                        <h3>Notice to shareholders &mdash; Annual General Meeting 2026</h3>
+                        <p>Convocation, agenda and proxy voting instructions for the Mori Funds Annual General Meeting to be held in Sliema, Malta.</p>
+                        <span class="insight-link">View notice <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Latest Insights Section End -->
+
+
     <!-- Page Team Start -->
     <div class="page-team" style="padding:80px 0;">
         <div class="container">
@@ -984,5 +1046,116 @@
     <script src="js/wow.min.js"></script>
     <!-- Main Custom js file -->
     <script src="js/function.js"></script>
+
+
+    <!-- ===== Investor Gate Modal (first-visit disclaimer) ================== -->
+    <div class="mori-gate" id="moriGate" role="dialog" aria-modal="true" aria-labelledby="moriGateTitle">
+        <div class="mori-gate__panel">
+            <img class="mori-gate__logo" src="assets/images/logo.png" alt="Mori Capital Management">
+            <p class="mori-gate__eyebrow">Important Information</p>
+            <h2 class="mori-gate__title" id="moriGateTitle">Please confirm before you continue</h2>
+            <p class="mori-gate__intro">
+                The information on this website is intended for residents of jurisdictions where Mori Capital Management Ltd. is authorised to promote its funds. The funds are <strong>not registered under the U.S. Investment Advisers Act of 1940</strong> and are not available to U.S. persons. Past performance is not a reliable indicator of future results; the value of investments can fall as well as rise.
+            </p>
+
+            <label class="mori-gate__check">
+                <input type="checkbox" id="moriGateConfirm">
+                <span>I confirm that I am <strong>not a U.S. person</strong> and I have read &amp; understood the <a href="legal.html" target="_blank">Legal &amp; Regulatory Disclaimer</a>.</span>
+            </label>
+
+            <div class="mori-gate__buttons">
+                <button type="button" class="mori-gate__btn mori-gate__btn--secondary" data-gate-role="retail">Retail Investor</button>
+                <button type="button" class="mori-gate__btn mori-gate__btn--primary" data-gate-role="professional" disabled>Professional / Institutional</button>
+            </div>
+
+            <button type="button" class="mori-gate__decline" id="moriGateDecline">I am a U.S. person — leave the site</button>
+
+            <div class="mori-gate__msg-decline">
+                <strong>Sorry &mdash;</strong> the funds described on this site are not available to U.S. persons. Please consult your local financial adviser for products available in your jurisdiction.
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ===== Cookie Consent Banner ======================================== -->
+    <div class="mori-cookie" id="moriCookie" role="region" aria-label="Cookie consent">
+        <div class="mori-cookie__icon"><i class="fa-solid fa-cookie-bite"></i></div>
+        <div class="mori-cookie__text">
+            We use cookies to provide essential site functionality and to analyse traffic anonymously. See our <a href="cookies.html">Cookie Policy</a> for details.
+        </div>
+        <div class="mori-cookie__actions">
+            <button type="button" class="mori-cookie__btn mori-cookie__btn--decline" id="moriCookieDecline">Necessary only</button>
+            <button type="button" class="mori-cookie__btn mori-cookie__btn--accept" id="moriCookieAccept">Accept all</button>
+        </div>
+    </div>
+
+
+    <script>
+    (function () {
+        var STORAGE = {
+            gate: 'mori.investorAcknowledged.v1',
+            cookie: 'mori.cookieConsent.v1'
+        };
+        var safeGet = function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } };
+        var safeSet = function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} };
+
+        // ----- Investor Gate -------------------------------------------------
+        var gate    = document.getElementById('moriGate');
+        var confirm = document.getElementById('moriGateConfirm');
+        var btnPro  = gate && gate.querySelector('[data-gate-role="professional"]');
+        var btnRet  = gate && gate.querySelector('[data-gate-role="retail"]');
+        var decline = document.getElementById('moriGateDecline');
+        var gateAcked = !!safeGet(STORAGE.gate);
+
+        function openGate() {
+            gate.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeGate(role) {
+            safeSet(STORAGE.gate, role + '|' + new Date().toISOString());
+            gate.classList.remove('show');
+            document.body.style.overflow = '';
+            // Now reveal cookie banner if not yet decided
+            setTimeout(maybeShowCookie, 250);
+        }
+        function syncButtons() {
+            var ok = confirm.checked;
+            btnPro.disabled = !ok;
+            btnRet.disabled = !ok;
+        }
+        if (gate && !gateAcked) {
+            confirm.addEventListener('change', syncButtons);
+            btnPro.addEventListener('click', function () { if (confirm.checked) closeGate('professional'); });
+            btnRet.addEventListener('click', function () { if (confirm.checked) closeGate('retail'); });
+            decline.addEventListener('click', function () { gate.classList.add('declined'); });
+            syncButtons();
+            openGate();
+        }
+
+        // ----- Cookie Consent ------------------------------------------------
+        var cookieBanner = document.getElementById('moriCookie');
+        var cookieAccept = document.getElementById('moriCookieAccept');
+        var cookieDecline = document.getElementById('moriCookieDecline');
+        var cookieDecided = !!safeGet(STORAGE.cookie);
+
+        function maybeShowCookie() {
+            if (!cookieBanner || cookieDecided) return;
+            // Only show after gate is closed (or if no gate showing)
+            if (gate && gate.classList.contains('show')) return;
+            cookieBanner.classList.add('show');
+        }
+        function dismissCookie(decision) {
+            safeSet(STORAGE.cookie, decision + '|' + new Date().toISOString());
+            cookieBanner.classList.remove('show');
+            cookieDecided = true;
+        }
+        if (cookieBanner) {
+            cookieAccept.addEventListener('click', function () { dismissCookie('accepted'); });
+            cookieDecline.addEventListener('click', function () { dismissCookie('necessary'); });
+            // If gate is already acknowledged, show cookie immediately (with slight delay for entrance)
+            if (gateAcked) setTimeout(maybeShowCookie, 600);
+        }
+    })();
+    </script>
 </body>
 </html>
