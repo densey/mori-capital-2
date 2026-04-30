@@ -514,6 +514,137 @@
     <!-- Why Choose Us Section End -->
 
 
+    <!-- Cinematic 3D Showcase Start -->
+    <div class="mori-cinematic" id="moriCinematic">
+        <div class="mori-cinematic__bg" aria-hidden="true">
+            <div class="mori-cinematic__grid"></div>
+            <div class="mori-cinematic__glow mori-cinematic__glow--a"></div>
+            <div class="mori-cinematic__glow mori-cinematic__glow--b"></div>
+        </div>
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-xl-5 col-lg-6">
+                    <div class="mori-cinematic__copy">
+                        <span class="section-sub-title wow fadeInUp">EEMEA in motion</span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque">Disciplined investing,<br>powered by data.</h2>
+                        <p class="wow fadeInUp" data-wow-delay="0.2s">Real-time portfolio analytics, on-the-ground research and active risk management — all converging into a single conviction-led process across Emerging European, Middle Eastern and African markets.</p>
+                        <div class="mori-cinematic__cta wow fadeInUp" data-wow-delay="0.4s">
+                            <a class="btn-default btn-highlighted" href="investment-style.html">Discover the Mori Style</a>
+                        </div>
+                        <div class="mori-cinematic__stats">
+                            <div><span class="num">15+</span><span class="lbl">EEMEA Markets</span></div>
+                            <div><span class="num">200+</span><span class="lbl">Securities Tracked</span></div>
+                            <div><span class="num">25+</span><span class="lbl">Years Experience</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-7 col-lg-6">
+                    <!-- 3D tilting dashboard card -->
+                    <div class="mori-cinematic__stage">
+                        <div class="mori-cinematic__card" id="moriTiltCard">
+                            <!-- Floating layers (parallax depth) -->
+                            <div class="tilt-layer tilt-back">
+                                <svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <defs>
+                                        <pattern id="cineDots" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+                                            <circle cx="2" cy="2" r="1" fill="#5DADE2" opacity="0.18"/>
+                                        </pattern>
+                                    </defs>
+                                    <rect width="600" height="360" fill="url(#cineDots)"/>
+                                    <!-- EEMEA territory silhouettes -->
+                                    <g fill="#1ABC9C" opacity="0.08">
+                                        <path d="M120,60 Q200,50 280,70 L340,90 Q360,130 320,150 L240,160 Q160,150 130,120 Z"/>
+                                        <path d="M340,140 Q400,130 460,145 L490,170 Q470,200 420,205 L360,200 Q330,180 330,160 Z"/>
+                                        <path d="M180,200 Q260,195 340,210 L370,240 Q340,275 280,280 L210,275 Q170,250 170,225 Z"/>
+                                    </g>
+                                </svg>
+                            </div>
+
+                            <div class="tilt-layer tilt-mid">
+                                <!-- Chart panel -->
+                                <div class="tilt-chart">
+                                    <div class="tilt-chart__head">
+                                        <div>
+                                            <div class="lbl">Mori Ottoman Fund · NAV</div>
+                                            <div class="val">€ 142.86 <span class="up">▲ 18.4% YTD</span></div>
+                                        </div>
+                                        <div class="tilt-chart__pills">
+                                            <span class="pill active">1Y</span>
+                                            <span class="pill">3Y</span>
+                                            <span class="pill">5Y</span>
+                                            <span class="pill">10Y</span>
+                                        </div>
+                                    </div>
+                                    <svg class="tilt-chart__svg" viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                                        <defs>
+                                            <linearGradient id="cineFill" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="0%" stop-color="#1ABC9C" stop-opacity="0.45"/>
+                                                <stop offset="100%" stop-color="#1ABC9C" stop-opacity="0"/>
+                                            </linearGradient>
+                                        </defs>
+                                        <!-- Grid lines -->
+                                        <g stroke="#5DADE2" stroke-width="0.4" opacity="0.18">
+                                            <line x1="0" y1="40" x2="560" y2="40"/>
+                                            <line x1="0" y1="90" x2="560" y2="90"/>
+                                            <line x1="0" y1="140" x2="560" y2="140"/>
+                                        </g>
+                                        <!-- Area fill -->
+                                        <path d="M10,140 L60,128 L110,135 L160,118 L210,120 L260,98 L310,102 L360,82 L410,86 L460,68 L510,60 L550,46 L550,180 L10,180 Z" fill="url(#cineFill)"/>
+                                        <!-- Line -->
+                                        <polyline points="10,140 60,128 110,135 160,118 210,120 260,98 310,102 360,82 410,86 460,68 510,60 550,46"
+                                                  fill="none" stroke="#1ABC9C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <!-- Dot markers -->
+                                        <circle cx="260" cy="98" r="4" fill="#1ABC9C"/>
+                                        <circle cx="260" cy="98" r="9" fill="none" stroke="#1ABC9C" stroke-width="1.2" opacity="0.55"/>
+                                        <circle cx="510" cy="60" r="3" fill="#5DADE2"/>
+                                        <circle cx="160" cy="118" r="3" fill="#5DADE2"/>
+                                    </svg>
+                                    <div class="tilt-chart__foot">
+                                        <span>Apr '25</span>
+                                        <span>Jul</span>
+                                        <span>Oct</span>
+                                        <span>Jan '26</span>
+                                        <span>Apr</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Floating chip: Currencies -->
+                            <div class="tilt-layer tilt-chip tilt-chip--ccy">
+                                <i class="fa-solid fa-coins"></i>
+                                <div>
+                                    <div class="chip-lbl">Multi-currency</div>
+                                    <div class="chip-val">EUR · USD · GBP · TRY</div>
+                                </div>
+                            </div>
+
+                            <!-- Floating chip: Performance -->
+                            <div class="tilt-layer tilt-chip tilt-chip--perf">
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                                <div>
+                                    <div class="chip-lbl">10Y Annualised</div>
+                                    <div class="chip-val">+11.7% <span style="color:#1ABC9C;font-size:11px;">vs benchmark</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Floating chip: AUM tier -->
+                            <div class="tilt-layer tilt-chip tilt-chip--aum">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <div>
+                                    <div class="chip-lbl">UCITS · Daily liquidity</div>
+                                    <div class="chip-val">MFSA C66999</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cinematic 3D Showcase End -->
+
+
     <!-- Awards Section Start -->
     <div class="our-awards" style="background:var(--mori-bg-soft,#F5F7FA);padding:64px 0;">
         <div class="container">
@@ -905,12 +1036,6 @@
                                     <h3><a href="mailto:info@mori-capital.com">info@mori-capital.com</a></h3>
                                 </div>
                                 <!-- Footer Contact Item End -->
-
-                                <!-- MFSA Regulator badge -->
-                                <a href="legal.html" class="footer-regulator">
-                                    <i class="fa-solid fa-shield-halved"></i>
-                                    Regulated by MFSA · Firm Reference C66999
-                                </a>
                             </div>
                             <!-- Footer Contact Items List End -->
                         </div>
@@ -923,6 +1048,9 @@
                                 <li><a href="index.html">Home</a></li>
                                 <li><a href="about.html">About Mori</a></li>
                                 <li><a href="investment-style.html">Investment Style</a></li>
+                                <li><a href="awards.html">Awards</a></li>
+                                <li><a href="team.html">Team</a></li>
+                                <li><a href="insights.html">Mori Views</a></li>
                                 <li><a href="contact.html">Contact</a></li>
                             </ul>
                         </div>
@@ -935,6 +1063,9 @@
                                 <li><a href="fund-eastern-european.html">Mori Eastern European Fund</a></li>
                                 <li><a href="fund-ottoman.html">Mori Ottoman Fund</a></li>
                                 <li><a href="fund-performance.html">Performance</a></li>
+                                <li><a href="documents.html#factsheets">Factsheets</a></li>
+                                <li><a href="documents.html#kiids">KIIDs &amp; PRIIPs KIDs</a></li>
+                                <li><a href="documents.html#reports">Annual &amp; Semi-Annual Reports</a></li>
                                 <li><a href="documents.html">Document Hub</a></li>
                             </ul>
                         </div>
@@ -966,6 +1097,12 @@
                             <img src="assets/images/logo-white.png" alt="Mori Capital Management">
                         </div>
                         <!-- Footer Logo End -->
+
+                        <!-- MFSA Regulator badge (centered) -->
+                        <a href="legal.html" class="footer-regulator">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Regulated by MFSA &middot; Firm Reference C66999
+                        </a>
 
                         <!-- Footer Social Links Start -->
                         <div class="footer-social-links">
@@ -1088,6 +1225,59 @@
             <button type="button" class="mori-cookie__btn mori-cookie__btn--accept" id="moriCookieAccept">Accept all</button>
         </div>
     </div>
+
+
+    <script>
+    /* ----- Cinematic 3D card — mouse tilt parallax ----------------------- */
+    (function () {
+        var card = document.getElementById('moriTiltCard');
+        var section = document.getElementById('moriCinematic');
+        if (!card || !section) return;
+
+        var maxTilt = 9;       // degrees
+        var rafId = null;
+        var targetX = 0, targetY = 0;
+        var currentX = 0, currentY = 0;
+        var lerp = 0.12;       // smoothing factor
+
+        function tick() {
+            currentX += (targetX - currentX) * lerp;
+            currentY += (targetY - currentY) * lerp;
+            card.style.transform =
+                'rotateX(' + (-currentY * maxTilt).toFixed(2) + 'deg) ' +
+                'rotateY(' + (currentX * maxTilt).toFixed(2) + 'deg)';
+            if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
+                rafId = requestAnimationFrame(tick);
+            } else {
+                rafId = null;
+            }
+        }
+        function schedule() {
+            if (rafId == null) rafId = requestAnimationFrame(tick);
+        }
+        section.addEventListener('mousemove', function (e) {
+            var rect = card.getBoundingClientRect();
+            var cx = rect.left + rect.width / 2;
+            var cy = rect.top + rect.height / 2;
+            targetX = Math.max(-1, Math.min(1, (e.clientX - cx) / (rect.width * 0.6)));
+            targetY = Math.max(-1, Math.min(1, (e.clientY - cy) / (rect.height * 0.6)));
+            schedule();
+        });
+        section.addEventListener('mouseleave', function () {
+            targetX = 0; targetY = 0;
+            schedule();
+        });
+        // Soft idle motion
+        var idleT = 0;
+        setInterval(function () {
+            if (rafId != null) return; // user is interacting
+            idleT += 0.015;
+            targetX = Math.sin(idleT) * 0.18;
+            targetY = Math.cos(idleT * 0.8) * 0.12;
+            schedule();
+        }, 50);
+    })();
+    </script>
 
 
     <script>
