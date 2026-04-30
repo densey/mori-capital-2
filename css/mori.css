@@ -71,6 +71,29 @@ body {
 @media (max-width: 991px) {
     .main-header .navbar { padding: 18px 0 12px !important; }
     .main-header .navbar-brand img { height: 60px; }
+
+    /* Mobile header: solid teal band (Mori brand) instead of transparent overlay */
+    header.main-header {
+        position: relative !important;
+        top: 0 !important;
+    }
+    header.main-header .header-sticky {
+        background: var(--accent-color) !important;
+        border-bottom: 1px solid rgba(0, 0, 0, .06) !important;
+    }
+    header.main-header .header-sticky.active {
+        background: var(--accent-color) !important;
+    }
+    /* Hamburger toggle visible on teal */
+    .main-header .navbar-toggle,
+    .main-header .navbar-toggle:before,
+    .main-header .navbar-toggle:after,
+    .main-header .navbar-toggle span {
+        background: #fff !important;
+        color: #fff !important;
+    }
+    .slicknav_btn { background: transparent !important; }
+    .slicknav_btn .slicknav_icon-bar { background: #fff !important; }
 }
 .footer-logo img {
     height: 64px;
