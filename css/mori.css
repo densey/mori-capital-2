@@ -53,26 +53,26 @@ body {
 
 /* ----- Logo prominence (header / footer) --------------------------------- */
 .main-header .navbar {
-    padding: 24px 0 14px !important;
+    padding: 18px 0 10px !important;
 }
 .main-header .navbar-brand img {
-    height: 96px;
+    height: 110px;
     width: auto;
-    max-width: 360px;
+    max-width: 400px;
 }
 .main-header .navbar-brand .logo-dark { display: none; }
 
 .header-sticky.fixed-header .navbar-brand img,
 .header-sticky.sticky .navbar-brand img,
 .header-sticky.active .navbar-brand img {
-    height: 76px;
+    height: 84px;
     transition: height .25s ease;
 }
-.header-sticky.active .navbar { padding: 14px 0 10px !important; }
+.header-sticky.active .navbar { padding: 10px 0 8px !important; }
 
 /* ----- Tighter menu spacing + smaller font ------------------------------- */
 .main-menu ul li a {
-    font-size: 14px !important;
+    font-size: 15px !important;
     padding: 10px 7px !important;
 }
 .main-menu .nav-menu-wrapper {
@@ -107,8 +107,8 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 /* Submenu dropdown when sticky stays styled normally — fine on white */
 
 @media (max-width: 991px) {
-    .main-header .navbar { padding: 18px 0 12px !important; }
-    .main-header .navbar-brand img { height: 72px; }
+    .main-header .navbar { padding: 14px 0 10px !important; }
+    .main-header .navbar-brand img { height: 84px; }
 
     /* Mobile header: solid teal band (Mori brand) instead of transparent overlay */
     header.main-header {
