@@ -53,7 +53,7 @@ body {
 
 /* ----- Logo prominence (header / footer) --------------------------------- */
 .main-header .navbar {
-    padding: 14px 0 !important;
+    padding: 24px 0 14px !important;
 }
 .main-header .navbar-brand img {
     height: 80px;
@@ -66,10 +66,10 @@ body {
     height: 64px;
     transition: height .25s ease;
 }
-.header-sticky.active .navbar { padding: 10px 0 !important; }
+.header-sticky.active .navbar { padding: 14px 0 10px !important; }
 
 @media (max-width: 991px) {
-    .main-header .navbar { padding: 12px 0 !important; }
+    .main-header .navbar { padding: 18px 0 12px !important; }
     .main-header .navbar-brand img { height: 60px; }
 }
 .footer-logo img {
