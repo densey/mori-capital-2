@@ -19,6 +19,20 @@ body {
     font-family: 'Inter', 'DM Sans', 'Google Sans', system-ui, sans-serif !important;
 }
 
+/* ----- Team item — fit longer titles on one line with social icons ------ */
+.team-item-content h2 {
+    font-size: 20px !important;
+    line-height: 1.3em !important;
+}
+.team-social-list { flex-wrap: nowrap !important; }
+.team-social-list p {
+    font-size: 12.5px !important;
+    line-height: 1.35 !important;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+.team-social-list ul { flex-shrink: 0; }
+
 /* ----- Logo prominence (header / footer) --------------------------------- */
 .main-header .navbar-brand img {
     height: 64px;
