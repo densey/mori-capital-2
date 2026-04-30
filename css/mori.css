@@ -60,6 +60,8 @@ body {
     width: auto;
     max-width: 320px;
 }
+.main-header .navbar-brand .logo-dark { display: none; }
+
 .header-sticky.fixed-header .navbar-brand img,
 .header-sticky.sticky .navbar-brand img,
 .header-sticky.active .navbar-brand img {
@@ -67,6 +69,26 @@ body {
     transition: height .25s ease;
 }
 .header-sticky.active .navbar { padding: 14px 0 10px !important; }
+
+/* ----- Sticky scroll state: WHITE bg + DARK logo + dark nav text --------- */
+header.main-header .header-sticky.active {
+    background: #fff !important;
+    border-bottom: 1px solid var(--divider-color) !important;
+    box-shadow: 0 4px 16px rgba(8, 18, 33, .06);
+}
+header.main-header .header-sticky.active .navbar-brand .logo-light { display: none; }
+header.main-header .header-sticky.active .navbar-brand .logo-dark  { display: inline-block; }
+header.main-header .header-sticky.active .main-menu ul li a {
+    color: var(--primary-color) !important;
+}
+header.main-header .header-sticky.active .main-menu ul li a:hover,
+header.main-header .header-sticky.active .main-menu ul li.active > a {
+    color: var(--accent-color) !important;
+}
+header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
+    color: var(--mori-muted, #7A8B99);
+}
+/* Submenu dropdown when sticky stays styled normally — fine on white */
 
 @media (max-width: 991px) {
     .main-header .navbar { padding: 18px 0 12px !important; }
@@ -83,7 +105,11 @@ body {
     }
     header.main-header .header-sticky.active {
         background: var(--accent-color) !important;
+        box-shadow: none !important;
     }
+    /* Mobile keeps the light logo (teal bg), no swap */
+    header.main-header .header-sticky.active .navbar-brand .logo-light { display: inline-block; }
+    header.main-header .header-sticky.active .navbar-brand .logo-dark  { display: none; }
     /* Hamburger toggle visible on teal */
     .main-header .navbar-toggle,
     .main-header .navbar-toggle:before,
