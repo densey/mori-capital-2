@@ -114,3 +114,174 @@ body {
 ::-webkit-scrollbar { width: 8px; background-color: var(--accent-color); }
 ::-webkit-scrollbar-thumb { background: var(--accent-color); }
 ::selection { background-color: var(--accent-color); color: #fff; filter: none; }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* ----- Tablet & below (<= 1199px) --------------------------------------- */
+@media (max-width: 1199px) {
+    .hero { min-height: 720px !important; }
+
+    /* Awards rating-bodies strip — 2-column wrap on tablet */
+    .rating-bodies { padding: 22px 24px !important; }
+    .rating-bodies > div:last-child {
+        gap: 18px 28px !important;
+    }
+    .team-item-content h2 { font-size: 18px !important; }
+    .team-social-list p { font-size: 12px !important; }
+}
+
+/* ----- Tablet (<= 991px) ------------------------------------------------ */
+@media (max-width: 991px) {
+    .hero { min-height: 600px !important; padding: 100px 0 70px !important; }
+    .hero .section-title h1 {
+        font-size: 36px !important;
+        line-height: 1.15em !important;
+    }
+    .hero .section-title-content p { font-size: 16px !important; }
+
+    .about-us .section-title h2,
+    .our-services .section-title h2,
+    .why-choose-us .section-title h2,
+    .our-awards .section-title h2,
+    .page-team .section-title h2 {
+        font-size: 28px !important;
+        line-height: 1.2em !important;
+    }
+
+    .our-awards { padding: 56px 0 !important; }
+    .page-team { padding: 56px 0 !important; }
+
+    /* Awards rating-bodies strip — stack into rows of 2 on tablet */
+    .rating-bodies {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 14px !important;
+    }
+    .rating-bodies > div:last-child {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 14px 20px !important;
+        width: 100%;
+    }
+
+    /* About body image hides bulky overlay decoration on small screens */
+    .about-us .about-us-image-box-2 { display: none; }
+}
+
+/* ----- Mobile (<= 767px) ------------------------------------------------ */
+@media (max-width: 767px) {
+    /* Topbar — reduce clutter on phone */
+    .topbar { font-size: 12px; padding: 8px 0; }
+    .topbar .topbar-contact-info p {
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .topbar .topbar-contact-info p i { display: none; }
+    .topbar .topbar-contact-info-list,
+    .topbar .topbar-social-links { display: none !important; }
+    .topbar-link-box { justify-content: flex-end !important; }
+    .lang-switcher { margin-left: 0; }
+
+    /* Hide the long contact info on phones, just show email */
+    .topbar .topbar-contact-info p span { display: none !important; }
+    .topbar .topbar-contact-info p a[href^="tel:"] { display: none; }
+
+    /* Header / nav */
+    .main-header .navbar-brand img { height: 44px; max-width: 200px; }
+    .header-btn { display: none !important; }
+
+    /* Hero — tighter on phone */
+    .hero { min-height: 540px !important; padding: 80px 0 60px !important; }
+    .hero .section-title h1 {
+        font-size: 28px !important;
+        line-height: 1.2em !important;
+    }
+    .hero .section-title .section-sub-title {
+        font-size: 11px !important;
+        letter-spacing: 0.16em !important;
+    }
+    .hero .section-content-btn { margin-top: 18px !important; }
+
+    /* Section titles & body */
+    .about-us,
+    .our-services,
+    .why-choose-us,
+    .our-awards,
+    .page-team {
+        padding: 48px 0 !important;
+    }
+    .about-us .section-title h2,
+    .our-services .section-title h2,
+    .why-choose-us .section-title h2,
+    .our-awards .section-title h2,
+    .page-team .section-title h2 {
+        font-size: 24px !important;
+    }
+    .section-title .section-sub-title {
+        font-size: 11px !important;
+    }
+    .section-content-btn { margin-top: 16px !important; }
+
+    /* Awards rating-bodies — single column on phone */
+    .rating-bodies > div:last-child {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px 16px !important;
+    }
+    .rating-bodies > div:last-child > div { font-size: 11px !important; }
+    .rating-bodies > div:last-child strong { font-size: 13px !important; }
+
+    /* Awards cards — tighter padding */
+    .award-item { padding: 22px !important; }
+    .award-item h3 { font-size: 16px !important; }
+
+    /* Team — single column on phone is bootstrap default for col-md-6 */
+    .team-item-content h2 { font-size: 19px !important; }
+
+    /* Funds — tighter spacing */
+    .service-item-content h2 { font-size: 20px !important; }
+
+    /* Footer */
+    .main-footer.dark-section { padding: 48px 0 0 !important; }
+    .footer-cta-box {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 18px !important;
+    }
+    .footer-disclaimer { font-size: 11px !important; }
+
+    /* Why-choose CTA box smaller on phone */
+    .why-choose-cta-box h3 { font-size: 14px !important; }
+}
+
+/* ----- Small mobile (<= 480px) ------------------------------------------ */
+@media (max-width: 480px) {
+    .container { padding-left: 16px; padding-right: 16px; }
+
+    .hero .section-title h1 { font-size: 24px !important; }
+    .hero .section-content-btn .section-btn .btn-default {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .topbar .topbar-contact-info { display: none !important; }
+    .topbar .container { justify-content: flex-end !important; }
+
+    /* Awards rating-bodies — single col on tiny phones */
+    .rating-bodies > div:last-child {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ----- Reduce motion: disable transforms / heavy animations ------------- */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
