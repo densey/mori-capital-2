@@ -145,10 +145,27 @@
         <!-- Video Start -->
         <div class="hero-bg-video">
             <!-- Selfhosted Video -->
-            <video autoplay muted playsinline loop id="myvideo" poster="assets/images/hero/hero-istanbul.jpg">
+            <video autoplay muted playsinline id="myvideo" poster="assets/images/hero/hero-istanbul.jpg">
                 <source src="assets/images/hero/mori-hero.mp4" type="video/mp4">
             </video>
         </div>
+        <script>
+            (function(){
+                var v = document.getElementById('myvideo');
+                if (!v) return;
+                var sources = [
+                    'assets/images/hero/mori-hero.mp4',
+                    'assets/images/hero/mori-hero-2.mp4'
+                ];
+                var i = 0;
+                v.addEventListener('ended', function(){
+                    i = (i + 1) % sources.length;
+                    v.src = sources[i];
+                    var p = v.play();
+                    if (p && typeof p.catch === 'function') p.catch(function(){});
+                });
+            })();
+        </script>
         <!-- Video End -->
 
         <div class="container">
