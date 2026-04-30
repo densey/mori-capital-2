@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mori Capital Management — Brand & Demo Guide for the new website redesign (homepage demo).">
+    <title>Mori Capital — Brand &amp; Demo Guide</title>
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/android-icon-192x192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" referrerpolicy="no-referrer">
+    <style>
+        :root {
+            --navy:        #1B3A5C;
+            --navy-dark:   #122842;
+            --navy-deep:   #0E1F36;
+            --teal:        #1ABC9C;
+            --teal-dark:   #16A085;
+            --text:        #2C3E50;
+            --text-soft:   #5A6B7B;
+            --muted:       #7A8B99;
+            --bg:          #FFFFFF;
+            --bg-soft:     #F5F7FA;
+            --bg-tint:     #EEF3F8;
+            --border:      #E1E7EE;
+            --gold:        #B8935A;
+            --font:        'Inter', 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            font-family: var(--font);
+            font-size: 15px;
+            line-height: 1.65;
+            color: var(--text);
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        a { color: var(--teal); text-decoration: none; }
+        a:hover { color: var(--teal-dark); }
+        h1, h2, h3, h4 {
+            font-family: var(--font);
+            color: var(--navy);
+            margin: 0 0 .4em;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+        p { margin: 0 0 1em; color: var(--text-soft); }
+        code {
+            font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+            font-size: 12.5px;
+            background: var(--bg-tint);
+            color: var(--navy);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+        .container {
+            width: 100%;
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 28px;
+        }
+        /* ---- Sticky top bar ---- */
+        .dg-top {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        .dg-top__inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 14px 0;
+            flex-wrap: wrap;
+        }
+        .dg-top__brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .dg-top__brand img { height: 40px; }
+        .dg-top__brand .meta {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+        .dg-top__brand .title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+            letter-spacing: -0.01em;
+        }
+        .dg-top__brand .sub {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .dg-top__nav {
+            display: flex;
+            gap: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            flex-wrap: wrap;
+        }
+        .dg-top__nav a {
+            color: var(--text-soft);
+            padding: 7px 11px;
+            border-radius: 6px;
+            transition: all .18s ease;
+        }
+        .dg-top__nav a:hover {
+            color: var(--navy);
+            background: var(--bg-tint);
+        }
+        .dg-top__cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--teal);
+            color: #fff !important;
+            padding: 9px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .dg-top__cta:hover { background: var(--teal-dark); color: #fff !important; }
+
+        @media (max-width: 900px) {
+            .dg-top__nav { width: 100%; order: 3; overflow-x: auto; padding-top: 6px; padding-bottom: 4px; flex-wrap: nowrap; }
+            .dg-top__nav a { white-space: nowrap; }
+        }
+
+        /* ---- Sections ---- */
+        section.dg-section {
+            padding: 70px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        section.dg-section.dg-soft { background: var(--bg-soft); }
+        section.dg-section.dg-dark {
+            background: linear-gradient(160deg, var(--navy-deep) 0%, var(--navy-dark) 100%);
+            color: #fff;
+        }
+        section.dg-section.dg-dark h1,
+        section.dg-section.dg-dark h2,
+        section.dg-section.dg-dark h3 { color: #fff; }
+        section.dg-section.dg-dark p { color: rgba(255,255,255,.78); }
+
+        .dg-eyebrow {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--teal);
+            margin-bottom: 12px;
+        }
+        section.dg-section.dg-dark .dg-eyebrow { color: #5DD4BA; }
+        .dg-h1 { font-size: clamp(28px, 3.4vw, 40px); margin-bottom: 16px; }
+        .dg-h2 { font-size: clamp(24px, 2.8vw, 30px); margin-bottom: 14px; }
+        .dg-lead {
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-soft);
+            max-width: 720px;
+        }
+        section.dg-section.dg-dark .dg-lead { color: rgba(255,255,255,.82); }
+    </style>
+</head>
+<body>
+
+    <!-- =========================================================
+         STICKY TOP NAV
+         ========================================================= -->
+    <header class="dg-top">
+        <div class="container">
+            <div class="dg-top__inner">
+                <a href="#cover" class="dg-top__brand">
+                    <img src="assets/images/logo.png" alt="Mori Capital">
+                    <span class="meta">
+                        <span class="title">Brand &amp; Demo Guide</span>
+                        <span class="sub">Homepage v1 &middot; April 2026</span>
+                    </span>
+                </a>
+                <nav class="dg-top__nav" aria-label="Guide sections">
+                    <a href="#brand">Brand</a>
+                    <a href="#type">Type</a>
+                    <a href="#sections">Pages</a>
+                    <a href="#components">Components</a>
+                    <a href="#compliance">Compliance</a>
+                    <a href="#interactive">Motion</a>
+                    <a href="#responsive">Responsive</a>
+                    <a href="#notes">Demo notes</a>
+                    <a href="#roadmap">Roadmap</a>
+                </nav>
+                <a href="index.html" class="dg-top__cta" target="_blank" rel="noopener">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Open the demo
+                </a>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- =========================================================
+         COVER / INTRO
+         ========================================================= -->
+    <section class="dg-section" id="cover" style="padding-top:90px;padding-bottom:80px;">
+        <div class="container">
+            <div style="display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center;">
+                <div>
+                    <span class="dg-eyebrow">Mori Capital Management &middot; Website Redesign</span>
+                    <h1 class="dg-h1" style="font-size:clamp(32px,4vw,52px);line-height:1.08;letter-spacing:-0.02em;">A new digital home for an EEMEA specialist asset manager.</h1>
+                    <p class="dg-lead" style="font-size:17px;">This document is a walkthrough of the homepage demo &mdash; the brand language, page sections, components, compliance behaviour and what's intentionally deferred. Built on the chosen theme, adapted with Mori&rsquo;s palette, content and EEMEA visual identity, and aligned with the original brief and the previously shared mock-up.</p>
+
+                    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;">
+                        <a href="index.html" class="dg-top__cta" target="_blank" rel="noopener" style="padding:13px 22px;font-size:14px;">
+                            <i class="fa-solid fa-eye"></i> View live demo
+                        </a>
+                        <a href="#sections" style="display:inline-flex;align-items:center;gap:6px;padding:13px 22px;border-radius:6px;font-size:14px;font-weight:600;color:var(--navy);background:var(--bg-tint);border:1px solid var(--border);">
+                            <i class="fa-solid fa-list"></i> Section breakdown
+                        </a>
+                    </div>
+
+                    <div style="margin-top:36px;padding-top:24px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(3,auto);gap:12px 36px;font-size:13px;">
+                        <div><div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-size:10.5px;font-weight:600;margin-bottom:3px;">Scope</div><div style="color:var(--navy);font-weight:600;">Homepage demo</div></div>
+                        <div><div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-size:10.5px;font-weight:600;margin-bottom:3px;">Sections</div><div style="color:var(--navy);font-weight:600;">10 + footer</div></div>
+                        <div><div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-size:10.5px;font-weight:600;margin-bottom:3px;">Languages</div><div style="color:var(--navy);font-weight:600;">EN (DE planned)</div></div>
+                        <div><div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-size:10.5px;font-weight:600;margin-bottom:3px;">Compliance</div><div style="color:var(--navy);font-weight:600;">GDPR + MFSA gate</div></div>
+                        <div><div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-size:10.5px;font-weight:600;margin-bottom:3px;">Responsive</div><div style="color:var(--navy);font-weight:600;">4 breakpoints</div></div>
+                        <div><div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;font-size:10.5px;font-weight:600;margin-bottom:3px;">Theme base</div><div style="color:var(--navy);font-weight:600;">Adapted, not extended</div></div>
+                    </div>
+                </div>
+
+                <div style="position:relative;aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy) 50%,var(--teal) 200%);box-shadow:0 30px 80px rgba(8,18,33,.18);">
+                    <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;" aria-hidden="true">
+                        <defs>
+                            <pattern id="coverDots" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+                                <circle cx="2" cy="2" r="1.2" fill="#5DADE2" opacity="0.28"/>
+                            </pattern>
+                            <radialGradient id="coverGlow" cx="50%" cy="50%" r="55%">
+                                <stop offset="0%" stop-color="#1ABC9C" stop-opacity="0.55"/>
+                                <stop offset="100%" stop-color="#1ABC9C" stop-opacity="0"/>
+                            </radialGradient>
+                        </defs>
+                        <rect width="400" height="500" fill="url(#coverDots)"/>
+                        <ellipse cx="200" cy="280" rx="220" ry="180" fill="url(#coverGlow)"/>
+                        <!-- EEMEA stylised clusters -->
+                        <g fill="#ffffff" opacity="0.18">
+                            <path d="M90,150 Q150,135 220,148 L280,165 Q295,200 250,212 L180,215 Q120,205 95,180 Z"/>
+                            <path d="M210,250 Q270,240 320,255 L335,290 Q310,325 250,330 L195,322 Q170,295 175,272 Z"/>
+                            <path d="M120,360 Q190,350 260,365 L280,395 Q255,430 195,432 L130,425 Q105,400 110,378 Z"/>
+                        </g>
+                        <!-- Network lines -->
+                        <g stroke="#1ABC9C" stroke-width="1.4" fill="none" opacity="0.7">
+                            <path d="M150,180 Q220,250 250,290"/>
+                            <path d="M250,290 Q280,340 195,400"/>
+                            <path d="M150,180 Q210,200 300,225"/>
+                        </g>
+                        <!-- Markers -->
+                        <g>
+                            <circle cx="150" cy="180" r="6" fill="#1ABC9C"/>
+                            <circle cx="150" cy="180" r="14" fill="none" stroke="#1ABC9C" stroke-width="1.2" opacity="0.55"/>
+                            <circle cx="250" cy="290" r="7" fill="#B8935A"/>
+                            <circle cx="250" cy="290" r="16" fill="none" stroke="#B8935A" stroke-width="1.2" opacity="0.55"/>
+                            <circle cx="195" cy="400" r="5" fill="#fff" opacity="0.9"/>
+                            <circle cx="300" cy="225" r="5" fill="#fff" opacity="0.9"/>
+                        </g>
+                    </svg>
+                    <div style="position:absolute;left:24px;bottom:24px;color:#fff;">
+                        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;font-weight:700;color:#5DD4BA;margin-bottom:6px;">EEMEA Coverage</div>
+                        <div style="font-size:20px;font-weight:700;line-height:1.15;">Emerging Europe<br>Middle East &middot; Africa</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         BRAND & COLOR PALETTE
+         ========================================================= -->
+    <section class="dg-section dg-soft" id="brand">
+        <div class="container">
+            <span class="dg-eyebrow">01 &middot; Brand &amp; Palette</span>
+            <h2 class="dg-h1">Mori Capital colour system</h2>
+            <p class="dg-lead">A two-tone identity: a deep navy for authority and structure, a Mori teal for energy, CTAs and brand recognition. Inspired by the existing Mori logo and tuned for finance-grade legibility.</p>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:32px;">
+                <!-- Mori Teal (Brand) -->
+                <div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:0 1px 2px rgba(8,18,33,.04);">
+                    <div style="background:#1ABC9C;height:140px;position:relative;">
+                        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 8px;border-radius:999px;backdrop-filter:blur(6px);">Brand</div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Mori Teal</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-soft);">#1ABC9C</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);">rgb(26, 188, 156)</div>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.5;">CTAs · sub-titles · links · active states · highlights</div>
+                    </div>
+                </div>
+
+                <!-- Navy (Primary) -->
+                <div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:0 1px 2px rgba(8,18,33,.04);">
+                    <div style="background:#1B3A5C;height:140px;position:relative;">
+                        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 8px;border-radius:999px;backdrop-filter:blur(6px);">Primary</div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Navy</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-soft);">#1B3A5C</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);">rgb(27, 58, 92)</div>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.5;">Headings · footer · sticky header · structural dark</div>
+                    </div>
+                </div>
+
+                <!-- Navy Dark -->
+                <div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:0 1px 2px rgba(8,18,33,.04);">
+                    <div style="background:#122842;height:140px;position:relative;">
+                        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 8px;border-radius:999px;backdrop-filter:blur(6px);">Deep</div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Navy Dark</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-soft);">#122842</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);">rgb(18, 40, 66)</div>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:10px;line-height:1.5;">Cinematic backdrop · cookie banner · gradient base</div>
+                    </div>
+                </div>
+
+                <!-- Teal Dark -->
+                <div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:0 1px 2px rgba(8,18,33,.04);">
+                    <div style="background:#16A085;height:120px;position:relative;">
+                        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 8px;border-radius:999px;backdrop-filter:blur(6px);">Hover</div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Teal Dark</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-soft);">#16A085</div>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:8px;line-height:1.5;">CTA hover · pressed states</div>
+                    </div>
+                </div>
+
+                <!-- Text -->
+                <div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:0 1px 2px rgba(8,18,33,.04);">
+                    <div style="background:#5A6B7B;height:120px;position:relative;">
+                        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 8px;border-radius:999px;backdrop-filter:blur(6px);">Body</div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Text Soft</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-soft);">#5A6B7B</div>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:8px;line-height:1.5;">Body copy · paragraphs · descriptions</div>
+                    </div>
+                </div>
+
+                <!-- Gold Accent -->
+                <div style="border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--border);box-shadow:0 1px 2px rgba(8,18,33,.04);">
+                    <div style="background:#B8935A;height:120px;position:relative;">
+                        <div style="position:absolute;top:14px;right:14px;background:rgba(255,255,255,.18);color:#fff;font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 8px;border-radius:999px;backdrop-filter:blur(6px);">Gold</div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;">Award Gold</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text-soft);">#B8935A</div>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:8px;line-height:1.5;">Accent only &mdash; award badges, premium markers</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Neutrals strip -->
+            <div style="margin-top:30px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;">
+                <div style="background:#FFFFFF;border:1px solid var(--border);padding:14px 16px;border-radius:8px;">
+                    <div style="height:18px;background:#FFFFFF;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;"></div>
+                    <div style="font-size:12px;font-weight:700;color:var(--navy);">Background</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">#FFFFFF</div>
+                </div>
+                <div style="background:#F5F7FA;border:1px solid var(--border);padding:14px 16px;border-radius:8px;">
+                    <div style="height:18px;background:#F5F7FA;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;"></div>
+                    <div style="font-size:12px;font-weight:700;color:var(--navy);">Soft</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">#F5F7FA</div>
+                </div>
+                <div style="background:#EEF3F8;border:1px solid var(--border);padding:14px 16px;border-radius:8px;">
+                    <div style="height:18px;background:#EEF3F8;border:1px solid var(--border);border-radius:4px;margin-bottom:8px;"></div>
+                    <div style="font-size:12px;font-weight:700;color:var(--navy);">Tint</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">#EEF3F8</div>
+                </div>
+                <div style="background:#fff;border:1px solid var(--border);padding:14px 16px;border-radius:8px;">
+                    <div style="height:18px;background:#E1E7EE;border-radius:4px;margin-bottom:8px;"></div>
+                    <div style="font-size:12px;font-weight:700;color:var(--navy);">Border</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);">#E1E7EE</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         TYPOGRAPHY
+         ========================================================= -->
+    <section class="dg-section" id="type">
+        <div class="container">
+            <span class="dg-eyebrow">02 &middot; Typography</span>
+            <h2 class="dg-h1">Inter &mdash; one family, full hierarchy</h2>
+            <p class="dg-lead">A single sans-serif (with DM Sans as a fallback) keeps the system clean and finance-grade. Tight letter-spacing on display sizes, generous line-height on body for long-form readability.</p>
+
+            <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:40px;margin-top:36px;align-items:start;">
+                <!-- Type scale -->
+                <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:32px 36px;">
+                    <div style="margin-bottom:22px;">
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:6px;">Hero / H1 &middot; clamp 28–44px</div>
+                        <div style="font-size:44px;font-weight:700;color:var(--navy);line-height:1.08;letter-spacing:-0.02em;">Navigating EEMEA markets</div>
+                    </div>
+                    <div style="margin-bottom:22px;">
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:6px;">Section title / H2 &middot; clamp 24–38px</div>
+                        <div style="font-size:32px;font-weight:700;color:var(--navy);line-height:1.18;">Two strategies, one focus</div>
+                    </div>
+                    <div style="margin-bottom:22px;">
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:6px;">Card title / H3 &middot; 20–24px</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--navy);line-height:1.3;">Mori Eastern European Fund</div>
+                    </div>
+                    <div style="margin-bottom:22px;">
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:6px;">Eyebrow / sub-title &middot; 11–12px / 0.18em tracking</div>
+                        <div style="font-size:12px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.18em;">Awards &amp; Recognition</div>
+                    </div>
+                    <div style="margin-bottom:22px;">
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:6px;">Body / paragraph &middot; 15–17px / 1.6 line-height</div>
+                        <div style="font-size:16px;font-weight:400;color:var(--text-soft);line-height:1.7;">Mori Capital Management is an independent, Malta-based investment manager dedicated to the EEMEA region. Through deep, in-house research and active engagement, we manage two flagship funds.</div>
+                    </div>
+                    <div>
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:6px;">Caption / micro &middot; 11–12px</div>
+                        <div style="font-size:12px;color:var(--muted);line-height:1.5;">Past performance is not a reliable indicator of future results. Investors should read the fund prospectus before investing.</div>
+                    </div>
+                </div>
+
+                <!-- Family info -->
+                <div>
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 26px;margin-bottom:14px;">
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:10px;">Primary family</div>
+                        <div style="font-size:28px;font-weight:700;color:var(--navy);line-height:1.1;margin-bottom:6px;">Inter</div>
+                        <div style="font-size:13px;color:var(--text-soft);line-height:1.6;margin-bottom:14px;">A modern, geometric sans designed for screen interfaces. Variable weights 400 → 700.</div>
+                        <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                            <span style="font-size:13px;color:var(--text-soft);background:var(--bg-tint);padding:5px 10px;border-radius:4px;font-weight:400;">Regular 400</span>
+                            <span style="font-size:13px;color:var(--text-soft);background:var(--bg-tint);padding:5px 10px;border-radius:4px;font-weight:500;">Medium 500</span>
+                            <span style="font-size:13px;color:var(--text-soft);background:var(--bg-tint);padding:5px 10px;border-radius:4px;font-weight:600;">Semibold 600</span>
+                            <span style="font-size:13px;color:var(--text-soft);background:var(--bg-tint);padding:5px 10px;border-radius:4px;font-weight:700;">Bold 700</span>
+                        </div>
+                    </div>
+
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 26px;">
+                        <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;font-weight:600;margin-bottom:10px;">Fallback &amp; system</div>
+                        <code style="display:block;background:var(--bg-tint);border:1px solid var(--border);padding:12px 14px;font-size:12px;line-height:1.6;color:var(--navy);">'Inter', 'DM Sans',<br>system-ui, -apple-system,<br>'Segoe UI', Roboto, sans-serif</code>
+                        <div style="font-size:12px;color:var(--text-soft);margin-top:12px;line-height:1.55;">Loaded from Google Fonts (preconnected). Falls back to OS default sans on slow networks &mdash; no FOIT.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         HOMEPAGE SECTION MAP
+         ========================================================= -->
+    <section class="dg-section dg-soft" id="sections">
+        <div class="container">
+            <span class="dg-eyebrow">03 &middot; Homepage map</span>
+            <h2 class="dg-h1">Ten sections, top to bottom</h2>
+            <p class="dg-lead">Built directly on the existing theme structure (no new component layouts) and adapted to Mori. Reduced from the theme's 14+ default blocks to keep scrolling tight, per the client's earlier feedback.</p>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:32px;">
+                <!-- Section card template repeated 11 times -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">01</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Top utility bar</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">Phone, email, working hours · Investor Login · LinkedIn / email · <strong>EN/DE language switcher</strong>.</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">02</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Header (sticky)</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">Prominent logo (80px) · main nav (Home, About, Investment Style, Funds dropdown, Documents, Contact) · Document Hub CTA. Transparent over hero, navy on scroll.</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--teal);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">03</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Hero with video gallery</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">Looping cinematic Mori video (<code>hero-final.mp4</code>) · headline "<em>Navigating EEMEA markets with proven expertise since 1998.</em>" · CTA "Explore our Funds".</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">04</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">About Mori</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">Founded 1998 · Malta · independent EEMEA specialist. Two layered images, italic pull-quote, animated counters: <strong>25+</strong> years, <strong>200+</strong> securities.</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">05</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Our Funds (2-card grid)</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;"><strong>Mori Eastern European Fund</strong> (1998 · EUR · 5 share classes) · <strong>Mori Ottoman Fund</strong> (2006 · EUR/USD/GBP · award-winning). Portrait images of PMs in section footer.</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">06</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">The Mori Style</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">Investment philosophy · 4 principles (proprietary research · walking the extra mile · risk management · co-investment). Visual + Aziz Unan pull-quote.</p>
+                    </div>
+                </div>
+
+                <div style="background:linear-gradient(135deg,var(--navy-dark) 0%,var(--navy) 100%);color:#fff;border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;border:1px solid var(--navy-dark);">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--teal);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">07</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;color:#fff;">Cinematic 3D showcase &nbsp;<i class="fa-solid fa-sparkles" style="color:var(--teal);font-size:11px;"></i></h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;color:rgba(255,255,255,.82);">Full-width navy section. <strong>Mouse-tilt 3D dashboard card</strong>: NAV chart, multi-currency chip, 10Y annualised, MFSA UCITS badge. Soft idle motion, lerp-smoothed parallax.</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">08</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Awards &amp; Rating Bodies</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">4 highlight cards (€uro / €uro am Sonntag / Börse Online / 1st Place 10Y) + horizontal rating-bodies strip (Sauren · FERI · Morningstar · FundStars · Quantalys).</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">09</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Mori Views &mdash; Latest insights</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">3-card grid: Outlook (Q1 2026 EEMEA) · Factsheet (Ottoman Q4) · Shareholder Notice (AGM 2026). Hover lifts the card with a teal border accent.</p>
+                    </div>
+                </div>
+
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">10</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Team (6 members)</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">3-col grid: Aziz Unan, Özlem Tümer Eke, Desmond Riordan, Isidro Garcia De La Torre, Dr. Peter Zurhorst, Jean-Paul Gauci. Real photos pulled from existing site.</p>
+                    </div>
+                </div>
+
+                <div style="grid-column:1 / -1;background:linear-gradient(135deg,#fff 0%,var(--bg-tint) 100%);border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;gap:18px;align-items:flex-start;">
+                    <div style="flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--navy-dark);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;">11</div>
+                    <div>
+                        <h3 style="font-size:16px;margin-bottom:4px;">Footer</h3>
+                        <p style="font-size:13.5px;line-height:1.55;margin:0;">4 columns: Contact · Mori Capital · Funds &amp; Documents · Newsletter. CTA strip with logo + <strong>MFSA C66999</strong> regulator badge + social icons. Full regulatory disclaimer + Privacy / Cookie / Legal links.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         COMPONENT LIBRARY
+         ========================================================= -->
+    <section class="dg-section" id="components">
+        <div class="container">
+            <span class="dg-eyebrow">04 &middot; Components</span>
+            <h2 class="dg-h1">Building blocks used on the homepage</h2>
+            <p class="dg-lead">All components inherit the theme's structure (Bootstrap grid, Swiper, WOW.js animations) and carry the Mori palette through CSS variable overrides. No new component layouts were introduced.</p>
+
+            <!-- ===== BUTTONS ===== -->
+            <h3 class="dg-h2" style="margin-top:40px;font-size:20px;">Buttons</h3>
+            <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:28px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+                <button style="background:var(--teal);color:#fff;border:1px solid var(--teal);padding:13px 24px;border-radius:6px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;">Primary &mdash; Explore Funds</button>
+                <button style="background:transparent;color:var(--navy);border:1px solid var(--navy);padding:13px 24px;border-radius:6px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;">Secondary &mdash; Read more</button>
+                <button style="background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.3);padding:13px 24px;border-radius:6px;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);background-color:var(--navy);">Ghost &mdash; on dark</button>
+                <button disabled style="background:var(--bg-tint);color:var(--muted);border:1px solid var(--border);padding:13px 24px;border-radius:6px;font-weight:600;font-size:14px;cursor:not-allowed;font-family:inherit;">Disabled</button>
+                <a href="#" style="color:var(--teal);font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:6px;">Read more <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></a>
+            </div>
+
+            <!-- ===== CARDS ===== -->
+            <h3 class="dg-h2" style="margin-top:40px;font-size:20px;">Cards</h3>
+            <div style="display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:18px;">
+                <!-- Fund card -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+                    <div style="height:120px;background:linear-gradient(135deg,var(--navy),var(--teal));position:relative;">
+                        <div style="position:absolute;top:14px;left:14px;background:rgba(255,255,255,.95);color:var(--navy);font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:5px 10px;border-radius:999px;">Emerging Europe</div>
+                    </div>
+                    <div style="padding:18px 20px;">
+                        <h4 style="font-size:16px;margin-bottom:4px;">Fund card</h4>
+                        <p style="font-size:13px;line-height:1.5;margin:0;color:var(--text-soft);">Image + tag + title + description + readmore-btn. Used in Funds section.</p>
+                    </div>
+                </div>
+
+                <!-- Award card -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+                    <div style="width:40px;height:40px;border-radius:50%;background:rgba(26,188,156,.12);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-trophy"></i></div>
+                    <div>
+                        <h4 style="font-size:16px;margin-bottom:4px;">Award card</h4>
+                        <p style="font-size:12.5px;line-height:1.55;margin:0;color:var(--text-soft);">Icon + name + year. Champion variant uses navy gradient + crown icon.</p>
+                    </div>
+                </div>
+
+                <!-- Insight card -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px;">
+                    <div style="display:flex;gap:10px;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;color:var(--teal);">
+                        <span>Outlook</span>
+                        <span style="color:var(--text-soft);font-weight:500;letter-spacing:0.05em;text-transform:none;">15 Apr 2026</span>
+                    </div>
+                    <h4 style="font-size:16px;margin-bottom:0;line-height:1.3;">Insight card</h4>
+                    <p style="font-size:12.5px;line-height:1.55;margin:0;color:var(--text-soft);">Tag + date + title + excerpt + arrow link. Hover: 4px lift, teal border.</p>
+                </div>
+
+                <!-- Team card -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+                    <div style="aspect-ratio:1;background:linear-gradient(160deg,#bbb,#888);"></div>
+                    <div style="padding:16px 18px;background:var(--navy);color:#fff;">
+                        <h4 style="font-size:15px;margin-bottom:0;color:#fff;">Team card</h4>
+                        <div style="display:flex;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.16);">
+                            <span style="font-size:12px;color:rgba(255,255,255,.75);">Director, PM</span>
+                            <span style="display:flex;gap:6px;"><i class="fa-brands fa-linkedin-in" style="font-size:11px;"></i><i class="fa-regular fa-envelope" style="font-size:11px;"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service item -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+                    <h4 style="font-size:16px;margin-bottom:0;">Service item</h4>
+                    <p style="font-size:12.5px;line-height:1.55;margin:0;color:var(--text-soft);">Theme service-item adapted &mdash; image, title, description, readmore. Used as fund card.</p>
+                </div>
+
+                <!-- Highlight quote -->
+                <div style="background:var(--bg-tint);border-left:3px solid var(--teal);border-radius:6px;padding:20px 24px;">
+                    <p style="font-style:italic;font-size:14px;color:var(--navy);line-height:1.55;margin:0;font-weight:500;">&ldquo;In the EEMEA region, knowledge isn't found in screens &mdash; it's earned by walking the extra mile.&rdquo;</p>
+                </div>
+            </div>
+
+            <!-- ===== BADGES & PILLS ===== -->
+            <h3 class="dg-h2" style="margin-top:40px;font-size:20px;">Badges &amp; pills</h3>
+            <div style="background:var(--bg-soft);border:1px solid var(--border);border-radius:14px;padding:28px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;">
+                <span style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.18em;">Eyebrow label</span>
+                <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);padding:7px 13px;border-radius:4px;font-size:12px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.10);background-color:var(--navy-dark);"><i class="fa-solid fa-shield-halved" style="color:var(--teal);"></i> Regulated by MFSA · C66999</span>
+                <span style="display:inline-flex;align-items:center;gap:0;background:var(--navy);border-radius:999px;padding:2px;font-size:12px;font-weight:600;letter-spacing:0.06em;">
+                    <span style="padding:4px 12px;border-radius:999px;color:var(--navy);background:#fff;">EN</span>
+                    <span style="padding:4px 12px;border-radius:999px;color:rgba(255,255,255,.7);">DE</span>
+                </span>
+                <span style="background:var(--gold);color:#fff;font-size:11px;font-weight:700;padding:6px 12px;border-radius:4px;display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-award"></i> 1st place &middot; 10Y</span>
+                <span style="background:rgba(255,255,255,.95);color:var(--navy);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:6px 12px;border-radius:999px;border:1px solid var(--border);">Türkiye &amp; MENA</span>
+            </div>
+
+            <!-- ===== FORM ===== -->
+            <h3 class="dg-h2" style="margin-top:40px;font-size:20px;">Newsletter input</h3>
+            <div style="background:var(--navy-dark);border-radius:14px;padding:28px;max-width:520px;">
+                <div style="font-size:14px;color:#fff;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;">Stay informed</div>
+                <div style="display:flex;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);padding:6px;border-radius:6px;">
+                    <input type="email" placeholder="Your email address" style="flex:1;background:transparent;border:none;color:#fff;font-size:14px;font-family:inherit;padding:8px 10px;outline:none;">
+                    <button style="background:var(--teal);color:#fff;border:none;width:40px;height:40px;border-radius:5px;cursor:pointer;font-family:inherit;"><i class="fa-regular fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         COMPLIANCE & TRUST
+         ========================================================= -->
+    <section class="dg-section dg-soft" id="compliance">
+        <div class="container">
+            <span class="dg-eyebrow">05 &middot; Compliance &amp; trust</span>
+            <h2 class="dg-h1">Built for an EU-regulated asset manager</h2>
+            <p class="dg-lead">Industry-standard regulatory and consent UX expected by institutional and retail investors visiting EU fund websites &mdash; covered out of the box.</p>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:32px;">
+                <!-- Investor Gate -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 30px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                        <div style="width:40px;height:40px;border-radius:8px;background:rgba(26,188,156,.12);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;font-size:16px;"><i class="fa-solid fa-user-shield"></i></div>
+                        <h3 style="margin:0;font-size:18px;">Investor type gate</h3>
+                    </div>
+                    <p style="font-size:14px;line-height:1.6;color:var(--text-soft);margin-bottom:14px;">First-visit modal. Confirms the visitor is not a U.S. person before fund information is shown. Standard for EU AIFMD/MiFID-distributed funds.</p>
+                    <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:1.85;color:var(--text-soft);">
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Confirmation checkbox &mdash; "I am not a U.S. person"</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Two role paths: Retail Investor / Professional / Institutional</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Decline path with friendly fallback message</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> One-shot &mdash; remembered in <code>localStorage</code></li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Backdrop blur, scroll lock, keyboard accessible</li>
+                    </ul>
+                </div>
+
+                <!-- Cookie Consent -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 30px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                        <div style="width:40px;height:40px;border-radius:8px;background:rgba(26,188,156,.12);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;font-size:16px;"><i class="fa-solid fa-cookie-bite"></i></div>
+                        <h3 style="margin:0;font-size:18px;">Cookie consent (GDPR)</h3>
+                    </div>
+                    <p style="font-size:14px;line-height:1.6;color:var(--text-soft);margin-bottom:14px;">Bottom slide-in banner shown after the gate is acknowledged. Two clear choices &mdash; no dark patterns.</p>
+                    <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:1.85;color:var(--text-soft);">
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> "Accept all" &middot; "Necessary only" buttons</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Cookie Policy link inline</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Decision saved in <code>localStorage</code> with timestamp</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Mobile responsive &mdash; stacks to a single column</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Versioned key (<code>v1</code>) for future re-consent</li>
+                    </ul>
+                </div>
+
+                <!-- MFSA Badge -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 30px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                        <div style="width:40px;height:40px;border-radius:8px;background:rgba(26,188,156,.12);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;font-size:16px;"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h3 style="margin:0;font-size:18px;">MFSA regulator badge</h3>
+                    </div>
+                    <p style="font-size:14px;line-height:1.6;color:var(--text-soft);margin-bottom:14px;">Permanently visible in the footer CTA strip &mdash; "<strong>Regulated by MFSA &middot; Firm Reference C66999</strong>". Clicking opens the legal disclaimer page.</p>
+                    <div style="background:var(--navy-dark);padding:16px;border-radius:8px;display:flex;justify-content:center;">
+                        <span style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);padding:7px 13px;border-radius:4px;font-size:12px;color:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.10);"><i class="fa-solid fa-shield-halved" style="color:var(--teal);"></i> Regulated by MFSA · Firm Reference C66999</span>
+                    </div>
+                </div>
+
+                <!-- Footer disclaimer -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 30px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+                        <div style="width:40px;height:40px;border-radius:8px;background:rgba(26,188,156,.12);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;font-size:16px;"><i class="fa-solid fa-circle-info"></i></div>
+                        <h3 style="margin:0;font-size:18px;">Footer regulatory disclaimer</h3>
+                    </div>
+                    <p style="font-size:14px;line-height:1.6;color:var(--text-soft);margin-bottom:14px;">Permanent block above copyright &mdash; covers MiFID authorisation, non-U.S. persons restriction, 1940 Act note, past-performance warning and prospectus reference.</p>
+                    <ul style="list-style:none;padding:0;margin:0;font-size:13px;line-height:1.85;color:var(--text-soft);">
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> MFSA C66999 + MiFID directive reference</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Not registered under U.S. Investment Advisers Act of 1940</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> "Past performance is not a reliable indicator…" line</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Prospectus / KIID / PRIIPs KID reference</li>
+                        <li><i class="fa-solid fa-check" style="color:var(--teal);margin-right:8px;font-size:11px;"></i> Privacy / Cookie / Legal links inline</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         INTERACTIVE / MOTION
+         ========================================================= -->
+    <section class="dg-section dg-dark" id="interactive">
+        <div class="container">
+            <span class="dg-eyebrow">06 &middot; Motion &amp; interaction</span>
+            <h2 class="dg-h1">Subtle motion, premium feel</h2>
+            <p class="dg-lead">Movement is used sparingly &mdash; reinforcing hierarchy and brand confidence rather than calling attention to itself. Every animation respects the user's <code style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.18);">prefers-reduced-motion</code> setting.</p>
+
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:32px;">
+                <!-- Hero video -->
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:26px 28px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                        <div style="width:38px;height:38px;border-radius:8px;background:rgba(26,188,156,.18);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-video"></i></div>
+                        <h3 style="margin:0;font-size:17px;color:#fff;">Hero video loop</h3>
+                    </div>
+                    <p style="font-size:13.5px;color:rgba(255,255,255,.78);line-height:1.6;margin:0;">Self-hosted Mori cinematic clip (<code style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.18);">hero-final.mp4</code>) plays muted on autoplay, loops seamlessly. Poster image fallback (<code style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.18);">hero-istanbul.jpg</code>) displays during load. Easy to swap to a JS video gallery (already coded) if multiple clips return.</p>
+                </div>
+
+                <!-- 3D tilt card -->
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:26px 28px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                        <div style="width:38px;height:38px;border-radius:8px;background:rgba(26,188,156,.18);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-cube"></i></div>
+                        <h3 style="margin:0;font-size:17px;color:#fff;">3D mouse-tilt card</h3>
+                    </div>
+                    <p style="font-size:13.5px;color:rgba(255,255,255,.78);line-height:1.6;margin:0;">Cinematic showcase. Card tilts up to ±9° following the cursor (lerp-smoothed via <code style="background:rgba(255,255,255,.1);color:#fff;border-color:rgba(255,255,255,.18);">requestAnimationFrame</code>). Three floating chips (multi-currency, 10Y annualised, MFSA UCITS) sit on different Z-depths for true parallax. Soft sin/cos idle drift when the cursor is away.</p>
+                </div>
+
+                <!-- Sticky header -->
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:26px 28px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                        <div style="width:38px;height:38px;border-radius:8px;background:rgba(26,188,156,.18);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-window-maximize"></i></div>
+                        <h3 style="margin:0;font-size:17px;color:#fff;">Sticky header transition</h3>
+                    </div>
+                    <p style="font-size:13.5px;color:rgba(255,255,255,.78);line-height:1.6;margin:0;">Header sits transparent over the hero video. Once the user scrolls past 600px, it locks to the top with a navy fill, the logo eases from 80→64px, and padding compresses &mdash; nothing jolts.</p>
+                </div>
+
+                <!-- WOW.js animations -->
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:26px 28px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                        <div style="width:38px;height:38px;border-radius:8px;background:rgba(26,188,156,.18);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                        <h3 style="margin:0;font-size:17px;color:#fff;">Reveal-on-scroll</h3>
+                    </div>
+                    <p style="font-size:13.5px;color:rgba(255,255,255,.78);line-height:1.6;margin:0;">WOW.js fades each section block in with staggered delays (0.1s · 0.2s · 0.4s). Headlines split into characters via SplitText for a controlled reveal. Counters animate from 0 to target on scroll into view.</p>
+                </div>
+
+                <!-- Card hover -->
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:26px 28px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                        <div style="width:38px;height:38px;border-radius:8px;background:rgba(26,188,156,.18);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-arrow-pointer"></i></div>
+                        <h3 style="margin:0;font-size:17px;color:#fff;">Card hover</h3>
+                    </div>
+                    <p style="font-size:13.5px;color:rgba(255,255,255,.78);line-height:1.6;margin:0;">Insight cards lift 4px and adopt a teal border on hover. Fund cards animate the inner image with a 1.04 scale. Award champion card has a subtle inner glow on hover.</p>
+                </div>
+
+                <!-- Demo toast -->
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:26px 28px;">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+                        <div style="width:38px;height:38px;border-radius:8px;background:rgba(26,188,156,.18);color:var(--teal);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-bell"></i></div>
+                        <h3 style="margin:0;font-size:17px;color:#fff;">Demo-mode toast</h3>
+                    </div>
+                    <p style="font-size:13.5px;color:rgba(255,255,255,.78);line-height:1.6;margin:0;">Click intercept on sub-page links shows a small navy pill toast at the top: "<em>Demo &mdash; sub-pages coming soon</em>", auto-dismisses after 1.8s. Easily removed when full site is live.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         RESPONSIVE
+         ========================================================= -->
+    <section class="dg-section" id="responsive">
+        <div class="container">
+            <span class="dg-eyebrow">07 &middot; Responsive</span>
+            <h2 class="dg-h1">Four breakpoints, deliberate behaviour</h2>
+            <p class="dg-lead">Layout adapts not just visually but <em>behaviourally</em> at each breakpoint &mdash; the topbar collapses on phones, the header switches from transparent-over-hero to a solid teal bar, and section paddings tighten progressively.</p>
+
+            <!-- Breakpoint table -->
+            <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-top:32px;">
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);background:var(--bg-soft);padding:14px 24px;border-bottom:1px solid var(--border);">
+                    <div>Element</div>
+                    <div>Desktop &gt; 1199px</div>
+                    <div>Tablet 991–1199</div>
+                    <div>Phone 480–767</div>
+                    <div>Small &lt; 480px</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;">
+                    <div style="font-weight:700;color:var(--navy);">Hero</div>
+                    <div>min-h 820px · h1 44px</div>
+                    <div>min-h 720 · h1 38</div>
+                    <div>min-h 540 · h1 28</div>
+                    <div>h1 24 · CTA full-width</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg-soft);">
+                    <div style="font-weight:700;color:var(--navy);">Header</div>
+                    <div>Transparent over hero · 80px logo</div>
+                    <div>Same · 60px logo</div>
+                    <div style="color:var(--teal);font-weight:600;">Solid teal · drawer · 60px</div>
+                    <div style="color:var(--teal);font-weight:600;">Solid teal · 44px</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;">
+                    <div style="font-weight:700;color:var(--navy);">Topbar</div>
+                    <div>Phone · email · hours · login · EN/DE</div>
+                    <div>Same</div>
+                    <div>Email + EN/DE only</div>
+                    <div>EN/DE only</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg-soft);">
+                    <div style="font-weight:700;color:var(--navy);">Funds</div>
+                    <div>2-col grid</div>
+                    <div>2-col</div>
+                    <div>1-col stack</div>
+                    <div>1-col stack</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;">
+                    <div style="font-weight:700;color:var(--navy);">Awards</div>
+                    <div>4-col</div>
+                    <div>4-col</div>
+                    <div>2-col</div>
+                    <div>1-col</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg-soft);">
+                    <div style="font-weight:700;color:var(--navy);">Rating bodies</div>
+                    <div>Horizontal · 5 inline</div>
+                    <div>Wraps</div>
+                    <div>Stacks · 2-col grid</div>
+                    <div>1-col grid</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;">
+                    <div style="font-weight:700;color:var(--navy);">Team</div>
+                    <div>3-col</div>
+                    <div>3-col</div>
+                    <div>2-col</div>
+                    <div>1-col</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;border-bottom:1px solid var(--border);align-items:center;background:var(--bg-soft);">
+                    <div style="font-weight:700;color:var(--navy);">Cinematic 3D</div>
+                    <div>Full effect</div>
+                    <div>Tighter chips</div>
+                    <div>Performance chip hidden</div>
+                    <div>Stats 2-col</div>
+                </div>
+                <div style="display:grid;grid-template-columns:140px 1fr 1fr 1fr 1fr;font-size:13px;line-height:1.5;padding:16px 24px;align-items:center;">
+                    <div style="font-weight:700;color:var(--navy);">Footer</div>
+                    <div>4-col</div>
+                    <div>4-col</div>
+                    <div>1-col stack · CTA vertical</div>
+                    <div>1-col stack · CTA vertical</div>
+                </div>
+            </div>
+
+            <!-- Mobile teal header callout -->
+            <div style="margin-top:28px;background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%);color:#fff;border-radius:14px;padding:24px 28px;display:flex;align-items:center;gap:18px;">
+                <div style="flex-shrink:0;width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.18);display:inline-flex;align-items:center;justify-content:center;font-size:18px;"><i class="fa-solid fa-mobile-screen"></i></div>
+                <div>
+                    <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:3px;">Mobile-only: brand-teal header bar</div>
+                    <div style="font-size:13.5px;color:rgba(255,255,255,.85);line-height:1.55;">Below 991px the header switches to a solid <code style="background:rgba(255,255,255,.18);color:#fff;border:none;padding:1px 6px;">#1ABC9C</code> band so the white Mori logo and hamburger toggle stay legible without depending on the hero video underneath.</div>
+                </div>
+            </div>
+
+            <!-- Reduce motion -->
+            <div style="margin-top:14px;background:var(--bg-tint);border:1px solid var(--border);border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:14px;">
+                <i class="fa-solid fa-universal-access" style="color:var(--teal);font-size:18px;"></i>
+                <div style="font-size:13.5px;color:var(--text-soft);line-height:1.55;"><strong style="color:var(--navy);">Reduce-motion safe</strong> &mdash; users with the OS setting enabled get instant transitions and a static hero (no auto-play motion).</div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         DEMO NOTES
+         ========================================================= -->
+    <section class="dg-section dg-soft" id="notes">
+        <div class="container">
+            <span class="dg-eyebrow">08 &middot; Demo notes</span>
+            <h2 class="dg-h1">How to walk through the demo</h2>
+            <p class="dg-lead">A few things to know before opening <code>index.html</code> &mdash; especially that this is the <strong>homepage only</strong>, with sub-page navigation intentionally muted.</p>
+
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:24px;margin-top:32px;">
+                <!-- Left: walkthrough -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:30px 32px;">
+                    <h3 style="font-size:18px;margin-bottom:18px;">Suggested walkthrough</h3>
+                    <ol style="padding-left:20px;margin:0;font-size:14px;line-height:1.8;color:var(--text-soft);">
+                        <li><strong style="color:var(--navy);">Open in incognito</strong> &mdash; first-visit experience triggers the investor gate.</li>
+                        <li><strong style="color:var(--navy);">Confirm "I am not a U.S. person"</strong> &mdash; both buttons unlock; pick Retail or Professional.</li>
+                        <li><strong style="color:var(--navy);">Cookie banner appears</strong> after the gate dismisses &mdash; Accept all or Necessary only.</li>
+                        <li><strong style="color:var(--navy);">Hero video</strong> plays muted, looped. Sticky header is transparent over it.</li>
+                        <li><strong style="color:var(--navy);">Scroll past the hero</strong> &mdash; header locks to navy with a smooth logo shrink.</li>
+                        <li><strong style="color:var(--navy);">Funds &amp; Mori Style</strong> &mdash; theme animations reveal each block as it enters view.</li>
+                        <li><strong style="color:var(--navy);">Cinematic showcase</strong> &mdash; hover the dashboard card to feel the 3D tilt; chips drift on different depths.</li>
+                        <li><strong style="color:var(--navy);">Awards &amp; Insights</strong> &mdash; cards lift on hover with a teal accent border.</li>
+                        <li><strong style="color:var(--navy);">Team grid</strong> &mdash; six profiles, real photos pulled from the existing Mori site.</li>
+                        <li><strong style="color:var(--navy);">Footer</strong> &mdash; full disclaimer + MFSA badge + Stay Informed newsletter.</li>
+                        <li><strong style="color:var(--navy);">Resize the window</strong> down to a phone width &mdash; the header turns Mori-teal and the menu collapses to a drawer.</li>
+                    </ol>
+                </div>
+
+                <!-- Right: practical info -->
+                <div>
+                    <!-- Demo limitations -->
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 26px;margin-bottom:14px;">
+                        <h3 style="font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:10px;"><i class="fa-solid fa-circle-exclamation" style="color:var(--gold);font-size:14px;"></i>Demo limitations</h3>
+                        <ul style="padding-left:18px;margin:0;font-size:13px;line-height:1.75;color:var(--text-soft);">
+                            <li>Single page only &mdash; <code>index.html</code></li>
+                            <li>Sub-page links show a "coming soon" toast (intercepted in JS)</li>
+                            <li>EN/DE switcher: only EN active for now</li>
+                            <li>Live mailto / tel still work normally</li>
+                            <li>Forms are decorative (no backend wiring yet)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Reset -->
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 26px;margin-bottom:14px;">
+                        <h3 style="font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:10px;"><i class="fa-solid fa-rotate-right" style="color:var(--teal);font-size:14px;"></i>Re-trigger the gate &amp; cookie banner</h3>
+                        <p style="font-size:13px;line-height:1.6;color:var(--text-soft);margin-bottom:10px;">Open DevTools console and run:</p>
+                        <code style="display:block;background:var(--navy-dark);color:#fff;border:none;padding:12px 14px;font-size:12px;line-height:1.5;border-radius:6px;">localStorage.clear();<br>location.reload();</code>
+                    </div>
+
+                    <!-- File structure -->
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:24px 26px;">
+                        <h3 style="font-size:17px;margin-bottom:12px;display:flex;align-items:center;gap:10px;"><i class="fa-solid fa-folder-tree" style="color:var(--teal);font-size:14px;"></i>What ships in the demo</h3>
+                        <code style="display:block;background:var(--bg-tint);color:var(--navy);border:1px solid var(--border);padding:14px 16px;font-size:12px;line-height:1.7;border-radius:6px;white-space:pre;">index.html
+demo-guide.html  <span style="color:var(--muted);">← this document</span>
+assets/images/   <span style="color:var(--muted);">Mori logos, hero/, service/, team/</span>
+css/mori.css     <span style="color:var(--muted);">palette + Mori-specific overrides</span>
+css/custom.css   <span style="color:var(--muted);">theme base</span>
+images/          <span style="color:var(--muted);">favicon</span>
+js/              <span style="color:var(--muted);">theme libs (jQuery, Swiper, GSAP, ...)</span></code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         ROADMAP / NEXT
+         ========================================================= -->
+    <section class="dg-section" id="roadmap">
+        <div class="container">
+            <span class="dg-eyebrow">09 &middot; Roadmap</span>
+            <h2 class="dg-h1">After homepage approval &mdash; what's next</h2>
+            <p class="dg-lead">Each page below uses the same theme structure and Mori palette. Sub-page navigation, content modelling and the admin panel will be wired in once the homepage direction is signed off.</p>
+
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;margin-top:32px;">
+                <!-- Public pages -->
+                <div style="background:#fff;border:1px solid var(--border);border-radius:14px;padding:28px 32px;">
+                    <h3 style="font-size:17px;margin-bottom:8px;">Public website pages</h3>
+                    <p style="font-size:13.5px;color:var(--text-soft);margin-bottom:18px;">From the original brief.</p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">About Mori</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Company history · mission · regulator info</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Investment Style</div>
+                            <div style="font-size:12px;color:var(--text-soft);">The Mori Style &mdash; full philosophy</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Mori Eastern European Fund</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Fund overview · share classes · performance chart</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Mori Ottoman Fund</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Fund overview · share classes · awards</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Fund Performance</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Interactive chart · benchmark · NAV table</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">FundHub / Documents</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Filterable repository · KIIDs · Factsheets</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Team</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Detail page · individual bios</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Awards</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Full list · Sauren · FERI · Morningstar</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Mori Views</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Insights index + article template</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Contact</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Form · address · map</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">Legal &amp; Disclaimer</div>
+                            <div style="font-size:12px;color:var(--text-soft);">Risk · non-US · privacy · cookies</div>
+                        </div>
+                        <div style="border:1px solid var(--border);border-radius:8px;padding:14px 16px;background:var(--bg-soft);">
+                            <div style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;">DE translation</div>
+                            <div style="font-size:12px;color:var(--text-soft);">All pages mirrored in German</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin / CMS -->
+                <div style="background:linear-gradient(160deg,var(--navy-deep) 0%,var(--navy) 100%);color:#fff;border-radius:14px;padding:28px 32px;">
+                    <h3 style="font-size:17px;margin-bottom:8px;color:#fff;">Admin panel (CMS)</h3>
+                    <p style="font-size:13.5px;color:rgba(255,255,255,.78);margin-bottom:18px;">Content team self-service for documents, NAV data and pages.</p>
+                    <ul style="list-style:none;padding:0;margin:0;font-size:13.5px;line-height:2;color:rgba(255,255,255,.85);">
+                        <li><i class="fa-solid fa-arrow-right" style="color:var(--teal);margin-right:8px;font-size:11px;"></i>Login &amp; user roles (Super / Editor / Doc Manager)</li>
+                        <li><i class="fa-solid fa-arrow-right" style="color:var(--teal);margin-right:8px;font-size:11px;"></i>Page management &mdash; EN + DE bilingual editor</li>
+                        <li><i class="fa-solid fa-arrow-right" style="color:var(--teal);margin-right:8px;font-size:11px;"></i>Document management &mdash; fund / share class / type</li>
+                        <li><i class="fa-solid fa-arrow-right" style="color:var(--teal);margin-right:8px;font-size:11px;"></i>Performance data entry &mdash; NAV monthly / CSV import</li>
+                        <li><i class="fa-solid fa-arrow-right" style="color:var(--teal);margin-right:8px;font-size:11px;"></i>Fund &amp; share-class CRUD</li>
+                        <li><i class="fa-solid fa-arrow-right" style="color:var(--teal);margin-right:8px;font-size:11px;"></i>Media library &mdash; image &amp; PDF upload</li>
+                        <li><i class="fa-solid fa-arrow-right" style="color:var(--teal);margin-right:8px;font-size:11px;"></i>Settings &mdash; SEO globals, GA, backups</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- =========================================================
+         CLOSING FOOTER
+         ========================================================= -->
+    <footer style="background:var(--navy-dark);color:rgba(255,255,255,.65);padding:36px 0;text-align:center;font-size:13px;">
+        <div class="container" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+            <div style="display:flex;align-items:center;gap:14px;">
+                <img src="assets/images/logo-white.png" alt="Mori Capital" style="height:36px;">
+                <span style="color:rgba(255,255,255,.55);font-size:12px;">Brand &amp; Demo Guide &middot; v1 &middot; April 2026</span>
+            </div>
+            <div style="display:flex;gap:18px;font-size:12px;">
+                <a href="index.html" style="color:#fff;">Open the demo →</a>
+                <span style="color:rgba(255,255,255,.4);">© 2026 Mori Capital Management Ltd.</span>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
