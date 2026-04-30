@@ -1091,6 +1091,43 @@
 
 
     <script>
+    /* ----- Demo mode: disable all sub-page links --------------------------
+       Allow: anchors (#…), index.html, tel:, mailto:, external http(s).
+       Block any other .html navigation and show a small toast.
+       Remove this block when other pages are ready.                        */
+    (function () {
+        var toast;
+        function showToast() {
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.className = 'mori-demo-toast';
+                toast.innerHTML = '<i class="fa-solid fa-circle-info"></i> Demo &mdash; sub-pages coming soon';
+                document.body.appendChild(toast);
+            }
+            toast.classList.add('show');
+            clearTimeout(showToast._t);
+            showToast._t = setTimeout(function () { toast.classList.remove('show'); }, 1800);
+        }
+        document.addEventListener('click', function (e) {
+            var a = e.target.closest && e.target.closest('a');
+            if (!a) return;
+            var href = a.getAttribute('href') || '';
+            if (
+                href === '' ||
+                href.charAt(0) === '#' ||
+                /^(tel:|mailto:|javascript:|https?:\/\/)/i.test(href) ||
+                /(^|\/)index\.html(#|$)/.test(href)
+            ) return;
+            if (/\.html(#|$)/.test(href)) {
+                e.preventDefault();
+                showToast();
+            }
+        }, true);
+    })();
+    </script>
+
+
+    <script>
     (function () {
         var STORAGE = {
             gate: 'mori.investorAcknowledged.v1',

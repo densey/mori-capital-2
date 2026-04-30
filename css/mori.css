@@ -134,6 +134,36 @@ body {
 ::selection { background-color: var(--accent-color); color: #fff; filter: none; }
 
 /* ==========================================================================
+   Demo-mode toast (shown when a sub-page link is clicked)
+   ========================================================================== */
+.mori-demo-toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translate(-50%, -120%);
+    background: var(--primary-color);
+    color: #fff;
+    padding: 12px 22px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    z-index: 11000;
+    box-shadow: 0 16px 40px rgba(8, 18, 33, .3);
+    transition: transform .35s cubic-bezier(.4, 0, .2, 1), opacity .25s ease;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+}
+.mori-demo-toast i { color: var(--accent-color); font-size: 12px; }
+.mori-demo-toast.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+/* ==========================================================================
    Investor Gate Modal (first-visit disclaimer)
    ========================================================================== */
 .mori-gate {
