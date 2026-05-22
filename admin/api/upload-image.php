@@ -13,6 +13,11 @@ header('Content-Type: application/json');
 Auth::requireLogin();
 
 try {
+    // CSRF via custom header (TinyMCE config sends X-CSRF-Token)
+    $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['_csrf'] ?? null;
+    if (!\Mori\Csrf::verify($token)) {
+        throw new \Exception('CSRF token missing or invalid');
+    }
     if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
         throw new \Exception('No file');
     }
@@ -20,7 +25,8 @@ try {
     if ($_FILES['file']['size'] > $maxBytes) throw new \Exception('Too large');
     $name = $_FILES['file']['name'];
     $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-    if (!in_array($ext, ['jpg','jpeg','png','gif','webp','svg'], true)) throw new \Exception('Bad type');
+    // SVG excluded — would allow inline <script> (stored XSS).
+    if (!in_array($ext, ['jpg','jpeg','png','gif','webp'], true)) throw new \Exception('Bad type');
 
     $year = date('Y');
     $dir  = dirname(__DIR__, 2) . '/uploads/media/' . $year;

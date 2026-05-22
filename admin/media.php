@@ -22,7 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
     try {
         if (empty($_FILES['files'])) throw new \Exception('Choose files to upload.');
         $maxBytes = (int)(setting('upload_max_mb', '20')) * 1024 * 1024;
-        $allowedExt = ['jpg','jpeg','png','gif','webp','svg'];
+        // SVG intentionally excluded — they can carry inline <script> (stored XSS risk).
+        // To allow SVG, sanitize server-side first (e.g. enshrined/svg-sanitizer).
+        $allowedExt = ['jpg','jpeg','png','gif','webp'];
         $count = 0;
         foreach ($_FILES['files']['name'] as $i => $name) {
             if ($_FILES['files']['error'][$i] !== UPLOAD_ERR_OK) continue;

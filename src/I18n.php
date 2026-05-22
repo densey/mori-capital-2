@@ -20,7 +20,15 @@ final class I18n
         // 1. Query param
         if (isset($_GET['lang']) && in_array($_GET['lang'], $available, true)) {
             self::$locale = $_GET['lang'];
-            setcookie('mori_lang', self::$locale, time() + 31536000, '/');
+            $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+                   || (($_SERVER['SERVER_PORT'] ?? 0) == 443);
+            setcookie('mori_lang', self::$locale, [
+                'expires'  => time() + 31536000,
+                'path'     => '/',
+                'secure'   => $secure,
+                'httponly' => false,        // language must be readable by JS
+                'samesite' => 'Lax',
+            ]);
         }
         // 2. Cookie
         elseif (isset($_COOKIE['mori_lang']) && in_array($_COOKIE['mori_lang'], $available, true)) {

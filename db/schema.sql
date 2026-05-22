@@ -259,19 +259,7 @@ CREATE TABLE IF NOT EXISTS audit_log (
     CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- -----------------------------------------------------------------------------
--- Sessions (database-backed for safer auth)
--- -----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS sessions (
-    id                  VARCHAR(128) NOT NULL PRIMARY KEY,
-    user_id             INT NULL,
-    payload             LONGTEXT NULL,
-    last_activity       INT NOT NULL,
-    ip_address          VARCHAR(45) NULL,
-    user_agent          VARCHAR(500) NULL,
-    INDEX idx_last_activity (last_activity),
-    INDEX idx_user (user_id),
-    CONSTRAINT fk_session_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 SET FOREIGN_KEY_CHECKS = 1;
+-- Note: the 'sessions' table is intentionally NOT created. PHP file-based
+-- session storage is used. If multi-server deployment is added later, a
+-- SessionHandlerInterface implementation can introduce a sessions table.

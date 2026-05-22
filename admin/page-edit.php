@@ -121,7 +121,7 @@ include __DIR__ . '/partials/layout-start.php';
                     <div><strong>Created:</strong> <?= e(\Mori\format_date($page['created_at'], 'd M Y H:i')) ?></div>
                     <div><strong>Updated:</strong> <?= e(\Mori\format_date($page['updated_at'], 'd M Y H:i')) ?></div>
                     <hr style="border:none;border-top:1px solid var(--a-border);margin:12px 0;">
-                    <a href="<?= asset($page['slug']) ?>.php" target="_blank" style="font-size:13px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> View live</a>
+                    <a href="<?= asset($page['slug']) ?>.php" target="_blank" rel="noopener noreferrer" style="font-size:13px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> View live</a>
                 </div>
             </div>
             <?php endif; ?>

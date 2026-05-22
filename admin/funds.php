@@ -19,11 +19,30 @@ $db = Database::instance();
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'save_sc') {
     Csrf::requireValid();
     $scId = (int)($_POST['sc_id'] ?? 0);
+
+    $name     = trim($_POST['name'] ?? '');
+    $currency = strtoupper(trim($_POST['currency'] ?? ''));
+    $isin     = trim($_POST['isin'] ?? '');
+
+    // Server-side validation
+    if ($name === '') {
+        flash('error', 'Share class name is required.');
+        redirect(asset('admin/funds.php'));
+    }
+    if (!preg_match('/^[A-Z]{3}$/', $currency)) {
+        flash('error', 'Currency must be a 3-letter ISO code (e.g. EUR, USD, GBP).');
+        redirect(asset('admin/funds.php'));
+    }
+    if ($isin !== '' && !preg_match('/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/', strtoupper($isin))) {
+        flash('error', 'ISIN must be 12 characters (2-letter country + 9 alnum + 1 check digit).');
+        redirect(asset('admin/funds.php'));
+    }
+
     $data = [
-        'fund_id'        => (int)$_POST['fund_id'],
-        'name'           => trim($_POST['name']),
-        'isin'           => trim($_POST['isin']) ?: null,
-        'currency'       => strtoupper(trim($_POST['currency'])),
+        'fund_id'        => (int)($_POST['fund_id'] ?? 0),
+        'name'           => $name,
+        'isin'           => $isin !== '' ? strtoupper($isin) : null,
+        'currency'       => $currency,
         'inception_date' => $_POST['inception_date'] ?: null,
         'status'         => in_array($_POST['status'] ?? 'active', ['active','inactive'], true) ? $_POST['status'] : 'active',
         'display_order'  => (int)($_POST['display_order'] ?? 0),

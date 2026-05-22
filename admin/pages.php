@@ -71,7 +71,7 @@ include __DIR__ . '/partials/layout-start.php';
                     <td><span class="a-badge <?= $p['status']==='published'?'success':'warning' ?>"><?= e($p['status']) ?></span></td>
                     <td><small><?= e(format_date($p['updated_at'], 'd M Y H:i')) ?></small></td>
                     <td style="text-align:right;">
-                        <a class="a-btn ghost sm" href="<?= asset($p['slug']) ?>.php" target="_blank" title="Preview"><i class="fa-solid fa-eye"></i></a>
+                        <a class="a-btn ghost sm" href="<?= asset($p['slug']) ?>.php" target="_blank" rel="noopener noreferrer" title="Preview"><i class="fa-solid fa-eye"></i></a>
                         <a class="a-btn ghost sm" href="<?= asset('admin/page-edit.php?id=' . $p['id']) ?>"><i class="fa-solid fa-pen"></i></a>
                         <form method="post" style="display:inline;" onsubmit="return confirm('Delete this page?');">
                             <?= Csrf::field() ?>

@@ -42,7 +42,7 @@ $user = Auth::user();
         <?php endif; ?>
 
         <li class="a-nav__section">Site</li>
-        <li><a href="<?= asset('/') ?>" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</a></li>
+        <li><a href="<?= asset('/') ?>" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-arrow-up-right-from-square"></i> View Site</a></li>
         <li><a href="<?= asset('admin/logout.php') ?>"><i class="fa-solid fa-right-from-bracket"></i> Log out</a></li>
     </ul>
 </aside>

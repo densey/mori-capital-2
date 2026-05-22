@@ -6,6 +6,7 @@ use Mori\I18n;
 use function Mori\e;
 use function Mori\asset;
 use function Mori\setting;
+use function Mori\safe_url;
 use function Mori\t;
 
 // Pull live data from DB (gracefully degrade if DB unreachable)
@@ -182,10 +183,13 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-lg-12">
                     <div class="section-footer-text section-satisfy-img wow fadeInUp" data-wow-delay="0.2s">
                         <div class="satisfy-client-images">
-                            <?php foreach (array_slice($team, 0, 2) as $tm): ?>
+                            <?php foreach (array_slice($team, 0, 2) as $tm):
+                                $tmSrc = $tm['photo_path'] ?? '';
+                                if ($tmSrc !== '' && !preg_match('/^https?:\/\//', $tmSrc)) $tmSrc = asset($tmSrc);
+                            ?>
                             <div class="satisfy-client-image">
                                 <figure class="image-anime">
-                                    <img src="<?= asset(e($tm['photo_path'])) ?>" alt="<?= e($tm['name']) ?>">
+                                    <img src="<?= e($tmSrc) ?>" alt="<?= e($tm['name']) ?>">
                                 </figure>
                             </div>
                             <?php endforeach; ?>
@@ -244,7 +248,10 @@ include __DIR__ . '/src/partials/header.php';
                                 <img src="<?= asset('assets/images/hero/hero-corporate-2.jpg') ?>" alt="Mori Capital research-led investment style">
                             </figure>
                         </div>
-                        <?php $pm = $team[0] ?? null; if ($pm): ?>
+                        <?php $pm = $team[0] ?? null; if ($pm):
+                            $pmSrc = $pm['photo_path'] ?? '';
+                            if ($pmSrc !== '' && !preg_match('/^https?:\/\//', $pmSrc)) $pmSrc = asset($pmSrc);
+                        ?>
                         <div class="why-choose-cta-box">
                             <div class="why-choose-cta-box-content">
                                 <h3>&ldquo;We don't just analyse companies &mdash; we visit them, walk their factories, and meet their stakeholders.&rdquo;</h3>
@@ -252,7 +259,7 @@ include __DIR__ . '/src/partials/header.php';
                             <div class="why-choose-author-box">
                                 <div class="why-choose-author-image">
                                     <figure class="image-anime">
-                                        <img src="<?= asset(e($pm['photo_path'])) ?>" alt="<?= e($pm['name']) ?>">
+                                        <img src="<?= e($pmSrc) ?>" alt="<?= e($pm['name']) ?>">
                                     </figure>
                                 </div>
                                 <div class="why-choose-author-content">
@@ -393,7 +400,7 @@ include __DIR__ . '/src/partials/header.php';
             <div class="row" style="margin-top:24px;">
                 <?php $ix = 0; foreach ($insights as $ins): $ix++; ?>
                 <div class="col-xl-4 col-md-6">
-                    <a href="<?= asset('insights/' . e($ins['slug']) . '.php') ?>" class="insight-card wow fadeInUp" <?= $ix>1?'data-wow-delay="0.'.($ix-1).'s"':'' ?>>
+                    <a href="<?= asset('insight.php?slug=' . urlencode($ins['slug'])) ?>" class="insight-card wow fadeInUp" <?= $ix>1?'data-wow-delay="0.'.($ix-1).'s"':'' ?>>
                         <div class="insight-meta">
                             <span><?= e(ucwords(str_replace('_',' ',$ins['category']))) ?></span>
                             <span class="date"><?= e(\Mori\format_date($ins['publish_date'])) ?></span>
@@ -453,7 +460,7 @@ include __DIR__ . '/src/partials/header.php';
                                 <p><?= e(I18n::fieldFor($member, 'title')) ?></p>
                                 <ul>
                                     <?php if (!empty($member['linkedin_url'])): ?>
-                                    <li><a href="<?= e($member['linkedin_url']) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                    <li><a href="<?= e(safe_url($member['linkedin_url'] ?? null)) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
                                     <?php endif; ?>
                                     <li><a href="mailto:<?= e($member['email'] ?: setting('contact_email')) ?>" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
                                 </ul>

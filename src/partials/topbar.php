@@ -8,11 +8,14 @@ $phone = setting('contact_phone', '+356 2033 0110');
 $email = setting('contact_email', 'info@mori-capital.com');
 $linkedin = setting('linkedin_url', '#');
 
-// Build language-switcher links: keep current path, toggle ?lang=
-$path = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?: '/';
-$enUrl = $path . '?lang=en';
-$deUrl = $path . '?lang=de';
-$cur = I18n::locale();
+// Build language-switcher links: keep path and any other query params
+$path  = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?: '/';
+$qs    = $_GET;
+unset($qs['lang']);
+$qsBase = $qs ? '?' . http_build_query($qs) . '&' : '?';
+$enUrl  = $path . $qsBase . 'lang=en';
+$deUrl  = $path . $qsBase . 'lang=de';
+$cur    = I18n::locale();
 ?>
 <!-- Topbar Section -->
 <div class="topbar">

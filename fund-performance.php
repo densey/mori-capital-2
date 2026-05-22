@@ -82,7 +82,7 @@ include __DIR__ . '/src/partials/page-header.php';
             </div>
             <div id="perfChart" style="width:100%;height:420px;"></div>
             <?php if (empty($navData)): ?>
-            <p style="text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;padding:80px 0;">No NAV data available yet for this share class.<br>Add monthly NAV entries from <a href="<?= asset('admin/performance.php') ?>" style="color:var(--accent-color,#1ABC9C);">the admin panel</a>.</p>
+            <p style="text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;padding:80px 0;">No NAV data available yet for this share class.<?php if (\Mori\Auth::check()): ?><br>Add monthly NAV entries from <a href="<?= asset('admin/performance.php') ?>" style="color:var(--accent-color,#1ABC9C);">the admin panel</a>.<?php endif; ?></p>
             <?php endif; ?>
         </div>
 
@@ -134,7 +134,7 @@ include __DIR__ . '/src/partials/footer.php';
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
 var navData = <?= json_encode(array_map(fn($r) => ['x' => $r['entry_date'], 'y' => (float)$r['nav']], $navData)) ?>;
-var benchData = <?= json_encode(array_filter(array_map(fn($r) => $r['benchmark_value'] !== null ? ['x' => $r['entry_date'], 'y' => (float)$r['benchmark_value']] : null, $navData))) ?>;
+var benchData = <?= json_encode(array_values(array_filter(array_map(fn($r) => $r['benchmark_value'] !== null ? ['x' => $r['entry_date'], 'y' => (float)$r['benchmark_value']] : null, $navData)))) ?>;
 if (navData.length > 0) {
     var series = [{name: 'NAV', data: navData}];
     if (benchData.length > 0) series.push({name: 'Benchmark', data: benchData});

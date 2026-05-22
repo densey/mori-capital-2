@@ -6,6 +6,7 @@ use Mori\I18n;
 use function Mori\e;
 use function Mori\asset;
 use function Mori\setting;
+use function Mori\safe_url;
 use function Mori\t;
 
 try {
@@ -151,7 +152,7 @@ include __DIR__ . '/src/partials/page-header.php';
                             <p><?= e(I18n::fieldFor($member, 'title')) ?></p>
                             <ul>
                                 <?php if (!empty($member['linkedin_url'])): ?>
-                                <li><a href="<?= e($member['linkedin_url']) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                <li><a href="<?= e(safe_url($member['linkedin_url'] ?? null)) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
                                 <?php endif; ?>
                                 <li><a href="mailto:<?= e($member['email'] ?: setting('contact_email')) ?>" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
                             </ul>

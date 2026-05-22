@@ -27,6 +27,21 @@ function asset(string $path): string
     return '/' . ltrim($path, '/');
 }
 
+/**
+ * Sanitise a user-provided URL for href attributes. Only http(s) and mailto:
+ * are permitted; everything else (including javascript:, data:, vbscript:)
+ * collapses to '#'.
+ */
+function safe_url(?string $url): string
+{
+    if (!$url) return '#';
+    $url = trim($url);
+    if ($url === '' || $url === '#') return '#';
+    if (preg_match('/^(https?:\/\/|mailto:|tel:)/i', $url)) return $url;
+    if (str_starts_with($url, '/') || str_starts_with($url, './') || str_starts_with($url, '?') || str_starts_with($url, '#')) return $url;
+    return '#';
+}
+
 function redirect(string $path, int $code = 302): never
 {
     header('Location: ' . $path, true, $code);

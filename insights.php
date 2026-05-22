@@ -55,7 +55,7 @@ include __DIR__ . '/src/partials/page-header.php';
 
         <?php if (empty($insights)): ?>
             <div style="background:#fff;border:1px dashed var(--mori-border,#E1E7EE);border-radius:10px;padding:48px;text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;">
-                No insights published yet. Add from the <a href="<?= asset('admin/insights.php') ?>" style="color:var(--accent-color,#1ABC9C);">admin panel</a>.
+                No insights published yet.<?php if (\Mori\Auth::check()): ?> Add from the <a href="<?= asset('admin/insights.php') ?>" style="color:var(--accent-color,#1ABC9C);">admin panel</a>.<?php endif; ?>
             </div>
         <?php else: ?>
         <div class="mori-insights" style="background:transparent;padding:0;">

@@ -94,7 +94,7 @@ include __DIR__ . '/src/partials/page-header.php';
         <!-- Results -->
         <?php if (empty($documents)): ?>
             <div style="background:#fff;border:1px dashed var(--mori-border,#E1E7EE);border-radius:10px;padding:48px;text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;">
-                No documents available yet. Upload from the <a href="<?= asset('admin/documents.php') ?>" style="color:var(--accent-color,#1ABC9C);">admin panel</a>.
+                No documents available yet.<?php if (\Mori\Auth::check()): ?> Upload from the <a href="<?= asset('admin/documents.php') ?>" style="color:var(--accent-color,#1ABC9C);">admin panel</a>.<?php endif; ?>
             </div>
         <?php else: ?>
             <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;overflow:hidden;">

@@ -132,7 +132,7 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
         <div class="row" style="margin-top:24px;">
             <?php foreach (array_slice($documents, 0, 6) as $doc): ?>
             <div class="col-xl-4 col-md-6" style="margin-bottom:16px;">
-                <a href="<?= asset('uploads/documents/' . e($doc['file_path'])) ?>" target="_blank" style="display:block;background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:20px;text-decoration:none;transition:all .25s ease;">
+                <a href="<?= asset('api/download.php?id=' . (int)$doc['id']) ?>" target="_blank" rel="noopener" style="display:block;background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:20px;text-decoration:none;transition:all .25s ease;">
                     <div style="display:flex;align-items:flex-start;gap:14px;">
                         <div style="width:40px;height:40px;border-radius:8px;background:rgba(26,188,156,.12);color:var(--accent-color,#1ABC9C);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fa-regular fa-file-pdf"></i></div>
                         <div style="flex:1;min-width:0;">

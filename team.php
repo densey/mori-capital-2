@@ -6,6 +6,7 @@ use Mori\I18n;
 use function Mori\e;
 use function Mori\asset;
 use function Mori\setting;
+use function Mori\safe_url;
 use function Mori\t;
 
 try {
@@ -49,7 +50,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 <?php if (!empty($member['linkedin_url']) || !empty($member['email'])): ?>
                 <div style="margin-top:20px;display:flex;gap:10px;">
                     <?php if (!empty($member['linkedin_url'])): ?>
-                    <a href="<?= e($member['linkedin_url']) ?>" style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--mori-bg-tint,#EEF3F8);color:var(--primary-color,#1B3A5C);align-items:center;justify-content:center;text-decoration:none;"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="<?= e(safe_url($member['linkedin_url'] ?? null)) ?>" style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--mori-bg-tint,#EEF3F8);color:var(--primary-color,#1B3A5C);align-items:center;justify-content:center;text-decoration:none;"><i class="fa-brands fa-linkedin-in"></i></a>
                     <?php endif; ?>
                     <a href="mailto:<?= e($member['email'] ?: setting('contact_email')) ?>" style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--mori-bg-tint,#EEF3F8);color:var(--primary-color,#1B3A5C);align-items:center;justify-content:center;text-decoration:none;"><i class="fa-regular fa-envelope"></i></a>
                 </div>

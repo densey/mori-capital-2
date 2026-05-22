@@ -15,6 +15,34 @@ declare(strict_types=1);
 
 require __DIR__ . '/src/bootstrap.php';
 
+// =============================================================================
+// SAFETY: if there's already an active super_admin, this installer is sealed.
+// Delete the file (or temporarily deactivate the super_admin) to re-run.
+// =============================================================================
+$installerSealed = false;
+try {
+    $cnt = \Mori\Database::instance()->fetchColumn(
+        'SELECT COUNT(*) FROM users WHERE role = "super_admin" AND status = "active"'
+    );
+    $installerSealed = ((int)$cnt > 0);
+} catch (\Throwable) {
+    $installerSealed = false; // DB unreachable yet — installer must be open
+}
+if ($installerSealed) {
+    http_response_code(403);
+    echo '<!DOCTYPE html><meta charset=utf-8><title>Installer sealed</title>'
+       . '<body style="font-family:Inter,system-ui,sans-serif;max-width:600px;margin:80px auto;padding:30px;'
+       . 'background:#FDECEC;border:1px solid #E57373;border-radius:10px;color:#8B2C2C;">'
+       . '<h1 style="margin:0 0 12px;">Installer is sealed</h1>'
+       . '<p>A super-admin already exists in the database. For safety, this installer '
+       . 'cannot be re-run while the system is in production.</p>'
+       . '<p><strong>Delete <code>install.php</code> from the server.</strong></p>'
+       . '<p style="font-size:13px;color:#6B2222;">If you genuinely need to re-install '
+       . '(e.g. restoring a backup), do it from the database directly.</p>'
+       . '</body>';
+    exit;
+}
+
 $step  = $_GET['step'] ?? '1';
 $error = null;
 $ok    = null;
@@ -23,6 +51,10 @@ $ok    = null;
 // STEP 4 — Create admin user (POST)
 // =============================================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create_admin') {
+    if (!\Mori\Csrf::verify($_POST['_csrf'] ?? null)) {
+        $error = 'Invalid form submission (CSRF). Please reload the page.';
+        $step  = '4';
+    } else
     try {
         $email = strtolower(trim($_POST['email'] ?? ''));
         $name  = trim($_POST['name'] ?? '');
@@ -201,6 +233,7 @@ nano .env</pre>
         <h2 style="font-size:18px;color:var(--navy);margin:0 0 8px;">Step 4 — First admin user</h2>
         <p>Creates a <strong>super_admin</strong> account you'll use to sign into the CMS.</p>
         <form method="post">
+            <?= \Mori\Csrf::field() ?>
             <input type="hidden" name="action" value="create_admin">
             <label>Email</label>
             <input type="email" name="email" required placeholder="admin@mori-capital.com" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">

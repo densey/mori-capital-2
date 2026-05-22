@@ -245,7 +245,7 @@ include __DIR__ . '/partials/layout-start.php';
                     <td><small><?= e(format_bytes((int)$d['file_size'])) ?></small></td>
                     <td><?= e($d['download_count']) ?></td>
                     <td style="text-align:right;">
-                        <a class="a-btn ghost sm" href="<?= asset('api/download.php?id=' . (int)$d['id']) ?>" target="_blank"><i class="fa-solid fa-download"></i></a>
+                        <a class="a-btn ghost sm" href="<?= asset('api/download.php?id=' . (int)$d['id']) ?>" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-download"></i></a>
                         <form method="post" style="display:inline;" onsubmit="return confirm('Delete this document?');">
                             <?= Csrf::field() ?>
                             <input type="hidden" name="action" value="delete">
