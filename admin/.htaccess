@@ -1,0 +1,25 @@
+# Force HTTPS once SSL is on (uncomment after Let's Encrypt is active)
+# <IfModule mod_rewrite.c>
+#     RewriteEngine On
+#     RewriteCond %{HTTPS} off
+#     RewriteRule ^(.*)$ https://%{HTTP_HOST}/admin/$1 [R=301,L]
+# </IfModule>
+
+# Block hidden files
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+# No directory listing
+Options -Indexes
+
+# Security headers (admin-only stricter)
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "DENY"
+    Header set Referrer-Policy "no-referrer"
+    Header set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+</IfModule>
