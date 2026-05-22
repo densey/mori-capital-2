@@ -8,9 +8,10 @@ use function Mori\asset;
 use function Mori\setting;
 use function Mori\t;
 
-// Pull live data from DB
-$db = Database::instance();
+// Pull live data from DB (gracefully degrade if DB unreachable)
+$funds = $team = $insights = [];
 try {
+    $db = Database::instance();
     $funds = $db->fetchAll(
         'SELECT * FROM funds WHERE status = "active" ORDER BY display_order ASC'
     );

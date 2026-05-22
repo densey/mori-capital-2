@@ -8,8 +8,8 @@ use function Mori\asset;
 use function Mori\setting;
 use function Mori\t;
 
-$db = Database::instance();
-try { $team = $db->fetchAll('SELECT * FROM team_members WHERE status="active" ORDER BY display_order'); }
+try {
+    $db = Database::instance(); $team = $db->fetchAll('SELECT * FROM team_members WHERE status="active" ORDER BY display_order'); }
 catch (\Throwable) { $team = []; }
 
 $page = [

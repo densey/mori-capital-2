@@ -8,8 +8,8 @@ use function Mori\asset;
 use function Mori\setting;
 use function Mori\t;
 
-$db = Database::instance();
 try {
+    $db = Database::instance();
     $pageData = $db->fetchOne(
         'SELECT * FROM pages WHERE slug = "about" AND locale = :loc AND status = "published"',
         ['loc' => I18n::locale()]

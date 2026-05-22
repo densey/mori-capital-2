@@ -6,8 +6,8 @@ use function Mori\e;
 use function Mori\asset;
 use function Mori\t;
 
-$db = Database::instance();
 try {
+    $db = Database::instance();
     $funds = $db->fetchAll('SELECT * FROM funds WHERE status = "active" ORDER BY display_order');
     $selectedFundId = isset($_GET['fund']) ? (int)$_GET['fund'] : ($funds[0]['id'] ?? 0);
     $shareClasses = $selectedFundId ? $db->fetchAll('SELECT * FROM share_classes WHERE fund_id = :id ORDER BY display_order', ['id' => $selectedFundId]) : [];
@@ -64,7 +64,11 @@ include __DIR__ . '/src/partials/page-header.php';
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
                 <div>
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:4px;">NAV evolution</div>
-                    <h2 style="font-size:20px;margin:0;"><?= e($funds ? array_filter($funds, fn($f)=>$f['id']==$selectedFundId)[array_key_first(array_filter($funds, fn($f)=>$f['id']==$selectedFundId))]['name_en'] ?? '' : '') ?></h2>
+                    <?php
+                        $selectedFund = null;
+                        foreach ($funds as $f) { if ($f['id'] == $selectedFundId) { $selectedFund = $f; break; } }
+                    ?>
+                    <h2 style="font-size:20px;margin:0;"><?= e($selectedFund['name_en'] ?? '—') ?></h2>
                 </div>
                 <div style="display:flex;gap:4px;background:var(--mori-bg-soft,#F5F7FA);padding:4px;border-radius:999px;font-size:12px;font-weight:600;">
                     <button type="button" class="rng" data-range="1m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">1M</button>

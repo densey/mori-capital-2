@@ -70,10 +70,25 @@ if ($step === '3' && $_SERVER['REQUEST_METHOD'] === 'GET') {
             $path = __DIR__ . '/' . $file;
             if (!is_readable($path)) throw new \Exception("Missing file: {$file}");
             $sql = file_get_contents($path);
-            // Split on semicolon at line end (very simple — works for our scripts)
-            $statements = array_filter(array_map('trim', preg_split('/;\s*\n/', $sql)));
+
+            // Strip block comments
+            $sql = preg_replace('!/\*.*?\*/!s', '', $sql);
+
+            // Strip single-line -- comments
+            $cleaned = [];
+            foreach (preg_split("/\r?\n/", $sql) as $line) {
+                $trim = ltrim($line);
+                if (str_starts_with($trim, '--')) continue;
+                $cleaned[] = $line;
+            }
+            $sql = implode("\n", $cleaned);
+
+            // Split on `;` followed by newline OR end-of-string — naive but
+            // safe for our scripts (no semicolons inside string literals).
+            $statements = preg_split('/;\s*(?:\r?\n|$)/', $sql);
             foreach ($statements as $stmt) {
-                if ($stmt === '' || str_starts_with($stmt, '--')) continue;
+                $stmt = trim($stmt);
+                if ($stmt === '') continue;
                 $db->exec($stmt);
             }
         }

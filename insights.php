@@ -8,8 +8,8 @@ use function Mori\asset;
 use function Mori\format_date;
 use function Mori\t;
 
-$db = Database::instance();
 try {
+    $db = Database::instance();
     $where = ['status = "published"', 'locale = :loc'];
     $params = ['loc' => I18n::locale()];
     if (!empty($_GET['cat'])) {

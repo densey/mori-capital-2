@@ -9,8 +9,8 @@ use function Mori\format_date;
 use function Mori\t;
 
 $slug = (string)($_GET['slug'] ?? '');
-$db = Database::instance();
 try {
+    $db = Database::instance();
     $ins = $db->fetchOne(
         'SELECT * FROM insights WHERE slug = :s AND locale = :loc AND status = "published"',
         ['s' => $slug, 'loc' => I18n::locale()]

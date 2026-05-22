@@ -26,13 +26,15 @@ final class AuditLog
 
     public static function recent(int $limit = 50): array
     {
+        // LIMIT with named placeholder fails when PDO emulation is off,
+        // so cast and interpolate the limit safely.
+        $limit = max(1, min($limit, 1000));
         return Database::instance()->fetchAll(
             'SELECT a.*, u.name AS user_name, u.email AS user_email
                FROM audit_log a
                LEFT JOIN users u ON u.id = a.user_id
               ORDER BY a.created_at DESC
-              LIMIT :limit',
-            ['limit' => $limit]
+              LIMIT ' . $limit
         );
     }
 }

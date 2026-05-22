@@ -8,8 +8,8 @@ use function Mori\format_date;
 use function Mori\format_bytes;
 use function Mori\t;
 
-$db = Database::instance();
 try {
+    $db = Database::instance();
     $funds = $db->fetchAll('SELECT * FROM funds WHERE status="active" ORDER BY display_order');
 
     // Filters
