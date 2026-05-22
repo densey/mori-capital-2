@@ -3,6 +3,9 @@
 # OpenLiteSpeed (CyberPanel) / Apache
 # =============================================================================
 
+# Index file priority
+DirectoryIndex index.php index.html
+
 # Default error documents
 ErrorDocument 404 /404.html
 ErrorDocument 403 /404.html
@@ -21,6 +24,13 @@ Options -Indexes
     </IfModule>
 </FilesMatch>
 
+# Block direct access to PHP includes (only entry-point PHPs should be reachable)
+<FilesMatch "(composer\.(json|lock)|package(-lock)?\.json|\.env(\.example)?)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
 # Force HTTPS (uncomment after SSL is active in CyberPanel)
 # <IfModule mod_rewrite.c>
 #     RewriteEngine On
@@ -28,7 +38,7 @@ Options -Indexes
 #     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 # </IfModule>
 
-# Pretty URLs — route extension-less paths to .php (best-effort, can be disabled)
+# Pretty URLs — route extension-less paths to .php (best-effort)
 <IfModule mod_rewrite.c>
     RewriteEngine On
     # Skip if file or directory exists
@@ -36,6 +46,10 @@ Options -Indexes
     RewriteCond %{REQUEST_FILENAME} !-d
     # Add .php
     RewriteRule ^([a-z0-9\-_/]+)$ $1.php [L]
+
+    # Legacy .html requests -> .php (so old indexed links still work)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^([a-z0-9\-_/]+)\.html$ $1.php [L,QSA]
 </IfModule>
 
 # Security headers
@@ -70,3 +84,4 @@ Options -Indexes
     AddOutputFilterByType DEFLATE application/javascript application/json
     AddOutputFilterByType DEFLATE image/svg+xml application/xml
 </IfModule>
+
