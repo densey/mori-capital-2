@@ -926,6 +926,47 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     /* Team — single column on phone is bootstrap default for col-md-6 */
     .team-item-content h2 { font-size: 19px !important; }
 
+    /* Insights cards — tighter on mobile */
+    .mori-insights { padding: 48px 0 !important; }
+    .mori-insights .insight-card { padding: 22px !important; gap: 10px !important; }
+    .mori-insights .insight-card h3 { font-size: 17px !important; line-height: 1.3 !important; }
+    .mori-insights .insight-card p { font-size: 13px !important; }
+    .mori-insights .insight-meta { font-size: 10.5px !important; }
+
+    /* Cinematic on mobile — reduce padding, hide idle animation */
+    .mori-cinematic { padding: 56px 0 !important; }
+    .mori-cinematic__copy h2 { font-size: 24px !important; }
+    .mori-cinematic__copy p { font-size: 14px !important; }
+    .mori-cinematic__stats { gap: 16px 24px !important; }
+    .mori-cinematic__stats .num { font-size: 22px !important; }
+    .mori-cinematic__stats .lbl { font-size: 10px !important; }
+    .mori-cinematic__card { aspect-ratio: 5/3.2 !important; }
+
+    /* FundHub matrix — horizontal scroll, sticky ISIN */
+    .fundhub-matrix { min-width: 900px !important; font-size: 12px !important; }
+
+    /* Page header — compact on mobile */
+    .page-header h1 { font-size: 22px !important; }
+
+    /* Sub-page content — tighter padding */
+    .about-us-content { padding-left: 0 !important; }
+
+    /* Contact form on mobile */
+    .col-lg-5, .col-lg-7 { padding-right: 15px !important; padding-left: 15px !important; }
+
+    /* Gate modal tighter */
+    .mori-gate__panel { padding: 24px 20px !important; }
+    .mori-gate__title { font-size: 18px !important; }
+    .mori-gate__intro { font-size: 13px !important; }
+    .mori-gate__check { font-size: 12px !important; padding: 10px 12px !important; }
+    .mori-gate__buttons { grid-template-columns: 1fr !important; }
+
+    /* Cookie banner vertical on phone */
+    .mori-cookie { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; padding: 16px !important; }
+    .mori-cookie__actions { justify-content: stretch !important; }
+    .mori-cookie__btn { flex: 1 !important; text-align: center !important; }
+    .mori-cookie__icon { display: none !important; }
+
     /* Funds — tighter spacing */
     .service-item-content h2 { font-size: 20px !important; }
 
@@ -959,6 +1000,19 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     .rating-bodies > div:last-child {
         grid-template-columns: 1fr !important;
     }
+
+    /* Insight cards — single col stack (bootstrap handles), tighter text */
+    .mori-insights .insight-card h3 { font-size: 16px !important; }
+
+    /* Cinematic stats 2-col on tiny */
+    .mori-cinematic__stats { grid-template-columns: 1fr 1fr !important; }
+
+    /* Footer text smaller */
+    .footer-disclaimer { font-size: 10.5px !important; }
+    .footer-copyright p { font-size: 11px !important; }
+
+    /* Fund matrix scrolls horizontally — show scroll hint */
+    .fundhub-matrix { min-width: 800px !important; }
 }
 
 /* ----- Reduce motion: disable transforms / heavy animations ------------- */
