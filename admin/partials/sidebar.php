@@ -21,6 +21,7 @@ $user = Auth::user();
 
         <li class="a-nav__section">Content</li>
         <li><a href="<?= asset('admin/pages.php') ?>" class="<?= is_active_nav('/admin/pages.php')||is_active_nav('/admin/page-edit.php')?'active':'' ?>"><i class="fa-solid fa-file-lines"></i> Pages</a></li>
+        <li><a href="<?= asset('admin/page-builder.php') ?>" class="<?= is_active_nav('/admin/page-builder.php')?'active':'' ?>"><i class="fa-solid fa-wand-magic-sparkles"></i> Visual Builder</a></li>
         <li><a href="<?= asset('admin/insights.php') ?>" class="<?= is_active_nav('/admin/insights.php')||is_active_nav('/admin/insight-edit.php')?'active':'' ?>"><i class="fa-solid fa-newspaper"></i> Mori Views</a></li>
         <li><a href="<?= asset('admin/team.php') ?>" class="<?= is_active_nav('/admin/team.php')||is_active_nav('/admin/team-edit.php')?'active':'' ?>"><i class="fa-solid fa-users"></i> Team</a></li>
 

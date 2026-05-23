@@ -1,0 +1,37 @@
+# IDE configuration
+.vs/
+.idea/
+.vscode/
+
+# Local environment (NEVER commit secrets)
+.env
+.env.local
+.env.production
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# PHP error logs
+*.log
+error_log
+
+# Upload working dirs (keep folder, ignore contents)
+uploads/documents/*
+uploads/media/*
+uploads/team/*
+!uploads/.htaccess
+!uploads/**/.gitkeep
+
+# Composer (if added later)
+vendor/
+composer.lock
+
+# Node (if any tooling added later)
+node_modules/
+
+# Editor backups
+*.bak
+*.swp
+*~

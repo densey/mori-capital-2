@@ -53,7 +53,10 @@ include __DIR__ . '/partials/layout-start.php';
                 <input type="text" name="q" placeholder="Search…" value="<?= e($_GET['q'] ?? '') ?>" class="input" style="font-size:13px;padding:7px 11px;">
             </form>
         </div>
-        <a class="a-btn" href="<?= asset('admin/page-edit.php') ?>"><i class="fa-solid fa-plus"></i> New page</a>
+        <div style="display:flex;gap:8px;">
+            <a class="a-btn" href="<?= asset('admin/page-edit.php') ?>"><i class="fa-solid fa-plus"></i> New page (TinyMCE)</a>
+            <a class="a-btn" href="<?= asset('admin/page-builder.php') ?>" style="background:#0E1F36;border-color:#0E1F36;"><i class="fa-solid fa-wand-magic-sparkles"></i> Visual builder</a>
+        </div>
     </div>
     <div class="a-card__body" style="padding:0;">
         <table class="a-table">
@@ -72,7 +75,8 @@ include __DIR__ . '/partials/layout-start.php';
                     <td><small><?= e(format_date($p['updated_at'], 'd M Y H:i')) ?></small></td>
                     <td style="text-align:right;">
                         <a class="a-btn ghost sm" href="<?= asset($p['slug']) ?>.php" target="_blank" rel="noopener noreferrer" title="Preview"><i class="fa-solid fa-eye"></i></a>
-                        <a class="a-btn ghost sm" href="<?= asset('admin/page-edit.php?id=' . $p['id']) ?>"><i class="fa-solid fa-pen"></i></a>
+                        <a class="a-btn ghost sm" href="<?= asset('admin/page-builder.php?id=' . $p['id']) ?>" title="Visual builder"><i class="fa-solid fa-wand-magic-sparkles"></i></a>
+                        <a class="a-btn ghost sm" href="<?= asset('admin/page-edit.php?id=' . $p['id']) ?>" title="Classic editor (TinyMCE)"><i class="fa-solid fa-pen"></i></a>
                         <form method="post" style="display:inline;" onsubmit="return confirm('Delete this page?');">
                             <?= Csrf::field() ?>
                             <input type="hidden" name="action" value="delete">

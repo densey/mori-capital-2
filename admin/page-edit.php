@@ -111,6 +111,9 @@ include __DIR__ . '/partials/layout-start.php';
 
                     <button class="a-btn" type="submit" style="width:100%;margin-top:18px;justify-content:center;"><i class="fa-solid fa-save"></i> Save page</button>
                     <a class="a-btn ghost" href="<?= asset('admin/pages.php') ?>" style="width:100%;margin-top:8px;justify-content:center;">Cancel</a>
+                    <?php if (!$isNew): ?>
+                    <a class="a-btn ghost" href="<?= asset('admin/page-builder.php?id=' . (int)$page['id']) ?>" style="width:100%;margin-top:8px;justify-content:center;background:#0E1F36;color:#fff;border-color:#0E1F36;"><i class="fa-solid fa-wand-magic-sparkles"></i> Open in Visual Builder</a>
+                    <?php endif; ?>
                 </div>
             </div>
 
