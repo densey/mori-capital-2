@@ -89,8 +89,34 @@ include __DIR__ . '/partials/layout-start.php';
             <input type="text" name="settings[seo_default_title]" value="<?= s($settings,'seo_default_title') ?>">
             <label>Default meta description</label>
             <textarea name="settings[seo_default_desc]" rows="2"><?= s($settings,'seo_default_desc') ?></textarea>
-            <label>Google Analytics ID (e.g. G-XXXXXX)</label>
-            <input type="text" name="settings[google_analytics_id]" value="<?= s($settings,'google_analytics_id') ?>">
+            <label>Google Analytics ID (e.g. <code>G-XXXXXXXXXX</code>)</label>
+            <input type="text" name="settings[google_analytics_id]" value="<?= s($settings,'google_analytics_id') ?>" placeholder="G-XXXXXXXXXX">
+            <div class="hint">Loaded asynchronously in the &lt;head&gt; on every page. Leave blank to disable.</div>
+            <label>Default Open Graph image (full URL or path under <code>assets/</code>)</label>
+            <input type="text" name="settings[og_default_image]" value="<?= s($settings,'og_default_image') ?>" placeholder="assets/images/og-cover.jpg">
+            <div class="hint">Shown when the site is shared on Facebook, LinkedIn, WhatsApp, X. Recommended 1200×630px.</div>
+        </div>
+    </div>
+
+    <div class="a-card" style="margin-bottom:22px;">
+        <div class="a-card__head">
+            <h2><i class="fa-solid fa-code"></i> Custom Code (&lt;head&gt; and footer)</h2>
+        </div>
+        <div class="a-card__body">
+            <div class="a-alert warn" style="margin-bottom:18px;">
+                <strong><i class="fa-solid fa-triangle-exclamation"></i> Powerful — and risky.</strong>
+                Everything you paste below is rendered raw into every page (no escaping). Use it for trusted
+                snippets only: Google Tag Manager, Meta Pixel, custom meta tags, schema.org JSON-LD, live-chat
+                widgets, etc. Don't paste anything from an untrusted source.
+            </div>
+
+            <label><i class="fa-solid fa-arrow-up"></i> Custom &lt;head&gt; code</label>
+            <textarea name="settings[custom_head_code]" rows="9" style="font-family:'JetBrains Mono','Menlo',Consolas,monospace;font-size:12.5px;background:#0E1F36;color:#9EC9E2;border-color:#0E1F36;" placeholder="<!-- e.g. Google Tag Manager -->&#10;<script>(function(w,d,s,l,i){...})(window,document,'script','dataLayer','GTM-XXXXXX');</script>&#10;&#10;<!-- e.g. Meta Pixel -->&#10;<script>!function(f,b,e,v,n,t,s){...}</script>&#10;&#10;<!-- e.g. custom meta -->&#10;<meta name='robots' content='index, follow'>"><?= s($settings,'custom_head_code') ?></textarea>
+            <div class="hint">Loaded inside &lt;head&gt;, AFTER theme stylesheets and Google Analytics. Ideal for: GTM, Meta Pixel, LinkedIn Insight Tag, Hotjar, structured-data JSON-LD, custom meta tags.</div>
+
+            <label style="margin-top:22px;"><i class="fa-solid fa-arrow-down"></i> Custom footer code (before &lt;/body&gt;)</label>
+            <textarea name="settings[custom_footer_code]" rows="9" style="font-family:'JetBrains Mono','Menlo',Consolas,monospace;font-size:12.5px;background:#0E1F36;color:#9EC9E2;border-color:#0E1F36;" placeholder="<!-- e.g. GTM noscript fallback -->&#10;<noscript><iframe src='https://www.googletagmanager.com/ns.html?id=GTM-XXXXXX' ...></iframe></noscript>&#10;&#10;<!-- e.g. Tawk.to live chat -->&#10;<script type='text/javascript'>var Tawk_API=Tawk_API||{}; ...</script>&#10;&#10;<!-- e.g. delayed-load Crisp / Intercom -->&#10;<script>setTimeout(function(){ ... }, 3000);</script>"><?= s($settings,'custom_footer_code') ?></textarea>
+            <div class="hint">Loaded just before &lt;/body&gt;, AFTER all theme JS. Best for: GTM noscript fallback, live-chat widgets, third-party tracking pixels that should not block page load.</div>
         </div>
     </div>
 

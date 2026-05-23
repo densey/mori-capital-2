@@ -41,6 +41,10 @@ Options -Indexes
 # Pretty URLs — route extension-less paths to .php (best-effort)
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # SEO: /sitemap.xml -> dynamic sitemap.php
+    RewriteRule ^sitemap\.xml$ sitemap.php [L]
+
     # Skip if file or directory exists
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d

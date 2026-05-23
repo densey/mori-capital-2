@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Block admin panel + installer + raw uploads from indexing
+Disallow: /admin/
+Disallow: /api/
+Disallow: /install.php
+Disallow: /src/
+Disallow: /db/
+Disallow: /uploads/documents/
+Disallow: /uploads/media/
+
+# Sitemap
+Sitemap: https://mori-capital.com/sitemap.xml

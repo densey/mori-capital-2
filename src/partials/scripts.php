@@ -148,5 +148,13 @@ use function Mori\t;
 </script>
 <?php endif; ?>
 
+<?php
+$customFooter = \Mori\setting('custom_footer_code', '');
+if ($customFooter):
+?>
+<!-- Admin-managed custom footer code (Settings → Custom Code) -->
+<?= $customFooter ?>
+<?php endif; ?>
+
 </body>
 </html>
