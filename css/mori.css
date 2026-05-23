@@ -25,6 +25,29 @@ body {
     padding-top: clamp(120px, 14vh, 160px) !important;
     padding-bottom: clamp(60px, 8vh, 100px) !important;
 }
+
+/* ----- Sub-page header (.page-header) — slim banner -------------------- */
+.page-header {
+    padding: 160px 0 50px !important;     /* theme default was 280/170 */
+    min-height: auto !important;
+}
+.page-header:before {
+    background: linear-gradient(135deg, rgba(8,18,33,.78) 0%, rgba(27,58,92,.55) 100%) !important;
+}
+.page-header .page-header-box {
+    padding: 0 !important;                /* partial inline-padding is now unnecessary */
+}
+.page-header h1 {
+    font-size: clamp(26px, 3vw, 38px) !important;
+    margin-bottom: 10px !important;
+}
+@media (max-width: 991px) {
+    .page-header { padding: 130px 0 40px !important; }
+    .page-header h1 { font-size: clamp(22px, 3.5vw, 30px) !important; }
+}
+@media (max-width: 600px) {
+    .page-header { padding: 110px 0 32px !important; }
+}
 .hero .section-title h1 {
     font-size: clamp(28px, 3.4vw, 44px) !important;
     line-height: 1.12em !important;

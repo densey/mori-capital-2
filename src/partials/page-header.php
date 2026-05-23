@@ -14,7 +14,7 @@ $bg = $page['header_bg'] ?? asset('images/page-header-bg.jpg');
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <div class="page-header-box" style="text-align:center;padding:120px 0 50px;color:#fff;">
+                <div class="page-header-box" style="text-align:center;color:#fff;">
                     <h1 style="color:#fff;font-size:clamp(28px,3.4vw,44px);margin-bottom:14px;letter-spacing:-0.01em;"><?= e($page['title'] ?? '') ?></h1>
                     <?php if (!empty($crumb)): ?>
                     <nav aria-label="Breadcrumb">
