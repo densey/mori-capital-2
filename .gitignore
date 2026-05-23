@@ -3,10 +3,11 @@
 .idea/
 .vscode/
 
-# Local environment (NEVER commit secrets)
-.env
-.env.local
+# Local environment overrides (NEVER commit production secrets via these)
+# Note: the staging .env IS committed so deployment is one-shot. For
+# production (mori-capital.com), create a separate file and DO NOT commit.
 .env.production
+.env.local
 
 # OS noise
 .DS_Store
