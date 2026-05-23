@@ -28,13 +28,13 @@ INSERT INTO settings (setting_key, setting_value, setting_group) VALUES
 ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
 
 -- -----------------------------------------------------------------------------
--- Funds
+-- Funds (umbrella: Mori Umbrella Fund plc)
 -- -----------------------------------------------------------------------------
 INSERT INTO funds (slug, name_en, name_de, description_en, description_de, objective_en, launch_date, base_currency, benchmark, cover_image_path, status, display_order) VALUES
 ('mori-eastern-european-fund',
  'Mori Eastern European Fund',
  'Mori Eastern European Fund',
- 'A long-only equity fund investing across Central and Eastern Europe since 1998. Our 25-year track record reflects deep local knowledge, on-the-ground research, and patient stock selection across the region''s most compelling growth stories.',
+ 'A long-only equity fund (sub-fund of Mori Umbrella Fund plc) investing across Central and Eastern Europe since 1998. Our 25-year track record reflects deep local knowledge, on-the-ground research, and patient stock selection across the region''s most compelling growth stories.',
  NULL,
  'To achieve long-term capital appreciation by investing primarily in equities of companies domiciled in or with significant operations across Central and Eastern Europe.',
  '1998-01-01', 'EUR', 'MSCI Emerging Europe 10/40',
@@ -44,29 +44,38 @@ INSERT INTO funds (slug, name_en, name_de, description_en, description_de, objec
 ('mori-ottoman-fund',
  'Mori Ottoman Fund',
  'Mori Ottoman Fund',
- 'An equity strategy focused on Türkiye and the broader Ottoman geography — including selected Middle East and North Africa exposure. Award-winning long-term track record.',
+ 'An equity strategy (sub-fund of Mori Umbrella Fund plc) focused on Türkiye and the broader Ottoman geography — including selected Middle East and North Africa exposure. Award-winning long-term track record.',
  NULL,
  'To achieve long-term capital appreciation by investing primarily in equities of companies domiciled in or with significant operations in Türkiye and the broader MENA region.',
  '2006-01-01', 'EUR', 'MSCI Türkiye',
  'assets/images/service/h6-service-2.webp',
  'active', 20)
-ON DUPLICATE KEY UPDATE updated_at = CURRENT_TIMESTAMP;
+ON DUPLICATE KEY UPDATE
+    description_en = VALUES(description_en),
+    objective_en   = VALUES(objective_en),
+    updated_at     = CURRENT_TIMESTAMP;
 
 -- -----------------------------------------------------------------------------
--- Share classes
+-- Share classes — ISINs from Desmond's FundHub spec (Jan 2026)
 -- -----------------------------------------------------------------------------
 INSERT INTO share_classes (fund_id, name, isin, currency, inception_date, status, display_order)
-SELECT id, 'Class A EUR', NULL, 'EUR', '1998-01-01', 'active', 10 FROM funds WHERE slug='mori-eastern-european-fund'
-UNION ALL SELECT id, 'Class B EUR', NULL, 'EUR', '1998-01-01', 'active', 20 FROM funds WHERE slug='mori-eastern-european-fund'
-UNION ALL SELECT id, 'Class AA GBP', NULL, 'GBP', '1998-01-01', 'active', 30 FROM funds WHERE slug='mori-eastern-european-fund'
-UNION ALL SELECT id, 'Class C GBP', NULL, 'GBP', '1998-01-01', 'active', 40 FROM funds WHERE slug='mori-eastern-european-fund'
-UNION ALL SELECT id, 'Class M EUR', NULL, 'EUR', '1998-01-01', 'active', 50 FROM funds WHERE slug='mori-eastern-european-fund'
-UNION ALL SELECT id, 'Class A EUR', NULL, 'EUR', '2006-01-01', 'active', 10 FROM funds WHERE slug='mori-ottoman-fund'
-UNION ALL SELECT id, 'Class C USD', NULL, 'USD', '2006-01-01', 'active', 20 FROM funds WHERE slug='mori-ottoman-fund'
-UNION ALL SELECT id, 'Class C EUR', NULL, 'EUR', '2006-01-01', 'active', 30 FROM funds WHERE slug='mori-ottoman-fund'
-UNION ALL SELECT id, 'Class C GBP', NULL, 'GBP', '2006-01-01', 'active', 40 FROM funds WHERE slug='mori-ottoman-fund'
-UNION ALL SELECT id, 'Class AA GBP', NULL, 'GBP', '2006-01-01', 'active', 50 FROM funds WHERE slug='mori-ottoman-fund'
-UNION ALL SELECT id, 'Class M USD', NULL, 'USD', '2006-01-01', 'active', 60 FROM funds WHERE slug='mori-ottoman-fund';
+SELECT id, 'EE Class A EUR',  'IE0002787442', 'EUR', '1998-01-01', 'active', 10 FROM funds WHERE slug='mori-eastern-european-fund'
+UNION ALL SELECT id, 'EE Class B EUR',  'IE00B53RTW70', 'EUR', '1998-01-01', 'active', 20 FROM funds WHERE slug='mori-eastern-european-fund'
+UNION ALL SELECT id, 'EE Class AA GBP', 'IE00B74GCZ17', 'GBP', '1998-01-01', 'active', 30 FROM funds WHERE slug='mori-eastern-european-fund'
+UNION ALL SELECT id, 'EE Class C GBP',  'IE00B762ZY72', 'GBP', '1998-01-01', 'active', 40 FROM funds WHERE slug='mori-eastern-european-fund'
+UNION ALL SELECT id, 'EE Class M EUR',  'IE00BD03V952', 'EUR', '1998-01-01', 'active', 50 FROM funds WHERE slug='mori-eastern-european-fund'
+UNION ALL SELECT id, 'Otto Class A EUR',  'IE00B0T0FN89', 'EUR', '2006-01-01', 'active', 10 FROM funds WHERE slug='mori-ottoman-fund'
+UNION ALL SELECT id, 'Otto Class C USD',  'IE00B4XYZP64', 'USD', '2006-01-01', 'active', 20 FROM funds WHERE slug='mori-ottoman-fund'
+UNION ALL SELECT id, 'Otto Class C EUR',  'IE00B8G12179', 'EUR', '2006-01-01', 'active', 30 FROM funds WHERE slug='mori-ottoman-fund'
+UNION ALL SELECT id, 'Otto Class C GBP',  'IE00B87PYK12', 'GBP', '2006-01-01', 'active', 40 FROM funds WHERE slug='mori-ottoman-fund'
+UNION ALL SELECT id, 'Otto Class AA GBP', 'IE00B87G5S97', 'GBP', '2006-01-01', 'active', 50 FROM funds WHERE slug='mori-ottoman-fund'
+UNION ALL SELECT id, 'Otto Class M USD',  'IE00BJLC3Y24', 'USD', '2006-01-01', 'active', 60 FROM funds WHERE slug='mori-ottoman-fund'
+ON DUPLICATE KEY UPDATE
+    name           = VALUES(name),
+    currency       = VALUES(currency),
+    inception_date = VALUES(inception_date),
+    display_order  = VALUES(display_order),
+    updated_at     = CURRENT_TIMESTAMP;
 
 -- -----------------------------------------------------------------------------
 -- Team (English bios — DE can be added via admin panel)

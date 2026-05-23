@@ -151,13 +151,14 @@ include __DIR__ . '/partials/layout-start.php';
 
             <div class="row">
                 <div>
-                    <label>Fund</label>
+                    <label>Fund / Scope</label>
                     <select name="fund_id">
-                        <option value="">— (no specific fund)</option>
+                        <option value="">— Umbrella / global (applies to all share classes)</option>
                         <?php foreach ($funds as $f): ?>
-                        <option value="<?= e($f['id']) ?>"><?= e($f['name_en']) ?></option>
+                        <option value="<?= e($f['id']) ?>"><?= e($f['name_en']) ?> (per-fund)</option>
                         <?php endforeach; ?>
                     </select>
+                    <div class="hint">Leave empty for documents that cover all share classes (Prospectus, Audited &amp; Semi-Annual Accounts). Pick a fund for per-fund docs (Factsheet). Use the share-class multi-select below for per-class docs (KIID, PRIIPs).</div>
                 </div>
                 <div>
                     <label>Document type *</label>
