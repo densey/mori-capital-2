@@ -24,7 +24,31 @@ function url(string $path = '/'): string
 
 function asset(string $path): string
 {
-    return '/' . ltrim($path, '/');
+    $path = ltrim($path, '/');
+
+    // Paths that must NOT carry a locale prefix:
+    //   - admin / api / static assets / installer / sitemap / robots
+    //   - any uploaded file
+    static $bare = ['admin/', 'api/', 'assets/', 'css/', 'js/', 'images/', 'uploads/'];
+    static $bareFiles = ['install.php', 'sitemap.php', 'sitemap.xml', 'robots.txt', 'favicon.ico'];
+
+    if (in_array($path, $bareFiles, true)) return '/' . $path;
+    foreach ($bare as $prefix) {
+        if ($path === $prefix || str_starts_with($path, $prefix)) return '/' . $path;
+    }
+
+    // Public page → /<locale>/<slug>  (drop .php extension for clean URLs)
+    $locale = class_exists('Mori\\I18n') ? I18n::locale() : 'en';
+    // Split query string so we can strip .php only from the path part
+    [$pure, $qs] = array_pad(explode('?', $path, 2), 2, null);
+    $pure = preg_replace('/\.php$/', '', (string)$pure);
+    if ($pure === '' || $pure === 'index') {
+        $out = '/' . $locale . '/';
+    } else {
+        $out = '/' . $locale . '/' . $pure;
+    }
+    if ($qs !== null && $qs !== '') $out .= '?' . $qs;
+    return $out;
 }
 
 /**

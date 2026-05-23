@@ -32,7 +32,8 @@ $static = [
 ];
 foreach ($static as $path => [$freq, $prio]) {
     foreach (['en', 'de'] as $loc) {
-        $href = url($path . ($loc === 'de' ? '?lang=de' : ''));
+        $slug = ltrim($path, '/');
+        $href = url('/' . $loc . ($slug ? '/' . $slug : '/'));
         $urls[] = ['loc' => $href, 'lastmod' => date('Y-m-d'), 'changefreq' => $freq, 'priority' => $prio];
     }
 }
@@ -42,7 +43,7 @@ try {
     $db = Database::instance();
     foreach ($db->fetchAll('SELECT slug, locale, GREATEST(updated_at, publish_date) AS lm FROM insights WHERE status="published"') as $ins) {
         $urls[] = [
-            'loc'        => url('/insight?slug=' . urlencode($ins['slug']) . '&lang=' . $ins['locale']),
+            'loc'        => url('/' . $ins['locale'] . '/insight?slug=' . urlencode($ins['slug'])),
             'lastmod'    => date('Y-m-d', strtotime((string)$ins['lm'])),
             'changefreq' => 'monthly',
             'priority'   => '0.6',

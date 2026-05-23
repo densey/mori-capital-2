@@ -8,14 +8,22 @@ $phone = setting('contact_phone', '+356 2033 0110');
 $email = setting('contact_email', 'info@mori-capital.com');
 $linkedin = setting('linkedin_url', '#');
 
-// Build language-switcher links: keep path and any other query params
-$path  = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?: '/';
-$qs    = $_GET;
+// Language-switcher: rebuild URL with the chosen locale prefix, keep query string
+$path = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?: '/';
+// Strip current locale prefix if any
+$basePath = preg_replace('#^/(en|de)(?=/|$)#', '', $path);
+if ($basePath === '' || $basePath === '/') $basePath = '/';
+elseif ($basePath[0] !== '/')               $basePath = '/' . $basePath;
+$basePath = preg_replace('/\.php$/', '', $basePath);
+
+// Preserve query string except lang
+$qs = $_GET;
 unset($qs['lang']);
-$qsBase = $qs ? '?' . http_build_query($qs) . '&' : '?';
-$enUrl  = $path . $qsBase . 'lang=en';
-$deUrl  = $path . $qsBase . 'lang=de';
-$cur    = I18n::locale();
+$qsStr = $qs ? '?' . http_build_query($qs) : '';
+
+$enUrl = '/en' . ($basePath === '/' ? '/' : $basePath) . $qsStr;
+$deUrl = '/de' . ($basePath === '/' ? '/' : $basePath) . $qsStr;
+$cur   = I18n::locale();
 ?>
 <!-- Topbar Section -->
 <div class="topbar">

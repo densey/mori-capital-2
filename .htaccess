@@ -45,13 +45,25 @@ Options -Indexes
     # SEO: /sitemap.xml -> dynamic sitemap.php
     RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
-    # Skip if file or directory exists
+    # ===== Locale-prefixed clean URLs =========================================
+    # /en or /de alone     ->  homepage with locale
+    # /en/about etc.       ->  about.php?lang=en  (etc.)
+    # admin/, api/, install.php, assets, css, js, images, uploads are excluded
+    # by the file/dir existence check below (they're real paths).
+    # ==========================================================================
+    RewriteRule ^(en|de)/?$ index.php?lang=$1 [L,QSA]
+
+    # /en/<slug> or /en/<slug>/ -> <slug>.php?lang=en (skip if real file/dir)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    # Add .php
+    RewriteRule ^(en|de)/([a-z0-9\-_/]+?)/?$ $2.php?lang=$1 [L,QSA]
+
+    # Backward-compat: bare extension-less URL (e.g. /about) — uses default locale
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^([a-z0-9\-_/]+)$ $1.php [L]
 
-    # Legacy .html requests -> .php (so old indexed links still work)
+    # Legacy .html requests -> .php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^([a-z0-9\-_/]+)\.html$ $1.php [L,QSA]
 </IfModule>

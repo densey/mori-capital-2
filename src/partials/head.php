@@ -19,14 +19,20 @@ $kw    = $page['keywords']    ?? 'Mori Capital, EEMEA, Emerging Europe, Ottoman 
 $bodyClass = $page['body_class'] ?? '';
 $ga = setting('google_analytics_id', '');
 
-// Canonical & social URLs — strip ".php" so search engines index clean URLs
+// Canonical & social URLs — locale-prefixed clean URLs
 $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
 $host   = $_SERVER['HTTP_HOST'] ?? 'mori-capital.com';
 $path   = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?: '/';
-// Canonical: drop .php so /about.php and /about share the same URL signal
-$canonicalPath = preg_replace('/\.php$/', '', $path);
-if ($canonicalPath === '' || $canonicalPath === '/index') $canonicalPath = '/';
-$canonical = $scheme . '://' . $host . $canonicalPath;
+
+// Strip any existing locale prefix and .php extension for canonical base
+$basePath = preg_replace('#^/(en|de)(?=/|$)#', '', $path);
+$basePath = preg_replace('/\.php$/', '', $basePath);
+if ($basePath === '' || $basePath === '/index') $basePath = '/';
+if ($basePath[0] !== '/') $basePath = '/' . $basePath;
+
+$canonical = $scheme . '://' . $host . '/' . I18n::locale() . ($basePath === '/' ? '/' : $basePath);
+$altUrlEn  = $scheme . '://' . $host . '/en' . ($basePath === '/' ? '/' : $basePath);
+$altUrlDe  = $scheme . '://' . $host . '/de' . ($basePath === '/' ? '/' : $basePath);
 
 $ogImageSetting = setting('og_default_image', 'assets/images/mori-capital-logo.fw.png');
 $ogImage = $page['og_image'] ?? $ogImageSetting;
@@ -35,10 +41,6 @@ if (!preg_match('/^https?:\/\//', (string)$ogImage)) {
 }
 $ogType = $page['og_type'] ?? 'website';
 $siteName = setting('site_title', 'Mori Capital Management');
-
-// Alternate language links (hreflang)
-$altUrlEn = $scheme . '://' . $host . $canonicalPath . '?lang=en';
-$altUrlDe = $scheme . '://' . $host . $canonicalPath . '?lang=de';
 
 // Admin-managed custom head code (analytics, GTM, pixel, custom meta tags, etc.)
 $customHead = setting('custom_head_code', '');
