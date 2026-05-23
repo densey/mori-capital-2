@@ -259,6 +259,19 @@ CREATE TABLE IF NOT EXISTS audit_log (
     CONSTRAINT fk_audit_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- -----------------------------------------------------------------------------
+-- Schema migrations tracker (records which .sql files have been applied)
+-- -----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS schema_migrations (
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    file        VARCHAR(190) NOT NULL UNIQUE,
+    checksum    VARCHAR(64)  NOT NULL,
+    applied_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    applied_by  INT NULL,
+    notes       TEXT NULL,
+    INDEX idx_file (file)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;
 -- Note: the 'sessions' table is intentionally NOT created. PHP file-based
 -- session storage is used. If multi-server deployment is added later, a

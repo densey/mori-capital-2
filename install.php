@@ -98,6 +98,13 @@ if ($step === '3' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     try {
         $db = \Mori\Database::instance()->pdo();
 
+        // Run base schema + seed, then apply every migration. All are idempotent.
+        $existingMigrations = glob(__DIR__ . '/db/migrations/*.sql') ?: [];
+        $migrationFiles = array_map('basename', $existingMigrations);
+        // Drop the internal _schema_migrations.sql — schema.sql creates that table itself.
+        $migrationFiles = array_filter($migrationFiles, fn($f) => $f[0] !== '_');
+        sort($migrationFiles);
+
         foreach (['db/schema.sql', 'db/seed.sql'] as $file) {
             $path = __DIR__ . '/' . $file;
             if (!is_readable($path)) throw new \Exception("Missing file: {$file}");
@@ -124,7 +131,19 @@ if ($step === '3' && $_SERVER['REQUEST_METHOD'] === 'GET') {
                 $db->exec($stmt);
             }
         }
-        $ok = 'Schema and seed imported successfully.';
+
+        // Now apply migrations (records them in schema_migrations so the
+        // admin Database panel knows they're done).
+        $migrator = new \Mori\Migrator();
+        $appliedCount = 0;
+        foreach ($migrationFiles as $mf) {
+            $r = $migrator->apply($mf, null, 'applied during install');
+            if (!empty($r['applied'])) $appliedCount++;
+        }
+
+        $ok = 'Schema and seed imported successfully'
+            . ($appliedCount ? " (+ $appliedCount migrations)" : '')
+            . '.';
     } catch (\Throwable $e) {
         $error = 'Import failed: ' . $e->getMessage();
     }

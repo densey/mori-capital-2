@@ -36,9 +36,11 @@ $user = Auth::user();
 
         <li class="a-nav__section">System</li>
         <li><a href="<?= asset('admin/media.php') ?>" class="<?= is_active_nav('/admin/media.php')?'active':'' ?>"><i class="fa-regular fa-images"></i> Media Library</a></li>
+        <li><a href="<?= asset('admin/seo.php') ?>" class="<?= is_active_nav('/admin/seo.php')?'active':'' ?>"><i class="fa-solid fa-magnifying-glass-chart"></i> SEO &amp; Custom Code</a></li>
         <?php if (($user['role'] ?? '') === 'super_admin'): ?>
         <li><a href="<?= asset('admin/users.php') ?>" class="<?= is_active_nav('/admin/users.php')?'active':'' ?>"><i class="fa-solid fa-user-shield"></i> Users</a></li>
         <li><a href="<?= asset('admin/settings.php') ?>" class="<?= is_active_nav('/admin/settings.php')?'active':'' ?>"><i class="fa-solid fa-gear"></i> Settings</a></li>
+        <li><a href="<?= asset('admin/database.php') ?>" class="<?= is_active_nav('/admin/database.php')?'active':'' ?>"><i class="fa-solid fa-database"></i> Database &amp; Migrations</a></li>
         <li><a href="<?= asset('admin/audit.php') ?>" class="<?= is_active_nav('/admin/audit.php')?'active':'' ?>"><i class="fa-solid fa-clock-rotate-left"></i> Audit Log</a></li>
         <?php endif; ?>
 
