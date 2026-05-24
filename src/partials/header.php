@@ -53,9 +53,8 @@ use function Mori\t;
                         </a>
                     </div>
                 </div>
-                <div class="navbar-toggle"></div>
+                <div class="responsive-menu"></div>
             </div>
         </nav>
-        <div class="responsive-menu"></div>
     </div>
 </header>

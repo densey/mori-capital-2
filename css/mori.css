@@ -130,42 +130,108 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 /* Submenu dropdown when sticky stays styled normally — fine on white */
 
 @media (max-width: 991px) {
-    .main-header .navbar { padding: 10px 0 8px !important; }
-    .main-header .navbar-brand img { height: 64px; }
+    /* Prevent horizontal overflow on mobile */
+    html, body { overflow-x: hidden !important; }
 
-    /* Mobile header: solid teal band, NOT sticky-fixed to avoid overlap */
+    /* Topbar hidden on tablet/mobile — saves space */
+    .topbar { display: none !important; }
+
+    /* Header: solid teal band */
     header.main-header {
         position: relative !important;
         top: 0 !important;
     }
     header.main-header .header-sticky {
         background: var(--accent-color) !important;
-        border-bottom: 1px solid rgba(0, 0, 0, .06) !important;
+        border-bottom: none !important;
         position: relative !important;
     }
-    header.main-header .header-sticky.active {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0; right: 0;
-        background: var(--accent-color) !important;
-        box-shadow: 0 2px 12px rgba(0,0,0,.15) !important;
-        z-index: 9999 !important;
+    .main-header .navbar {
+        padding: 10px 0 8px !important;
+        position: relative;
     }
-    /* Mobile keeps the light logo (teal bg), no swap */
-    header.main-header .header-sticky.active .navbar-brand .logo-light { display: inline-block; }
-    header.main-header .header-sticky.active .navbar-brand .logo-dark  { display: none; }
-    /* Hamburger toggle button: white bars on transparent bg */
+    .main-header .navbar .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .main-header .navbar-brand img { height: 56px; }
+
+    /* Hide desktop menu */
+    .main-header .collapse.navbar-collapse { display: none !important; }
+
+    /* Responsive menu + slicknav hamburger button */
+    .responsive-menu {
+        display: block !important;
+        position: static !important;
+        flex-shrink: 0;
+    }
+    .slicknav_menu {
+        position: static !important;
+        background: transparent !important;
+        width: auto !important;
+        padding: 0 !important;
+    }
     .slicknav_btn {
         background: rgba(255,255,255,.15) !important;
         border: 1px solid rgba(255,255,255,.3) !important;
         border-radius: 6px !important;
+        width: 40px !important;
+        height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
     }
-    .slicknav_btn .slicknav_icon-bar,
     .slicknav_icon .slicknav_icon-bar {
         background: #fff !important;
+        height: 2px !important;
+        width: 20px !important;
+        margin: 3px auto !important;
     }
-    /* Topbar hidden on mobile — saves space */
-    .topbar { display: none !important; }
+
+    /* Slicknav dropdown menu — full width below header */
+    .slicknav_nav {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: var(--accent-color) !important;
+        z-index: 9998 !important;
+        padding-top: 80px !important;
+        overflow-y: auto !important;
+    }
+    .slicknav_nav li a,
+    .slicknav_nav .slicknav_row {
+        color: #fff !important;
+        font-size: 18px !important;
+        padding: 12px 24px !important;
+        border-bottom: 1px solid rgba(255,255,255,.08) !important;
+    }
+    .slicknav_nav li a:hover,
+    .slicknav_nav .slicknav_row:hover {
+        background: rgba(255,255,255,.08) !important;
+    }
+    .slicknav_nav ul ul li a { padding-left: 40px !important; font-size: 15px !important; }
+    .slicknav_arrow:after { color: #fff !important; }
+
+    /* Sticky scroll: fixed header with z-index */
+    header.main-header .header-sticky.active {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: var(--accent-color) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,.15) !important;
+        z-index: 9999 !important;
+    }
+    /* Keep light logo always on mobile */
+    header.main-header .navbar-brand .logo-light { display: inline-block !important; }
+    header.main-header .navbar-brand .logo-dark  { display: none !important; }
+    header.main-header .header-sticky.active .navbar-brand .logo-light { display: inline-block !important; }
+    header.main-header .header-sticky.active .navbar-brand .logo-dark  { display: none !important; }
 }
 .footer-logo img {
     height: 64px;
@@ -884,10 +950,10 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 
     /* Header / nav — compact on phone */
     .main-header .navbar { padding: 8px 0 6px !important; }
-    .main-header .navbar-brand img { height: 44px; max-width: 180px; }
+    .main-header .navbar-brand img { height: 40px; max-width: 160px; }
+    .slicknav_btn { width: 36px !important; height: 36px !important; }
+    .slicknav_icon .slicknav_icon-bar { width: 18px !important; margin: 3px auto !important; }
     .header-btn { display: none !important; }
-    /* Sticky header body offset */
-    body.sticky-active { padding-top: 60px; }
 
     /* Hero — tighter on phone */
     .hero { min-height: 540px !important; padding: 80px 0 60px !important; }
