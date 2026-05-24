@@ -178,22 +178,24 @@ $csrfToken  = Csrf::token();
 </header>
 
 <div id="gjs"></div>
+<textarea id="gjs-import-html" style="display:none;"><?= htmlspecialchars($existingHtml, ENT_QUOTES, 'UTF-8') ?></textarea>
+<textarea id="gjs-import-css" style="display:none;"><?= htmlspecialchars($existingCss, ENT_QUOTES, 'UTF-8') ?></textarea>
 
 <div class="pb-toast" id="pb_toast"></div>
 
 <script>
 const csrfToken = <?= json_encode($csrfToken) ?>;
 const pageId    = <?= json_encode($id ?: null) ?>;
-const existingHtml = <?= json_encode($existingHtml) ?>;
-const existingCss  = <?= json_encode($existingCss) ?>;
+const existingHtml = document.getElementById('gjs-import-html').value;
+const existingCss  = document.getElementById('gjs-import-css').value;
+
+console.log('GrapesJS init — HTML length:', existingHtml.length, 'CSS length:', existingCss.length);
 
 const editor = grapesjs.init({
     container: '#gjs',
     height:    '100%',
     width:     'auto',
     storageManager: false,
-    components: existingHtml || '<div style="padding:40px;text-align:center;color:#7A8B99;"><h2>Start building your page</h2><p>Drag blocks from the right panel to get started.</p></div>',
-    style: existingCss || '',
     canvas: {
         styles: [
             'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
@@ -223,6 +225,20 @@ const editor = grapesjs.init({
         autoAdd:       true
     }
 });
+
+// Load existing content AFTER editor is ready
+if (existingHtml.trim()) {
+    editor.setComponents(existingHtml);
+    console.log('GrapesJS: loaded existing HTML');
+}
+if (existingCss.trim()) {
+    editor.setStyle(existingCss);
+    console.log('GrapesJS: loaded existing CSS');
+}
+if (!existingHtml.trim()) {
+    editor.setComponents('<section style="padding:60px 40px;text-align:center;"><h2 style="color:#1B3A5C;font-size:28px;">Start building your page</h2><p style="color:#7A8B99;font-size:16px;margin-top:12px;">Drag blocks from the right panel, or click the + button to add content.</p></section>');
+    console.log('GrapesJS: loaded placeholder');
+}
 
 // Auto-fill slug from title
 const $title  = document.getElementById('pb_title');
