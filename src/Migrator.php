@@ -28,6 +28,27 @@ final class Migrator
     {
         $this->dir = $dir ?? (dirname(__DIR__) . '/db/migrations');
         $this->db  = Database::instance();
+        $this->ensureTable();
+    }
+
+    /** Create schema_migrations table if it doesn't exist yet. */
+    private function ensureTable(): void
+    {
+        try {
+            $this->db->pdo()->exec('
+                CREATE TABLE IF NOT EXISTS schema_migrations (
+                    id          INT AUTO_INCREMENT PRIMARY KEY,
+                    file        VARCHAR(190) NOT NULL UNIQUE,
+                    checksum    VARCHAR(64)  NOT NULL,
+                    applied_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                    applied_by  INT NULL,
+                    notes       TEXT NULL,
+                    INDEX idx_file (file)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+            ');
+        } catch (\Throwable $e) {
+            // Table might already exist — ignore
+        }
     }
 
     /** All .sql files in the migrations directory, sorted by filename. */
