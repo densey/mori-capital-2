@@ -96,14 +96,11 @@ $csrfToken  = Csrf::token();
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grapick@0.1.10/dist/grapick.min.css">
 <script src="https://cdn.jsdelivr.net/npm/grapesjs@0.21.13/dist/grapes.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/grapesjs-preset-webpage@1.0.3/dist/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/grapesjs-blocks-basic@1.0.2/dist/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/grapesjs-plugin-forms@2.0.6/dist/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/grapesjs-component-countdown@1.0.2/dist/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/grapesjs-tabs@1.0.6/dist/grapesjs-tabs.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/grapesjs-custom-code@1.0.2/dist/index.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/grapesjs-tooltip@0.1.8/dist/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/grapesjs-typed@2.0.0/dist/grapesjs-typed.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/grapesjs-style-bg@2.0.3/dist/grapesjs-style-bg.min.js"></script>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" referrerpolicy="no-referrer">
@@ -207,14 +204,11 @@ const editor = grapesjs.init({
     },
     plugins: [
         'grapesjs-preset-webpage',
-        'grapesjs-blocks-basic',
         'grapesjs-plugin-forms',
         'grapesjs-component-countdown',
         'grapesjs-tabs',
         'grapesjs-custom-code',
-        'grapesjs-tooltip',
-        'grapesjs-typed',
-        'grapesjs-style-bg'
+        'grapesjs-tooltip'
     ],
     pluginsOpts: {
         'grapesjs-preset-webpage': {
