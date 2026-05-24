@@ -629,6 +629,7 @@ header.main-header .header-sticky.active{
 	background: var(--accent-secondary-color);
 	border-bottom: 1px solid var(--dark-divider-color);
 	border-radius: 0;
+	z-index: 9999;
 }
 
 .navbar{
@@ -6429,7 +6430,7 @@ header.main-header .header-sticky.active{
 	}
 
 	header.main-header{
-		top: 38px;
+		top: 0;
 	}
 
 	.section-row{
