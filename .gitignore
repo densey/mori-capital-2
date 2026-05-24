@@ -36,3 +36,7 @@ node_modules/
 *.bak
 *.swp
 *~
+uploads/documents/fund-updates/
+uploads/documents/accounts/
+uploads/documents/prospectus/
+uploads/documents/policies/
