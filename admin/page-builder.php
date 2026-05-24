@@ -177,20 +177,23 @@ $csrfToken  = Csrf::token();
     </div>
 </header>
 
-<div id="gjs"><?= $existingHtml ?></div>
+<div id="gjs"></div>
 
 <div class="pb-toast" id="pb_toast"></div>
 
 <script>
 const csrfToken = <?= json_encode($csrfToken) ?>;
 const pageId    = <?= json_encode($id ?: null) ?>;
+const existingHtml = <?= json_encode($existingHtml) ?>;
+const existingCss  = <?= json_encode($existingCss) ?>;
 
 const editor = grapesjs.init({
     container: '#gjs',
     height:    '100%',
     width:     'auto',
     storageManager: false,
-    fromElement: true,
+    components: existingHtml || '<div style="padding:40px;text-align:center;color:#7A8B99;"><h2>Start building your page</h2><p>Drag blocks from the right panel to get started.</p></div>',
+    style: existingCss || '',
     canvas: {
         styles: [
             'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
@@ -220,10 +223,6 @@ const editor = grapesjs.init({
         autoAdd:       true
     }
 });
-
-<?php if ($existingCss !== ''): ?>
-editor.setStyle(<?= json_encode($existingCss) ?>);
-<?php endif; ?>
 
 // Auto-fill slug from title
 const $title  = document.getElementById('pb_title');
