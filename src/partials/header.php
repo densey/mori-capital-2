@@ -10,8 +10,8 @@ use function Mori\t;
         <nav class="navbar navbar-expand-lg">
             <div class="container">
                 <?php
-                    $logoLight = setting('logo_light_path') ?: 'assets/images/mori-capital-logo.fw.png';
-                    $logoDark  = setting('logo_dark_path')  ?: 'assets/images/mori-capital-logo-dark.fw.png';
+                    $logoLight = \Mori\setting('logo_light_path') ?: 'assets/images/mori-capital-logo.fw.png';
+                    $logoDark  = \Mori\setting('logo_dark_path')  ?: 'assets/images/mori-capital-logo-dark.fw.png';
                 ?>
                 <a class="navbar-brand" href="<?= asset('/') ?>" aria-label="Mori Capital Management">
                     <img class="logo-light" src="/<?= e(ltrim($logoLight, '/')) ?>" alt="Mori Capital Management">
