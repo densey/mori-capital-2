@@ -338,6 +338,43 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--pb-bg); co
 }
 .pb-empty i { font-size: 48px; margin-bottom: 16px; display: block; color: var(--pb-border); }
 .pb-empty p { font-size: 14px; margin-bottom: 20px; }
+
+/* ── Responsive preview ── */
+.pb-responsive-group {
+    display: flex; gap: 2px; background: rgba(255,255,255,.06);
+    border-radius: 4px; padding: 2px; margin-right: 4px;
+}
+.pb-resp-btn {
+    background: transparent; border: none; color: rgba(255,255,255,.45);
+    width: 34px; height: 30px; border-radius: 3px; cursor: pointer;
+    font-size: 14px; display: inline-flex; align-items: center; justify-content: center;
+    transition: all .15s;
+}
+.pb-resp-btn:hover { color: rgba(255,255,255,.8); }
+.pb-resp-btn.active { background: rgba(255,255,255,.15); color: #fff; }
+.pb-canvas-inner { transition: max-width .3s ease; }
+
+/* ── Palette highlight animation ── */
+@keyframes paletteFlash {
+    0%, 100% { background: #fff; }
+    50% { background: #E8F8F4; }
+}
+.pb-palette.highlight { animation: paletteFlash .5s ease 2; }
+.pb-palette-item.highlight-item {
+    border-color: var(--pb-teal); color: var(--pb-teal); background: #F0FBF9;
+    transform: scale(1.03);
+}
+
+/* ── Undo/redo ── */
+.pb-topbar .pb-undo-group { display: flex; gap: 2px; margin-right: 4px; }
+.pb-topbar .pb-undo-group button {
+    background: transparent; border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.5); width: 32px; height: 30px; border-radius: 4px;
+    cursor: pointer; font-size: 13px; display: inline-flex; align-items: center;
+    justify-content: center; transition: all .15s;
+}
+.pb-topbar .pb-undo-group button:hover:not(:disabled) { color: rgba(255,255,255,.9); border-color: rgba(255,255,255,.3); }
+.pb-topbar .pb-undo-group button:disabled { opacity: .3; cursor: default; }
 </style>
 </head>
 <body>
@@ -356,6 +393,17 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--pb-bg); co
         <option value="published" <?= ($page['status'] ?? '')==='published'?'selected':'' ?>>Published</option>
     </select>
     <span class="spacer"></span>
+    <!-- Undo/Redo -->
+    <div class="pb-undo-group">
+        <button id="pb_undo" title="Undo (Ctrl+Z)" disabled><i class="fa-solid fa-rotate-left"></i></button>
+        <button id="pb_redo" title="Redo (Ctrl+Y)" disabled><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+    <!-- Responsive preview toggles -->
+    <div class="pb-responsive-group">
+        <button class="pb-resp-btn active" data-width="100%" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
+        <button class="pb-resp-btn" data-width="768px" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+        <button class="pb-resp-btn" data-width="375px" title="Mobile"><i class="fa-solid fa-mobile-screen-button"></i></button>
+    </div>
     <?php if (!$isNew): ?>
     <a href="/admin/page-edit.php?id=<?= $id ?>" class="pb-btn pb-btn-ghost"><i class="fa-solid fa-pen"></i> Classic</a>
     <?php endif; ?>
@@ -689,8 +737,31 @@ function makeInsertLine(insertIndex) {
 
 // ── Add menu (shows palette, clicking adds at end or specific index) ──
 var pendingInsertIndex = null;
-window.showAddMenu = function() { pendingInsertIndex = null; showPalette(); };
-function showAddMenuAt(idx) { pendingInsertIndex = idx; showPalette(); }
+window.showAddMenu = function() {
+    pendingInsertIndex = null;
+    showPalette();
+    highlightPalette();
+    toast('Select a block type from the left panel');
+};
+function showAddMenuAt(idx) {
+    pendingInsertIndex = idx;
+    showPalette();
+    highlightPalette();
+    toast('Select where to insert');
+}
+function highlightPalette() {
+    var pal = document.getElementById('blockPalette');
+    pal.classList.remove('highlight');
+    void pal.offsetWidth;
+    pal.classList.add('highlight');
+    var items = pal.querySelectorAll('.pb-palette-item');
+    items.forEach(function(item, i) {
+        setTimeout(function() {
+            item.classList.add('highlight-item');
+            setTimeout(function() { item.classList.remove('highlight-item'); }, 400);
+        }, i * 50);
+    });
+}
 
 // ── Panel: palette vs settings ──
 function showPalette() {
@@ -1041,11 +1112,86 @@ document.getElementById('pb_preview').addEventListener('click', function() {
     w.document.close();
 });
 
+// ── Responsive preview ──
+document.querySelectorAll('.pb-resp-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.pb-resp-btn').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        var w = this.dataset.width;
+        var inner = document.getElementById('canvasInner');
+        inner.style.maxWidth = w;
+        var label = this.title;
+        toast(label + ' preview (' + w + ')');
+    });
+});
+
+// ── Undo/Redo ──
+var history = [];
+var historyIndex = -1;
+var historyMax = 40;
+function saveHistory() {
+    syncAllEditables();
+    var snap = JSON.stringify(blocks);
+    if (historyIndex >= 0 && history[historyIndex] === snap) return;
+    history = history.slice(0, historyIndex + 1);
+    history.push(snap);
+    if (history.length > historyMax) history.shift();
+    historyIndex = history.length - 1;
+    updateUndoRedoBtns();
+}
+function undo() {
+    if (historyIndex <= 0) return;
+    historyIndex--;
+    blocks = JSON.parse(history[historyIndex]);
+    selectedId = null;
+    renderAll();
+    showPalette();
+    updateUndoRedoBtns();
+}
+function redo() {
+    if (historyIndex >= history.length - 1) return;
+    historyIndex++;
+    blocks = JSON.parse(history[historyIndex]);
+    selectedId = null;
+    renderAll();
+    showPalette();
+    updateUndoRedoBtns();
+}
+function updateUndoRedoBtns() {
+    document.getElementById('pb_undo').disabled = historyIndex <= 0;
+    document.getElementById('pb_redo').disabled = historyIndex >= history.length - 1;
+}
+document.getElementById('pb_undo').addEventListener('click', undo);
+document.getElementById('pb_redo').addEventListener('click', redo);
+
+// Auto-save history on block changes
+var _origAddBlock = addBlock;
+addBlock = function(type, atIndex) { _origAddBlock(type, atIndex); saveHistory(); };
+var _origDeleteBlock = deleteBlock;
+deleteBlock = function(id) { _origDeleteBlock(id); saveHistory(); };
+var _origMoveBlock = moveBlock;
+moveBlock = function(id, dir) { _origMoveBlock(id, dir); saveHistory(); };
+var _origDuplicateBlock = duplicateBlock;
+duplicateBlock = function(id) { _origDuplicateBlock(id); saveHistory(); };
+
+// Save history on contenteditable blur
+document.getElementById('canvasInner').addEventListener('focusout', function(e) {
+    if (e.target.closest('[contenteditable]')) {
+        setTimeout(saveHistory, 100);
+    }
+});
+
 // ── Keyboard shortcuts ──
 document.addEventListener('keydown', function(e) {
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
         document.getElementById('pb_save').click();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        if (!e.target.closest('[contenteditable]')) { e.preventDefault(); undo(); }
+    }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        if (!e.target.closest('[contenteditable]')) { e.preventDefault(); redo(); }
     }
     if (e.key === 'Delete' && selectedId && !e.target.closest('[contenteditable]') && !e.target.closest('input') && !e.target.closest('textarea')) {
         deleteBlock(selectedId);
@@ -1068,6 +1214,7 @@ function toast(msg, isErr) {
 
 // ── Init ──
 initBlocks();
+saveHistory();
 
 })();
 </script>
