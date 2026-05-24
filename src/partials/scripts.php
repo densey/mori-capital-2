@@ -58,6 +58,30 @@ use function Mori\t;
 <script src="<?= asset('js/wow.min.js') ?>"></script>
 <script src="<?= asset('js/function.js') ?>"></script>
 
+<!-- ===== Mobile menu ===== -->
+<script>
+(function($){
+    var btn = $('#moriMenuToggle');
+    var nav = $('.responsive-menu .slicknav_nav');
+    if (!btn.length || !nav.length) return;
+
+    var overlay = $('<div class="mori-mobile-nav"></div>');
+    nav.clone(true).appendTo(overlay);
+    $('body').append(overlay);
+
+    var open = false;
+    function toggle() {
+        open = !open;
+        btn.toggleClass('active', open);
+        overlay.toggleClass('open', open);
+        $('body').css('overflow', open ? 'hidden' : '');
+    }
+    btn.on('click', toggle);
+    overlay.on('click', 'a', function() { if (open) toggle(); });
+    overlay.on('click', function(e) { if (e.target === this) toggle(); });
+})(jQuery);
+</script>
+
 <!-- ===== Gate + cookie consent logic ===== -->
 <script>
 (function () {

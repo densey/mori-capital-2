@@ -53,7 +53,10 @@ use function Mori\t;
                         </a>
                     </div>
                 </div>
-                <div class="navbar-toggle"></div>
+                <!-- Mobile hamburger (visible <992px) -->
+                <button class="mori-hamburger" id="moriMenuToggle" aria-label="Menu">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </nav>
         <div class="responsive-menu"></div>
