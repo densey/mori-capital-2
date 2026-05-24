@@ -84,7 +84,7 @@ $pageTitle = $isNew ? 'New page' : $page['title'];
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:#0E1F36}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#ffffff}
 .pb-bar{background:#122842;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
 .pb-bar input,.pb-bar select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;padding:7px 10px;border-radius:4px;font:inherit;font-size:13px}
 .pb-bar input:focus,.pb-bar select:focus{outline:none;border-color:#1ABC9C}
