@@ -208,7 +208,7 @@ include __DIR__ . '/src/partials/page-header.php';
         });
         $types = $columns + ['marketing' => 'Marketing', 'other' => 'Other'];
         ?>
-        <form method="get" style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:18px 22px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:12px;align-items:end;">
+        <form method="get" class="doc-filter-form" style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:18px 22px;margin-bottom:24px;display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:12px;align-items:end;">
             <input type="hidden" name="view" value="list">
             <div>
                 <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;">Fund</label>

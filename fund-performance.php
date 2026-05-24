@@ -39,7 +39,7 @@ include __DIR__ . '/src/partials/page-header.php';
     <div class="container">
         <!-- Selectors -->
         <form method="get" style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:22px 24px;margin-bottom:30px;">
-            <div style="flex:1;min-width:220px;">
+            <div style="flex:1;min-width:0;">
                 <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;">Fund</label>
                 <select name="fund" onchange="this.form.submit()" style="width:100%;padding:10px 12px;border:1px solid var(--mori-border,#E1E7EE);border-radius:6px;font-family:inherit;font-size:14px;">
                     <?php foreach ($funds as $f): ?>
@@ -47,7 +47,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     <?php endforeach; ?>
                 </select>
             </div>
-            <div style="flex:1;min-width:220px;">
+            <div style="flex:1;min-width:0;">
                 <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;">Share class</label>
                 <select name="class" onchange="this.form.submit()" style="width:100%;padding:10px 12px;border:1px solid var(--mori-border,#E1E7EE);border-radius:6px;font-family:inherit;font-size:14px;">
                     <?php foreach ($shareClasses as $sc): ?>
@@ -80,7 +80,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     <button type="button" class="rng" data-range="max" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">Max</button>
                 </div>
             </div>
-            <div id="perfChart" style="width:100%;height:420px;"></div>
+            <div id="perfChart" style="width:100%;height:clamp(260px,50vw,420px);"></div>
             <?php if (empty($navData)): ?>
             <p style="text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;padding:80px 0;">No NAV data available yet for this share class.<?php if (\Mori\Auth::check()): ?><br>Add monthly NAV entries from <a href="<?= asset('admin/performance.php') ?>" style="color:var(--accent-color,#1ABC9C);">the admin panel</a>.<?php endif; ?></p>
             <?php endif; ?>
@@ -109,7 +109,7 @@ include __DIR__ . '/src/partials/page-header.php';
         ?>
         <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:14px;padding:30px;margin-top:24px;">
             <h3 style="font-size:18px;margin-bottom:18px;">Cumulative returns (as of <?= e(\Mori\format_date($latest['entry_date'])) ?>)</h3>
-            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;">
+            <div class="perf-returns-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;">
                 <?php foreach ($ranges as $label => $cutoffDate):
                     $startRow = findNavAt($navData, $cutoffDate);
                     $ret = $startRow ? (($latest['nav'] - $startRow['nav']) / $startRow['nav']) * 100 : null;

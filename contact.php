@@ -83,7 +83,7 @@ include __DIR__ . '/src/partials/page-header.php';
     <div class="container">
         <div class="row" style="gap:0;">
             <!-- Info -->
-            <div class="col-lg-5" style="padding-right:30px;">
+            <div class="col-lg-5" style="padding-right:clamp(15px,3vw,30px);">
                 <div class="section-title">
                     <span class="section-sub-title wow fadeInUp">Get in touch</span>
                     <h2 style="font-size:clamp(24px,2.6vw,32px);">We'd love to hear from you</h2>
@@ -121,7 +121,7 @@ include __DIR__ . '/src/partials/page-header.php';
 
             <!-- Form -->
             <div class="col-lg-7" id="contact-form">
-                <form method="post" style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:14px;padding:34px 36px;">
+                <form method="post" style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:14px;padding:clamp(20px,4vw,34px) clamp(16px,4vw,36px);">
                     <?= Csrf::field() ?>
                     <!-- Honeypot -->
                     <div style="position:absolute;left:-9999px;" aria-hidden="true">

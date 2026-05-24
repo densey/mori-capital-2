@@ -1082,6 +1082,21 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 
     /* Fund matrix scrolls horizontally — show scroll hint */
     .fundhub-matrix { min-width: 800px !important; }
+
+    /* Performance returns grid: 3 columns on small, 2 on tiny */
+    .perf-returns-grid { grid-template-columns: repeat(3, 1fr) !important; }
+
+    /* Document filter form: stack on mobile */
+    .doc-filter-form { grid-template-columns: 1fr 1fr !important; }
+
+    /* Team: stack on phone, remove side padding */
+    .team-bio-col { padding: 20px 0 0 0 !important; }
+}
+
+/* ----- Tiny phone (<= 380px) --------------------------------------------- */
+@media (max-width: 380px) {
+    .perf-returns-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .doc-filter-form { grid-template-columns: 1fr !important; }
 }
 
 /* ----- Reduce motion: disable transforms / heavy animations ------------- */

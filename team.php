@@ -42,7 +42,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     <img src="<?= e($photoSrc) ?>" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<?= urlencode($member['name']) ?>&background=1B3A5C&color=fff&size=600&bold=true&font-size=0.36'" alt="<?= e($member['name']) ?>" style="width:100%;height:100%;object-fit:cover;filter:grayscale(0.1);">
                 </figure>
             </div>
-            <div class="col-md-8" style="padding:<?= $flip?'0 50px 0 30px':'0 30px 0 50px' ?>;">
+            <div class="col-md-8 team-bio-col" style="padding:<?= $flip?'0 clamp(15px,4vw,50px) 0 clamp(15px,3vw,30px)':'0 clamp(15px,3vw,30px) 0 clamp(15px,4vw,50px)' ?>;">
                 <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent-color,#1ABC9C);font-weight:700;margin-bottom:8px;"><?= e(I18n::fieldFor($member, 'title')) ?></div>
                 <h2 style="font-size:clamp(22px,2.4vw,30px);margin-bottom:14px;"><?= e($member['name']) ?></h2>
                 <div style="height:2px;width:60px;background:var(--mori-border,#E1E7EE);margin-bottom:18px;"></div>
