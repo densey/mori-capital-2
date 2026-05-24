@@ -171,9 +171,17 @@ function injectCanvasStyles() {
     return false;
 }
 
-// Set content and styles
-editor.setComponents(initHtml);
+// IMPORTANT: Set content with INLINE styles so it's visible regardless of CSS
+var safeHtml = initHtml;
+// Wrap in a visible container if content doesn't have inline styles
+if (safeHtml && safeHtml.indexOf('style=') === -1) {
+    safeHtml = '<div style="background:#ffffff;color:#2C3E50;padding:30px;font-family:Inter,Arial,sans-serif;font-size:15px;line-height:1.65;min-height:200px;">' + safeHtml + '</div>';
+}
+editor.setComponents(safeHtml);
 if (initCss) editor.setStyle(initCss);
+
+// DEBUG: Also try adding a guaranteed-visible test block
+editor.addComponents('<div style="background:#E8F8F4;border:2px solid #1ABC9C;color:#0F6B5C;padding:20px;margin:20px 0;border-radius:8px;font-size:16px;font-weight:600;">✓ GrapesJS is working — you can edit this text. Click on any element to select it.</div>');
 
 // Try injecting styles immediately and on various events
 injectCanvasStyles();
