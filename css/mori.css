@@ -130,42 +130,37 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 /* Submenu dropdown when sticky stays styled normally — fine on white */
 
 @media (max-width: 991px) {
-    /* Prevent horizontal overflow on mobile */
+    /* Prevent horizontal overflow */
     html, body { overflow-x: hidden !important; }
 
-    /* Topbar hidden on tablet/mobile — saves space */
+    /* Topbar hidden on tablet/mobile */
     .topbar { display: none !important; }
 
-    /* Header: solid teal band */
+    /* Header: solid teal, relative (no absolute offset) */
     header.main-header {
         position: relative !important;
         top: 0 !important;
+        z-index: 9999 !important;
     }
     header.main-header .header-sticky {
         background: var(--accent-color) !important;
-        border-bottom: none !important;
         position: relative !important;
     }
-    .main-header .navbar {
-        padding: 10px 0 8px !important;
-        position: relative;
-    }
-    .main-header .navbar .container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+    .main-header .navbar { padding: 10px 0 8px !important; }
     .main-header .navbar-brand img { height: 56px; }
 
-    /* Hide desktop menu */
+    /* Keep light logo always on teal bg */
+    header.main-header .navbar-brand .logo-light { display: inline-block !important; }
+    header.main-header .navbar-brand .logo-dark  { display: none !important; }
+
+    /* Hide desktop nav + Document Hub button */
     .main-header .collapse.navbar-collapse { display: none !important; }
 
-    /* Responsive menu + slicknav hamburger button */
-    .responsive-menu {
-        display: block !important;
-        position: static !important;
-        flex-shrink: 0;
-    }
+    /* Hide empty .navbar-toggle placeholder */
+    .navbar-toggle { display: none !important; }
+
+    /* ── Slicknav hamburger button: fixed top-right ── */
+    .responsive-menu { display: block !important; }
     .slicknav_menu {
         position: static !important;
         background: transparent !important;
@@ -173,11 +168,15 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
         padding: 0 !important;
     }
     .slicknav_btn {
-        background: rgba(255,255,255,.15) !important;
+        position: fixed !important;
+        top: 14px !important;
+        right: 16px !important;
+        z-index: 10001 !important;
+        background: rgba(255,255,255,.18) !important;
         border: 1px solid rgba(255,255,255,.3) !important;
         border-radius: 6px !important;
-        width: 40px !important;
-        height: 40px !important;
+        width: 42px !important;
+        height: 42px !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
@@ -189,35 +188,42 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
         height: 2px !important;
         width: 20px !important;
         margin: 3px auto !important;
+        display: block !important;
     }
 
-    /* Slicknav dropdown menu — full width below header */
+    /* ── Slicknav dropdown: slides down below header ── */
     .slicknav_nav {
-        position: fixed !important;
-        top: 0 !important;
+        position: absolute !important;
+        top: 100% !important;
         left: 0 !important;
         right: 0 !important;
-        bottom: 0 !important;
-        background: var(--accent-color) !important;
+        background: #0E1F36 !important;
         z-index: 9998 !important;
-        padding-top: 80px !important;
+        padding: 10px 0 !important;
+        box-shadow: 0 8px 24px rgba(0,0,0,.25) !important;
+        max-height: 70vh !important;
         overflow-y: auto !important;
     }
     .slicknav_nav li a,
     .slicknav_nav .slicknav_row {
-        color: #fff !important;
-        font-size: 18px !important;
-        padding: 12px 24px !important;
-        border-bottom: 1px solid rgba(255,255,255,.08) !important;
+        color: rgba(255,255,255,.9) !important;
+        font-size: 16px !important;
+        padding: 13px 24px !important;
+        border-bottom: 1px solid rgba(255,255,255,.06) !important;
     }
     .slicknav_nav li a:hover,
     .slicknav_nav .slicknav_row:hover {
-        background: rgba(255,255,255,.08) !important;
+        background: rgba(26,188,156,.15) !important;
+        color: #fff !important;
     }
-    .slicknav_nav ul ul li a { padding-left: 40px !important; font-size: 15px !important; }
-    .slicknav_arrow:after { color: #fff !important; }
+    .slicknav_nav ul ul li a {
+        padding-left: 40px !important;
+        font-size: 14px !important;
+        color: rgba(255,255,255,.7) !important;
+    }
+    .slicknav_arrow:after { color: rgba(255,255,255,.5) !important; }
 
-    /* Sticky scroll: fixed header with z-index */
+    /* ── Sticky scroll ── */
     header.main-header .header-sticky.active {
         position: fixed !important;
         top: 0 !important;
@@ -227,9 +233,6 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
         box-shadow: 0 2px 12px rgba(0,0,0,.15) !important;
         z-index: 9999 !important;
     }
-    /* Keep light logo always on mobile */
-    header.main-header .navbar-brand .logo-light { display: inline-block !important; }
-    header.main-header .navbar-brand .logo-dark  { display: none !important; }
     header.main-header .header-sticky.active .navbar-brand .logo-light { display: inline-block !important; }
     header.main-header .header-sticky.active .navbar-brand .logo-dark  { display: none !important; }
 }
@@ -930,18 +933,15 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 
 /* ----- Mobile (<= 767px) ------------------------------------------------ */
 @media (max-width: 767px) {
-    /* Topbar — reduce clutter on phone */
-    .topbar { font-size: 12px; padding: 8px 0; }
-    .topbar .topbar-contact-info p {
-        font-size: 12px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-    .topbar .topbar-contact-info p i { display: none; }
-    .topbar .topbar-contact-info-list,
-    .topbar .topbar-social-links { display: none !important; }
-    .topbar-link-box { justify-content: flex-end !important; }
+    /* Hero buttons: contain arrow circle overflow */
+    .hero .section-content-btn { overflow: hidden; }
+    .hero .btn-default { font-size: 14px !important; padding: 14px 22px !important; }
+
+    /* Slicknav button position adjust for smaller header */
+    .slicknav_btn { top: 10px !important; }
+
+    /* Topbar — already hidden by 991px rule, but belt and braces */
+    .topbar { display: none !important; }
     .lang-switcher { margin-left: 0; }
 
     /* Hide the long contact info on phones, just show email */
@@ -951,9 +951,11 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     /* Header / nav — compact on phone */
     .main-header .navbar { padding: 8px 0 6px !important; }
     .main-header .navbar-brand img { height: 40px; max-width: 160px; }
-    .slicknav_btn { width: 36px !important; height: 36px !important; }
-    .slicknav_icon .slicknav_icon-bar { width: 18px !important; margin: 3px auto !important; }
     .header-btn { display: none !important; }
+
+    /* All sections: prevent overflow from button arrows */
+    .container { overflow-x: hidden !important; }
+    .section-btn { overflow: hidden; padding-right: 50px; }
 
     /* Hero — tighter on phone */
     .hero { min-height: 540px !important; padding: 80px 0 60px !important; }
