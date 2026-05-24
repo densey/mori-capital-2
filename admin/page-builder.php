@@ -405,6 +405,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--pb-bg); co
         <button class="pb-resp-btn" data-width="375px" title="Mobile"><i class="fa-solid fa-mobile-screen-button"></i></button>
     </div>
     <?php if (!$isNew): ?>
+    <a href="/admin/page-builder-grapes.php?id=<?= $id ?>" class="pb-btn pb-btn-ghost"><i class="fa-solid fa-wand-magic-sparkles"></i> GrapesJS</a>
     <a href="/admin/page-edit.php?id=<?= $id ?>" class="pb-btn pb-btn-ghost"><i class="fa-solid fa-pen"></i> Classic</a>
     <?php endif; ?>
     <button class="pb-btn pb-btn-ghost" id="pb_preview" title="Preview"><i class="fa-solid fa-eye"></i> Preview</button>
