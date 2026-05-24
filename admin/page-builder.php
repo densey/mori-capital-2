@@ -96,8 +96,11 @@ body{margin:0;font-family:Inter,system-ui,sans-serif;background:#0E1F36}
 .pb-toast.show{transform:translateY(0);opacity:1}
 .pb-toast.err{background:#E74C3C}
 #gjs{height:calc(100vh - 52px);overflow:hidden}
-/* Fix GrapesJS canvas to show content */
+/* Force GrapesJS canvas white */
+.gjs-cv-canvas{background:#fff !important}
+.gjs-frame-wrapper{background:#fff !important}
 .gjs-frame{background:#fff !important}
+.gjs-cv-canvas__frames{background:#fff !important}
 </style>
 </head>
 <body>
@@ -148,22 +151,51 @@ var editor = grapesjs.init({
     }
 });
 
-// Load content after editor is fully ready
+// Inject styles into canvas iframe
+function injectCanvasStyles() {
+    try {
+        var frame = editor.Canvas.getFrameEl();
+        if (frame && frame.contentDocument && frame.contentDocument.head) {
+            var doc = frame.contentDocument;
+            // Remove any existing injected style
+            var existing = doc.getElementById('mori-canvas-style');
+            if (existing) existing.remove();
+            var style = doc.createElement('style');
+            style.id = 'mori-canvas-style';
+            style.textContent = 'html,body{background:#fff!important;color:#2C3E50!important;font-family:Inter,Arial,sans-serif!important;font-size:15px!important;line-height:1.65!important;padding:20px!important;margin:0!important;min-height:100%!important;visibility:visible!important;opacity:1!important}h1,h2,h3,h4{color:#1B3A5C!important;font-weight:700}p{color:#5A6B7B!important;margin:0 0 1em}a{color:#1ABC9C}ul,ol{color:#5A6B7B;padding-left:24px}blockquote{border-left:3px solid #1ABC9C;padding-left:16px;color:#1B3A5C;font-style:italic}img{max-width:100%;height:auto}';
+            doc.head.appendChild(style);
+            console.log('Canvas styles injected');
+            return true;
+        }
+    } catch(e) { console.warn('Canvas style injection failed:', e); }
+    return false;
+}
+
+// Set content and styles
+editor.setComponents(initHtml);
+if (initCss) editor.setStyle(initCss);
+
+// Try injecting styles immediately and on various events
+injectCanvasStyles();
 editor.on('load', function() {
-    // Inject base styles into the canvas iframe
-    var doc = editor.Canvas.getDocument();
-    if (doc) {
-        var style = doc.createElement('style');
-        style.textContent = 'body{background:#fff!important;color:#2C3E50;font-family:Inter,Arial,sans-serif;font-size:15px;line-height:1.65;padding:20px;margin:0}h1,h2,h3,h4{color:#1B3A5C;font-weight:700}p{color:#5A6B7B;margin:0 0 1em}a{color:#1ABC9C}ul,ol{color:#5A6B7B;padding-left:24px}blockquote{border-left:3px solid #1ABC9C;padding-left:16px;color:#1B3A5C;font-style:italic}img{max-width:100%;height:auto;border-radius:8px}';
-        doc.head.appendChild(style);
-    }
-
-    // Now set the components
-    editor.setComponents(initHtml);
-    if (initCss) editor.setStyle(initCss);
-
+    injectCanvasStyles();
     console.log('Editor loaded. Components:', editor.getComponents().length, 'HTML:', editor.getHtml().substring(0, 100));
 });
+editor.on('canvas:frame:load', function() {
+    injectCanvasStyles();
+    // Re-set components in case the frame reloaded
+    if (editor.getComponents().length === 0) {
+        editor.setComponents(initHtml);
+    }
+    console.log('Canvas frame loaded');
+});
+// Fallback: try again after a short delay
+setTimeout(injectCanvasStyles, 500);
+setTimeout(injectCanvasStyles, 1500);
+setTimeout(function() {
+    injectCanvasStyles();
+    console.log('Final check — Components:', editor.getComponents().length);
+}, 3000);
 
 // Save
 document.getElementById('pb_save').addEventListener('click', function() {
