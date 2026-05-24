@@ -13,7 +13,19 @@ use function Mori\redirect;
 Auth::requireRole('super_admin');
 $db = Database::instance();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'smtp_test') {
+    Csrf::requireValid();
+    $testEmail = trim($_POST['test_email'] ?? '');
+    if (!filter_var($testEmail, FILTER_VALIDATE_EMAIL)) {
+        flash('error', 'Please enter a valid email address for the SMTP test.');
+    } else {
+        $result = \Mori\Mail::test($testEmail);
+        flash($result['ok'] ? 'ok' : 'error', $result['message']);
+    }
+    redirect(asset('admin/settings.php') . '#smtp');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? 'save') === 'save') {
     Csrf::requireValid();
     $changed = 0;
     foreach ($_POST['settings'] ?? [] as $key => $value) {
@@ -97,6 +109,74 @@ include __DIR__ . '/partials/layout-start.php';
             <div class="hint">Shown when the site is shared on Facebook, LinkedIn, WhatsApp, X. Recommended 1200×630px.</div>
         </div>
     </div>
+
+    <!-- SMTP -->
+    <div class="a-card" style="margin-bottom:22px;" id="smtp">
+        <div class="a-card__head"><h2><i class="fa-solid fa-envelope"></i> SMTP Email</h2></div>
+        <div class="a-card__body">
+            <p style="font-size:13.5px;color:var(--a-text-soft);margin-bottom:14px;">
+                SMTP settings are stored in <code>.env</code> on the server (not in this form) because they contain secrets.
+                Current values from <code>.env</code>:
+            </p>
+            <div style="display:grid;grid-template-columns:140px 1fr;gap:8px 14px;font-size:13px;background:var(--a-border-soft);padding:16px 18px;border-radius:6px;margin-bottom:16px;">
+                <div style="font-weight:600;color:var(--a-navy);">SMTP_HOST</div><div style="font-family:monospace;color:var(--a-text-soft);"><?= e(\Mori\Config::get('SMTP_HOST','(not set)')) ?></div>
+                <div style="font-weight:600;color:var(--a-navy);">SMTP_PORT</div><div style="font-family:monospace;color:var(--a-text-soft);"><?= e(\Mori\Config::get('SMTP_PORT','587')) ?></div>
+                <div style="font-weight:600;color:var(--a-navy);">SMTP_USER</div><div style="font-family:monospace;color:var(--a-text-soft);"><?= e(\Mori\Config::get('SMTP_USER','(not set)')) ?></div>
+                <div style="font-weight:600;color:var(--a-navy);">SMTP_FROM</div><div style="font-family:monospace;color:var(--a-text-soft);"><?= e(\Mori\Config::get('SMTP_FROM','info@mori-capital.com')) ?></div>
+                <div style="font-weight:600;color:var(--a-navy);">SMTP_SECURE</div><div style="font-family:monospace;color:var(--a-text-soft);"><?= e(\Mori\Config::get('SMTP_SECURE','tls')) ?></div>
+            </div>
+            <p style="font-size:12px;color:var(--a-muted);margin-bottom:14px;">To change these: SSH into the server → <code>nano .env</code> → fill SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM.</p>
+            </form>
+            <form method="post" class="a-form" style="display:flex;gap:10px;align-items:end;margin-top:12px;">
+                <?= Csrf::field() ?>
+                <input type="hidden" name="action" value="smtp_test">
+                <div style="flex:1;">
+                    <label>Send test email to</label>
+                    <input type="email" name="test_email" required placeholder="your@email.com" value="<?= e(\Mori\Auth::user()['email'] ?? '') ?>">
+                </div>
+                <button class="a-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Send test</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Logo Management -->
+    <div class="a-card" style="margin-bottom:22px;">
+        <div class="a-card__head"><h2><i class="fa-solid fa-image"></i> Logo Management</h2></div>
+        <div class="a-card__body">
+            <div class="row" style="display:flex;gap:22px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:260px;">
+                    <label>Light logo (for dark backgrounds — header, footer)</label>
+                    <div class="a-upload" data-folder="branding">
+                        <input type="hidden" name="settings[logo_light_path]" value="<?= s($settings,'logo_light_path') ?>">
+                        <input type="file" accept="image/*">
+                        <div class="a-upload__label"><i class="fa-solid fa-cloud-arrow-up"></i><span>Upload light logo</span></div>
+                        <img class="a-upload__preview" src="" alt="Preview" style="background:#1B3A5C;padding:12px;border-radius:6px;">
+                        <div class="a-upload__path"><?= s($settings,'logo_light_path') ?></div>
+                    </div>
+                    <div class="hint">White/light version shown on dark header, footer and sticky header. PNG with transparent background, ~200px+ wide.</div>
+                </div>
+                <div style="flex:1;min-width:260px;">
+                    <label>Dark logo (for light backgrounds — sticky header, gate modal)</label>
+                    <div class="a-upload" data-folder="branding">
+                        <input type="hidden" name="settings[logo_dark_path]" value="<?= s($settings,'logo_dark_path') ?>">
+                        <input type="file" accept="image/*">
+                        <div class="a-upload__label"><i class="fa-solid fa-cloud-arrow-up"></i><span>Upload dark logo</span></div>
+                        <img class="a-upload__preview" src="" alt="Preview" style="background:#F5F7FA;padding:12px;border-radius:6px;">
+                        <div class="a-upload__path"><?= s($settings,'logo_dark_path') ?></div>
+                    </div>
+                    <div class="hint">Dark/colored version shown on white sticky header and investor gate modal.</div>
+                </div>
+            </div>
+            <p style="font-size:12px;color:var(--a-muted);margin-top:14px;">
+                Current logos are at <code>assets/images/mori-capital-logo.fw.png</code> (light) and <code>mori-capital-logo-dark.fw.png</code> (dark).
+                Upload new versions here to override — the file paths in the templates will be updated automatically when you save settings.
+            </p>
+        </div>
+    </div>
+
+    <form method="post" class="a-form">
+    <?= Csrf::field() ?>
+    <input type="hidden" name="action" value="save">
 
     <div class="a-card" style="margin-bottom:22px;">
         <div class="a-card__head">

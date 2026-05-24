@@ -36,6 +36,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'ip_address' => Auth::clientIp(),
                     'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500),
                 ]);
+
+                // Send notification email to admin
+                try {
+                    \Mori\Mail::sendTemplate(
+                        setting('contact_email', 'info@mori-capital.com'),
+                        'New contact message: ' . mb_substr($subject ?: $name, 0, 80),
+                        'New message from ' . $name,
+                        '<p><strong>From:</strong> ' . htmlspecialchars($name) . ' &lt;' . htmlspecialchars($email) . '&gt;</p>'
+                        . '<p><strong>Subject:</strong> ' . htmlspecialchars($subject ?: '(no subject)') . '</p>'
+                        . '<hr style="border:none;border-top:1px solid #E1E7EE;margin:16px 0;">'
+                        . '<p>' . nl2br(htmlspecialchars($message)) . '</p>'
+                        . '<hr style="border:none;border-top:1px solid #E1E7EE;margin:16px 0;">'
+                        . '<p style="font-size:12px;color:#7A8B99;">Reply directly to this email to respond to ' . htmlspecialchars($email) . '</p>'
+                    );
+                } catch (\Throwable) {
+                    // Email failed silently — message is saved in DB regardless
+                }
+
                 flash('contact_ok', t('contact.form.thanks'));
             } catch (\Throwable $e) {
                 flash('contact_error', t('contact.form.error'));

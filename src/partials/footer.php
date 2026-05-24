@@ -79,8 +79,9 @@ $year = date('Y');
 
             <div class="col-xl-12">
                 <div class="footer-cta-box">
+                    <?php $fLogo = \Mori\setting('logo_light_path') ?: 'assets/images/mori-capital-logo.fw.png'; ?>
                     <div class="footer-logo">
-                        <img src="<?= asset('assets/images/mori-capital-logo.fw.png') ?>" alt="Mori Capital Management">
+                        <img src="/<?= \Mori\e(ltrim($fLogo, '/')) ?>" alt="Mori Capital Management">
                     </div>
 
                     <a href="<?= asset('legal.php') ?>" class="footer-regulator">
