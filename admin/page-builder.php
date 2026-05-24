@@ -200,12 +200,26 @@ const editor = grapesjs.init({
         styles: [
             'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
             'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
-            '/css/bootstrap.min.css',
-            '/css/custom.css',
-            '/css/mori.css'
+            '/css/bootstrap.min.css'
         ]
     },
-    protectedCss: 'body { background: #fff !important; color: #2C3E50; font-family: Inter, sans-serif; font-size: 15px; line-height: 1.65; padding: 20px; }',
+    protectedCss: [
+        '* { box-sizing: border-box; }',
+        'body { background: #fff !important; color: #2C3E50 !important; font-family: Inter, Arial, sans-serif !important; font-size: 15px; line-height: 1.65; padding: 24px !important; margin: 0; overflow-x: visible !important; visibility: visible !important; opacity: 1 !important; }',
+        'h1, h2, h3, h4, h5, h6 { color: #1B3A5C; font-weight: 700; line-height: 1.2; margin: 0 0 0.5em; }',
+        'h1 { font-size: 32px; } h2 { font-size: 24px; } h3 { font-size: 20px; }',
+        'p { color: #5A6B7B; margin: 0 0 1em; line-height: 1.65; }',
+        'a { color: #1ABC9C; }',
+        'ul, ol { padding-left: 24px; color: #5A6B7B; }',
+        'li { margin-bottom: 6px; }',
+        'img { max-width: 100%; height: auto; border-radius: 8px; }',
+        'blockquote { border-left: 3px solid #1ABC9C; padding-left: 16px; margin: 16px 0; font-style: italic; color: #1B3A5C; }',
+        'hr { border: none; border-top: 1px solid #E1E7EE; margin: 24px 0; }',
+        'section { padding: 20px 0; }',
+        '.container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }',
+        '.row { display: flex; flex-wrap: wrap; margin: 0 -15px; }',
+        '[class*="col-"] { padding: 0 15px; flex: 1; }',
+    ].join('\\n'),
     plugins: ['grapesjs-preset-webpage'],
     pluginsOpts: {
         'grapesjs-preset-webpage': {
