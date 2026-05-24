@@ -101,13 +101,13 @@ $pageTitle = $isNew ? 'New page' : $page['title'];
 <link rel="stylesheet" href="https://unpkg.com/grapesjs@0.21.13/dist/css/grapes.min.css">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 100vh; background: #353535; }
+body { font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
 
-/* Top bar */
+/* ── Top bar ── */
 .gjs-topbar {
-    background: #122842; color: #fff; height: 48px;
+    background: #122842; color: #fff; height: 48px; flex-shrink: 0;
     display: flex; align-items: center; gap: 10px; padding: 0 14px;
-    z-index: 100; position: relative; flex-shrink: 0;
+    z-index: 100;
 }
 .gjs-topbar input, .gjs-topbar select {
     background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
@@ -123,23 +123,59 @@ body { font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 10
 .tb-g:hover { background: rgba(255,255,255,.06); color: #fff; }
 .gjs-topbar .sp { flex: 1; }
 
-/* GrapesJS overrides for Mori theme */
-.gjs-one-bg { background-color: #1B3A5C; }
-.gjs-two-color { color: #ddd; }
-.gjs-three-bg { background-color: #122842; }
-.gjs-four-color, .gjs-four-color-h:hover { color: #1ABC9C; }
-
-/* Editor fills remaining space */
-#gjs-editor {
-    height: calc(100vh - 48px);
-    width: 100%;
-    overflow: hidden;
+/* ── Editor wrapper — left panel + canvas + right panel ── */
+.gjs-editor-wrap {
+    flex: 1; display: flex; overflow: hidden;
 }
 
-/* Make sure canvas is white */
-.gjs-cv-canvas { background: #fff !important; }
+/* ── Left toolbar (devices + view switchers) ── */
+.gjs-left-bar {
+    width: 40px; flex-shrink: 0; background: #1B3A5C;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 8px 0; gap: 4px;
+}
+.gjs-left-bar button {
+    width: 34px; height: 34px; background: transparent; border: none;
+    color: rgba(255,255,255,.55); border-radius: 4px; cursor: pointer;
+    font-size: 14px; display: flex; align-items: center; justify-content: center;
+    transition: all .12s;
+}
+.gjs-left-bar button:hover { color: #fff; background: rgba(255,255,255,.08); }
+.gjs-left-bar button.active { color: #1ABC9C; background: rgba(26,188,156,.15); }
+.gjs-left-bar .sep { width: 24px; height: 1px; background: rgba(255,255,255,.12); margin: 6px 0; }
 
-/* Toast */
+/* ── Right panel (blocks / layers / styles) ── */
+.gjs-right-panel {
+    width: 240px; flex-shrink: 0; background: #1B3A5C; overflow-y: auto;
+    border-left: 1px solid rgba(255,255,255,.06);
+}
+.gjs-right-panel .panel-tab { display: none; }
+.gjs-right-panel .panel-tab.active { display: block; }
+.gjs-right-panel .panel-title {
+    padding: 10px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; color: rgba(255,255,255,.4); border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+/* ── GrapesJS container ── */
+#gjs-editor { flex: 1; overflow: hidden; }
+
+/* ── GrapesJS theme overrides ── */
+.gjs-one-bg { background-color: #1B3A5C !important; }
+.gjs-two-color { color: #ddd !important; }
+.gjs-three-bg { background-color: #122842 !important; }
+.gjs-four-color, .gjs-four-color-h:hover { color: #1ABC9C !important; }
+.gjs-cv-canvas { background: #E8ECF0 !important; }
+.gjs-block { padding: 8px; min-height: 50px; border: 1px solid rgba(255,255,255,.08) !important; border-radius: 4px; }
+.gjs-block:hover { border-color: #1ABC9C !important; }
+.gjs-block__media { margin-bottom: 4px; }
+.gjs-block-label { font-size: 11px !important; }
+.gjs-blocks-c { padding: 8px; }
+.gjs-category-title { font-size: 11px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: .06em; }
+
+/* Hide default GrapesJS panels — we build our own */
+.gjs-pn-panels { display: none !important; }
+
+/* ── Toast ── */
 .gjs-toast {
     position: fixed; top: 56px; right: 16px; padding: 10px 18px; border-radius: 6px;
     font-size: 13px; font-weight: 600; z-index: 999; transform: translateY(-20px);
@@ -148,15 +184,6 @@ body { font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 10
 }
 .gjs-toast.show { transform: translateY(0); opacity: 1; }
 .gjs-toast.err { background: #E74C3C; }
-
-/* Debug overlay */
-.gjs-debug {
-    position: fixed; bottom: 10px; left: 10px; background: rgba(0,0,0,.85);
-    color: #0f0; font-family: monospace; font-size: 11px; padding: 8px 12px;
-    border-radius: 6px; z-index: 999; max-width: 400px; line-height: 1.5;
-    display: none;
-}
-.gjs-debug.visible { display: block; }
 </style>
 </head>
 <body>
@@ -179,18 +206,50 @@ body { font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 10
     <a href="/admin/page-builder.php?id=<?= $id ?>" class="tb tb-g"><i class="fa-solid fa-cubes"></i> Block Editor</a>
     <a href="/admin/page-edit.php?id=<?= $id ?>" class="tb tb-g"><i class="fa-solid fa-pen"></i> Classic</a>
     <?php endif; ?>
-    <button class="tb tb-g" id="g_debug_toggle"><i class="fa-solid fa-bug"></i></button>
     <button class="tb tb-p" id="g_save"><i class="fa-solid fa-floppy-disk"></i> Save</button>
 </div>
 
-<!-- GrapesJS editor container -->
-<div id="gjs-editor"></div>
+<!-- Editor layout -->
+<div class="gjs-editor-wrap">
+    <!-- Left toolbar -->
+    <div class="gjs-left-bar">
+        <button class="active" data-panel="blocks" title="Blocks"><i class="fa-solid fa-th-large"></i></button>
+        <button data-panel="layers" title="Layers"><i class="fa-solid fa-layer-group"></i></button>
+        <button data-panel="styles" title="Styles"><i class="fa-solid fa-paint-brush"></i></button>
+        <div class="sep"></div>
+        <button data-device="Desktop" class="active" title="Desktop"><i class="fa-solid fa-desktop"></i></button>
+        <button data-device="Tablet" title="Tablet"><i class="fa-solid fa-tablet-screen-button"></i></button>
+        <button data-device="Mobile" title="Mobile"><i class="fa-solid fa-mobile-screen-button"></i></button>
+        <div class="sep"></div>
+        <button id="g_fullscreen" title="Fullscreen canvas"><i class="fa-solid fa-expand"></i></button>
+        <button id="g_preview" title="Preview mode"><i class="fa-solid fa-eye"></i></button>
+        <button id="g_undo" title="Undo"><i class="fa-solid fa-rotate-left"></i></button>
+        <button id="g_redo" title="Redo"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+
+    <!-- GrapesJS canvas -->
+    <div id="gjs-editor"></div>
+
+    <!-- Right panel -->
+    <div class="gjs-right-panel">
+        <div class="panel-tab active" id="panel-blocks">
+            <div class="panel-title">Blocks</div>
+            <div id="gjs-blocks"></div>
+        </div>
+        <div class="panel-tab" id="panel-layers">
+            <div class="panel-title">Layers</div>
+            <div id="gjs-layers"></div>
+        </div>
+        <div class="panel-tab" id="panel-styles">
+            <div class="panel-title">Style Manager</div>
+            <div id="gjs-styles"></div>
+            <div id="gjs-traits" style="margin-top:8px;"></div>
+        </div>
+    </div>
+</div>
 
 <!-- Toast -->
 <div class="gjs-toast" id="gToast"></div>
-
-<!-- Debug panel -->
-<div class="gjs-debug" id="gDebug"></div>
 
 <script src="https://unpkg.com/grapesjs@0.21.13/dist/grapes.min.js"></script>
 <script>
@@ -203,7 +262,6 @@ var INIT_HTML = <?= json_encode($existingHtml ?: '') ?>;
 var INIT_CSS = <?= json_encode($existingCss ?: '') ?>;
 var INIT_GJS = <?= json_encode($existingGjsData ?: '') ?>;
 
-// ── Utility ──
 function toast(msg, err) {
     var el = document.getElementById('gToast');
     el.textContent = msg;
@@ -211,40 +269,42 @@ function toast(msg, err) {
     setTimeout(function() { el.className = 'gjs-toast'; }, 2500);
 }
 
-function debug(msg) {
-    var el = document.getElementById('gDebug');
-    el.innerHTML += msg + '<br>';
-    el.scrollTop = el.scrollHeight;
-    console.log('[GJS]', msg);
-}
-
-// ── Default content if empty ──
-var defaultHtml = '<section style="padding:40px 30px;max-width:900px;margin:0 auto;font-family:Inter,Arial,sans-serif;">' +
-    '<h2 style="color:#1B3A5C;font-size:28px;margin-bottom:16px;">Page Title</h2>' +
-    '<p style="color:#5A6B7B;font-size:15px;line-height:1.7;">Start editing this page. Click on any text to edit it, or use the blocks panel on the right to add new elements.</p>' +
-    '</section>';
-
+// ── Default content ──
+var defaultHtml = '<div class="container" style="max-width:1140px;margin:0 auto;padding:40px 15px;">' +
+    '<h2>Page Title</h2>' +
+    '<p>Start editing this page. Click on any text to edit, or drag blocks from the right panel.</p>' +
+    '</div>';
 var contentHtml = INIT_HTML && INIT_HTML.trim() ? INIT_HTML : defaultHtml;
 
-// ── Protected CSS: ensures content is always visible ──
-var protectedCss = [
-    '* { box-sizing: border-box; }',
-    'body { margin: 0; padding: 0; background: #fff !important; min-height: 100vh; }',
-    'html { background: #fff !important; }',
-    '[data-gjs-type="wrapper"] { min-height: 100vh !important; padding: 0 !important; overflow: visible !important; background: #fff; }',
-    'h1, h2, h3, h4 { color: #1B3A5C; margin: 0 0 .5em; font-weight: 700; }',
-    'p { color: #5A6B7B; line-height: 1.7; margin: 0 0 1em; }',
-    'a { color: #1ABC9C; }',
-    'img { max-width: 100%; height: auto; }',
-    'section { position: relative; }',
-    'ul, ol { color: #5A6B7B; padding-left: 24px; }',
-    'blockquote { border-left: 3px solid #1ABC9C; padding: 12px 20px; margin: 0 0 1em; color: #1B3A5C; font-style: italic; }',
-    '.row { display: flex; flex-wrap: wrap; margin: 0 -15px; }',
-    '.row > div { padding: 0 15px; }',
-    '.btn-mori { display: inline-block; padding: 12px 28px; background: #1ABC9C; color: #fff; border-radius: 4px; font-weight: 600; text-decoration: none; font-size: 14px; cursor: pointer; }',
-].join('\n');
-
-debug('Init: HTML length=' + contentHtml.length + ', CSS length=' + INIT_CSS.length);
+// ── Protected CSS: base typography + Mori brand ──
+var protectedCss = '' +
+    '* { box-sizing: border-box; }\n' +
+    'body { background: #fff !important; margin: 0; min-height: 100vh; font-family: Inter, "DM Sans", Arial, sans-serif; font-size: 15px; line-height: 1.65; color: #2C3E50; }\n' +
+    '[data-gjs-type="wrapper"] { min-height: 100vh !important; overflow: visible !important; background: #fff; width: 100% !important; position: relative !important; }\n' +
+    'h1 { font-size: 36px; color: #1B3A5C; font-weight: 700; margin: 0 0 .5em; line-height: 1.2; }\n' +
+    'h2 { font-size: 28px; color: #1B3A5C; font-weight: 700; margin: 0 0 .5em; line-height: 1.25; }\n' +
+    'h3 { font-size: 22px; color: #1B3A5C; font-weight: 700; margin: 0 0 .5em; line-height: 1.3; }\n' +
+    'h4 { font-size: 18px; color: #1B3A5C; font-weight: 600; margin: 0 0 .5em; }\n' +
+    'p { color: #5A6B7B; line-height: 1.7; margin: 0 0 1em; }\n' +
+    'a { color: #1ABC9C; text-decoration: none; }\n' +
+    'a:hover { color: #16A085; }\n' +
+    'img { max-width: 100%; height: auto; }\n' +
+    'ul, ol { color: #5A6B7B; padding-left: 24px; line-height: 1.8; }\n' +
+    'blockquote { border-left: 3px solid #1ABC9C; padding: 12px 20px; margin: 0 0 1em; color: #1B3A5C; font-style: italic; background: #F8FFFE; border-radius: 0 4px 4px 0; }\n' +
+    'hr { border: 0; border-top: 1px solid #E1E7EE; margin: 24px 0; }\n' +
+    '.container { max-width: 1140px; margin: 0 auto; padding: 0 15px; }\n' +
+    '.row { display: flex; flex-wrap: wrap; margin: 0 -15px; }\n' +
+    '.col { flex: 1; padding: 0 15px; min-width: 0; }\n' +
+    '.btn-default, .btn-mori { display: inline-block; padding: 12px 28px; background: #1ABC9C; color: #fff !important; border-radius: 4px; font-weight: 600; text-decoration: none; font-size: 14px; border: none; cursor: pointer; transition: background .15s; }\n' +
+    '.btn-default:hover, .btn-mori:hover { background: #16A085; }\n' +
+    '.btn-border { background: transparent; border: 2px solid #1ABC9C; color: #1ABC9C !important; }\n' +
+    '.btn-border:hover { background: #1ABC9C; color: #fff !important; }\n' +
+    '.text-center { text-align: center; }\n' +
+    '.text-right { text-align: right; }\n' +
+    '.bg-light { background: #F7F9FC; }\n' +
+    '.bg-navy { background: #122842; color: #fff; }\n' +
+    '.bg-navy h1,.bg-navy h2,.bg-navy h3,.bg-navy h4 { color: #fff; }\n' +
+    '.bg-navy p { color: rgba(255,255,255,.75); }\n';
 
 // ── Initialize GrapesJS ──
 var editor = grapesjs.init({
@@ -256,7 +316,8 @@ var editor = grapesjs.init({
     protectedCss: protectedCss,
     canvas: {
         styles: [
-            'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
+            'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap',
+            '/css/bootstrap.min.css'
         ]
     },
     panels: { defaults: [] },
@@ -267,263 +328,46 @@ var editor = grapesjs.init({
             { name: 'Mobile', width: '375px', widthMedia: '480px' }
         ]
     },
-    blockManager: {
-        appendTo: '#gjs-editor',
-        blocks: []
-    },
+    blockManager: { appendTo: '#gjs-blocks' },
+    layerManager: { appendTo: '#gjs-layers' },
     styleManager: {
-        appendTo: '#gjs-editor'
+        appendTo: '#gjs-styles',
+        sectors: [
+            { name: 'Layout', open: true, properties: [
+                { property: 'display', type: 'select', options: [{value:'block'},{value:'flex'},{value:'inline-block'},{value:'none'}] },
+                { property: 'flex-direction', type: 'select', options: [{value:'row'},{value:'column'}] },
+                { property: 'justify-content', type: 'select', options: [{value:'flex-start'},{value:'center'},{value:'flex-end'},{value:'space-between'},{value:'space-around'}] },
+                { property: 'align-items', type: 'select', options: [{value:'flex-start'},{value:'center'},{value:'flex-end'},{value:'stretch'}] },
+                { property: 'gap' },
+            ]},
+            { name: 'Size', open: false, properties: [
+                'width','min-width','max-width','height','min-height','max-height',
+            ]},
+            { name: 'Spacing', open: false, properties: [
+                'padding','padding-top','padding-right','padding-bottom','padding-left',
+                'margin','margin-top','margin-right','margin-bottom','margin-left',
+            ]},
+            { name: 'Typography', open: false, properties: [
+                { property: 'font-family', type: 'select', options: [{value:'Inter, sans-serif',name:'Inter'},{value:'"DM Sans", sans-serif',name:'DM Sans'},{value:'Georgia, serif',name:'Georgia'},{value:'monospace',name:'Mono'}] },
+                'font-size','font-weight','line-height','letter-spacing',
+                { property: 'color', type: 'color' },
+                { property: 'text-align', type: 'select', options: [{value:'left'},{value:'center'},{value:'right'},{value:'justify'}] },
+                'text-decoration','text-transform',
+            ]},
+            { name: 'Background', open: false, properties: [
+                { property: 'background-color', type: 'color' },
+                'background-image','background-size','background-position','background-repeat',
+            ]},
+            { name: 'Border', open: false, properties: [
+                'border','border-radius','border-top','border-bottom',
+            ]},
+            { name: 'Effects', open: false, properties: [
+                'opacity','box-shadow',
+                { property: 'overflow', type: 'select', options: [{value:'visible'},{value:'hidden'},{value:'auto'}] },
+            ]},
+        ]
     },
-    layerManager: {
-        appendTo: '#gjs-editor'
-    }
-});
-
-debug('Editor created');
-
-// ── Add custom blocks ──
-var bm = editor.BlockManager;
-
-bm.add('section', {
-    label: '<i class="fa fa-object-group"></i> Section',
-    category: 'Layout',
-    content: '<section style="padding:40px 30px;"><h2 style="color:#1B3A5C;">Section Title</h2><p style="color:#5A6B7B;">Section content goes here.</p></section>',
-});
-
-bm.add('text-block', {
-    label: '<i class="fa fa-paragraph"></i> Text',
-    category: 'Basic',
-    content: '<p style="color:#5A6B7B;font-size:15px;line-height:1.7;">Insert your text here.</p>',
-});
-
-bm.add('heading', {
-    label: '<i class="fa fa-heading"></i> Heading',
-    category: 'Basic',
-    content: '<h2 style="color:#1B3A5C;font-size:28px;">Heading</h2>',
-});
-
-bm.add('image', {
-    label: '<i class="fa fa-image"></i> Image',
-    category: 'Basic',
-    content: { type: 'image' },
-    activate: true,
-});
-
-bm.add('button', {
-    label: '<i class="fa fa-square"></i> Button',
-    category: 'Basic',
-    content: '<a class="btn-mori" href="#" style="display:inline-block;padding:12px 28px;background:#1ABC9C;color:#fff;border-radius:4px;font-weight:600;text-decoration:none;font-size:14px;">Button</a>',
-});
-
-bm.add('2-columns', {
-    label: '<i class="fa fa-columns"></i> 2 Columns',
-    category: 'Layout',
-    content: '<div style="display:flex;gap:20px;padding:20px 0;">' +
-        '<div style="flex:1;padding:10px;"><p style="color:#5A6B7B;">Column 1</p></div>' +
-        '<div style="flex:1;padding:10px;"><p style="color:#5A6B7B;">Column 2</p></div>' +
-        '</div>',
-});
-
-bm.add('3-columns', {
-    label: '<i class="fa fa-th"></i> 3 Columns',
-    category: 'Layout',
-    content: '<div style="display:flex;gap:20px;padding:20px 0;">' +
-        '<div style="flex:1;padding:10px;"><p style="color:#5A6B7B;">Column 1</p></div>' +
-        '<div style="flex:1;padding:10px;"><p style="color:#5A6B7B;">Column 2</p></div>' +
-        '<div style="flex:1;padding:10px;"><p style="color:#5A6B7B;">Column 3</p></div>' +
-        '</div>',
-});
-
-bm.add('divider', {
-    label: '<i class="fa fa-minus"></i> Divider',
-    category: 'Basic',
-    content: '<hr style="border:0;border-top:1px solid #E1E7EE;margin:20px 0;">',
-});
-
-bm.add('spacer', {
-    label: '<i class="fa fa-arrows-up-down"></i> Spacer',
-    category: 'Basic',
-    content: '<div style="height:40px;"></div>',
-});
-
-bm.add('quote', {
-    label: '<i class="fa fa-quote-left"></i> Quote',
-    category: 'Basic',
-    content: '<blockquote style="border-left:3px solid #1ABC9C;padding:12px 20px;margin:20px 0;"><p style="color:#1B3A5C;font-style:italic;">A meaningful quote goes here.</p></blockquote>',
-});
-
-bm.add('video', {
-    label: '<i class="fa fa-video"></i> Video',
-    category: 'Media',
-    content: { type: 'video', src: 'https://www.youtube.com/embed/dQw4w9WgXcQ', style: { width: '100%', height: '350px' } },
-});
-
-bm.add('list', {
-    label: '<i class="fa fa-list"></i> List',
-    category: 'Basic',
-    content: '<ul style="color:#5A6B7B;padding-left:24px;line-height:1.8;"><li>Item one</li><li>Item two</li><li>Item three</li></ul>',
-});
-
-bm.add('colored-section', {
-    label: '<i class="fa fa-fill-drip"></i> Colored Section',
-    category: 'Layout',
-    content: '<section style="padding:50px 30px;background:#F7F9FC;text-align:center;"><h2 style="color:#1B3A5C;font-size:28px;margin-bottom:12px;">Call to Action</h2><p style="color:#5A6B7B;font-size:16px;max-width:600px;margin:0 auto 20px;">Describe your value proposition here.</p><a style="display:inline-block;padding:12px 28px;background:#1ABC9C;color:#fff;border-radius:4px;font-weight:600;text-decoration:none;" href="#">Get Started</a></section>',
-});
-
-// ── Build custom panels ──
-var pn = editor.Panels;
-
-// Device buttons
-pn.addPanel({
-    id: 'devices-c',
-    el: '',
-    buttons: [{
-        id: 'device-desktop', command: 'set-device-desktop',
-        className: 'fa fa-desktop', active: true, togglable: false,
-    }, {
-        id: 'device-tablet', command: 'set-device-tablet',
-        className: 'fa fa-tablet',
-    }, {
-        id: 'device-mobile', command: 'set-device-mobile',
-        className: 'fa fa-mobile',
-    }]
-});
-
-editor.Commands.add('set-device-desktop', { run: function(e) { e.setDevice('Desktop'); } });
-editor.Commands.add('set-device-tablet', { run: function(e) { e.setDevice('Tablet'); } });
-editor.Commands.add('set-device-mobile', { run: function(e) { e.setDevice('Mobile'); } });
-
-// View buttons
-pn.addPanel({
-    id: 'views-c',
-    el: '',
-    buttons: [{
-        id: 'show-blocks', command: 'show-blocks', active: true,
-        className: 'fa fa-th-large', togglable: false,
-    }, {
-        id: 'show-layers', command: 'show-layers',
-        className: 'fa fa-bars',
-    }, {
-        id: 'show-style', command: 'show-styles',
-        className: 'fa fa-paint-brush',
-    }]
-});
-
-editor.Commands.add('show-blocks', {
-    run: function(editor) {
-        var bm = editor.Panels.getButton('views-c', 'show-blocks');
-        if (bm) bm.set('active', true);
-    }
-});
-editor.Commands.add('show-layers', {
-    run: function(editor) {
-        var lm = editor.Panels.getButton('views-c', 'show-layers');
-        if (lm) lm.set('active', true);
-    }
-});
-editor.Commands.add('show-styles', {
-    run: function(editor) {
-        var sm = editor.Panels.getButton('views-c', 'show-style');
-        if (sm) sm.set('active', true);
-    }
-});
-
-// ── CRITICAL: Load content AFTER frame is ready ──
-var contentLoaded = false;
-
-function loadContent() {
-    if (contentLoaded) return;
-    contentLoaded = true;
-    debug('Loading content into editor...');
-
-    // If we have stored GrapesJS project data, use it (preserves component structure)
-    if (INIT_GJS) {
-        try {
-            var gjsProject = JSON.parse(INIT_GJS);
-            editor.loadProjectData(gjsProject);
-            debug('Loaded from GJS project data');
-            verifyContent();
-            return;
-        } catch(e) {
-            debug('GJS project parse failed: ' + e.message + ', falling back to HTML');
-        }
-    }
-
-    // Otherwise load from HTML+CSS
-    editor.setComponents(contentHtml);
-    if (INIT_CSS) {
-        editor.setStyle(INIT_CSS);
-    }
-    debug('Loaded from HTML+CSS');
-    verifyContent();
-}
-
-function verifyContent() {
-    setTimeout(function() {
-        var wrapper = editor.DomComponents.getWrapper();
-        var comps = wrapper ? wrapper.components().length : 0;
-        var html = editor.getHtml();
-        debug('Verify: components=' + comps + ', html_len=' + html.length);
-
-        // Check if iframe body has visible content
-        try {
-            var frame = editor.Canvas.getFrameEl();
-            if (frame && frame.contentDocument) {
-                var body = frame.contentDocument.body;
-                var bodyH = body ? body.scrollHeight : 0;
-                var bodyW = body ? body.offsetWidth : 0;
-                var wrapperEl = body ? body.querySelector('[data-gjs-type="wrapper"]') : null;
-                var wrapH = wrapperEl ? wrapperEl.scrollHeight : 0;
-                debug('Frame body: ' + bodyW + 'x' + bodyH + ', wrapper: ' + wrapH + 'px');
-
-                if (wrapperEl && wrapH < 10) {
-                    debug('WARNING: wrapper has zero height, forcing styles');
-                    wrapperEl.style.cssText = 'min-height:100vh !important; position:relative !important; width:100% !important; display:block !important; background:#fff !important;';
-                }
-
-                // Check children visibility
-                if (wrapperEl) {
-                    var children = wrapperEl.children;
-                    debug('Wrapper children: ' + children.length);
-                    for (var i = 0; i < Math.min(children.length, 3); i++) {
-                        var c = children[i];
-                        var rect = c.getBoundingClientRect();
-                        debug('  child[' + i + '] ' + c.tagName + ': ' + rect.width + 'x' + rect.height + ' vis=' + getComputedStyle(c).visibility);
-                    }
-                }
-            }
-        } catch(e) {
-            debug('Frame inspect error: ' + e.message);
-        }
-    }, 500);
-}
-
-// Try multiple events to load content
-editor.on('load', function() {
-    debug('Event: editor load');
-    loadContent();
-});
-
-editor.on('canvas:frame:load', function() {
-    debug('Event: canvas:frame:load');
-    loadContent();
-});
-
-// Extra safety: load after delay if events didn't fire
-setTimeout(function() {
-    if (!contentLoaded) {
-        debug('Fallback: loading content via timeout');
-        loadContent();
-    }
-}, 2000);
-
-// ── Image upload handler ──
-editor.on('asset:upload:start', function() { debug('Asset upload start'); });
-editor.on('asset:upload:end', function() { debug('Asset upload end'); });
-editor.on('asset:upload:error', function(err) { debug('Asset upload error: ' + err); });
-
-// Custom upload for images
-editor.setConfig && editor.setConfig({
+    traitManager: { appendTo: '#gjs-traits' },
     assetManager: {
         upload: '/admin/api/upload-file.php',
         uploadName: 'file',
@@ -534,6 +378,111 @@ editor.setConfig && editor.setConfig({
     }
 });
 
+// ── Add blocks ──
+var bm = editor.BlockManager;
+
+bm.add('section', { label: 'Section', category: 'Layout', media: '<i class="fa fa-rectangle-list" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<section class="container" style="padding:40px 15px;"><h2>Section Title</h2><p>Section content goes here.</p></section>' });
+
+bm.add('text', { label: 'Text', category: 'Basic', media: '<i class="fa fa-paragraph" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<p>Insert your text here. Click to edit.</p>' });
+
+bm.add('heading', { label: 'Heading', category: 'Basic', media: '<i class="fa fa-heading" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<h2>Heading</h2>' });
+
+bm.add('image', { label: 'Image', category: 'Basic', media: '<i class="fa fa-image" style="font-size:28px;color:#1ABC9C"></i>',
+    content: { type: 'image' }, activate: true });
+
+bm.add('link-button', { label: 'Button', category: 'Basic', media: '<i class="fa fa-square" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<a class="btn-default" href="#">Button Text</a>' });
+
+bm.add('2-columns', { label: '2 Columns', category: 'Layout', media: '<i class="fa fa-columns" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<div class="row"><div class="col"><p>Column 1</p></div><div class="col"><p>Column 2</p></div></div>' });
+
+bm.add('3-columns', { label: '3 Columns', category: 'Layout', media: '<i class="fa fa-th" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<div class="row"><div class="col"><p>Column 1</p></div><div class="col"><p>Column 2</p></div><div class="col"><p>Column 3</p></div></div>' });
+
+bm.add('divider', { label: 'Divider', category: 'Basic', media: '<i class="fa fa-minus" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<hr>' });
+
+bm.add('spacer', { label: 'Spacer', category: 'Basic', media: '<i class="fa fa-arrows-up-down" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<div style="height:40px;"></div>' });
+
+bm.add('quote', { label: 'Quote', category: 'Basic', media: '<i class="fa fa-quote-left" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<blockquote><p>A meaningful quote goes here.</p></blockquote>' });
+
+bm.add('list', { label: 'List', category: 'Basic', media: '<i class="fa fa-list" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<ul><li>Item one</li><li>Item two</li><li>Item three</li></ul>' });
+
+bm.add('video', { label: 'Video', category: 'Media', media: '<i class="fa fa-video" style="font-size:28px;color:#1ABC9C"></i>',
+    content: { type: 'video', src: 'https://www.youtube.com/embed/dQw4w9WgXcQ', style: { width: '100%', height: '350px' } } });
+
+bm.add('hero-section', { label: 'Hero', category: 'Sections', media: '<i class="fa fa-panorama" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<section class="bg-navy" style="padding:80px 30px;text-align:center;"><div class="container"><h1 style="color:#fff;font-size:42px;margin-bottom:16px;">Welcome to Mori Capital</h1><p style="color:rgba(255,255,255,.75);font-size:18px;max-width:650px;margin:0 auto 28px;">Specialist investor in Emerging European, Middle Eastern and African equity markets since 1998.</p><a class="btn-default" href="#">Learn More</a></div></section>' });
+
+bm.add('cta-section', { label: 'CTA', category: 'Sections', media: '<i class="fa fa-bullhorn" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<section class="bg-light" style="padding:50px 30px;text-align:center;"><div class="container"><h2>Get in Touch</h2><p style="max-width:600px;margin:0 auto 20px;">Contact us to learn more about our investment approach.</p><a class="btn-default" href="/contact.php">Contact Us</a></div></section>' });
+
+bm.add('feature-grid', { label: 'Features', category: 'Sections', media: '<i class="fa fa-grip" style="font-size:28px;color:#1ABC9C"></i>',
+    content: '<section style="padding:50px 30px;"><div class="container"><div class="row" style="gap:30px;"><div class="col" style="text-align:center;"><h3 style="font-size:20px;">Feature 1</h3><p>Brief description of this feature.</p></div><div class="col" style="text-align:center;"><h3 style="font-size:20px;">Feature 2</h3><p>Brief description of this feature.</p></div><div class="col" style="text-align:center;"><h3 style="font-size:20px;">Feature 3</h3><p>Brief description of this feature.</p></div></div></div></section>' });
+
+// ── Left bar: panel switching ──
+document.querySelectorAll('.gjs-left-bar [data-panel]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.gjs-left-bar [data-panel]').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        var panel = this.dataset.panel;
+        document.querySelectorAll('.gjs-right-panel .panel-tab').forEach(function(p) { p.classList.toggle('active', p.id === 'panel-' + panel); });
+    });
+});
+
+// ── Left bar: device switching ──
+document.querySelectorAll('.gjs-left-bar [data-device]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.gjs-left-bar [data-device]').forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        editor.setDevice(this.dataset.device);
+    });
+});
+
+// ── Toolbar buttons ──
+document.getElementById('g_undo').addEventListener('click', function() { editor.UndoManager.undo(); });
+document.getElementById('g_redo').addEventListener('click', function() { editor.UndoManager.redo(); });
+document.getElementById('g_preview').addEventListener('click', function() { editor.runCommand('preview'); });
+document.getElementById('g_fullscreen').addEventListener('click', function() {
+    var el = document.querySelector('.gjs-editor-wrap');
+    if (!document.fullscreenElement) el.requestFullscreen().catch(function(){}); else document.exitFullscreen();
+});
+
+// ── Auto-switch to styles panel on component select ──
+editor.on('component:selected', function() {
+    document.querySelectorAll('.gjs-left-bar [data-panel]').forEach(function(b) { b.classList.remove('active'); });
+    var stylesBtn = document.querySelector('.gjs-left-bar [data-panel="styles"]');
+    if (stylesBtn) stylesBtn.classList.add('active');
+    document.querySelectorAll('.gjs-right-panel .panel-tab').forEach(function(p) { p.classList.toggle('active', p.id === 'panel-styles'); });
+});
+
+// ── Load content after frame is ready ──
+var contentLoaded = false;
+function loadContent() {
+    if (contentLoaded) return;
+    contentLoaded = true;
+    if (INIT_GJS) {
+        try {
+            editor.loadProjectData(JSON.parse(INIT_GJS));
+            console.log('[GJS] Loaded from project data');
+            return;
+        } catch(e) { console.warn('[GJS] Project data parse failed:', e); }
+    }
+    editor.setComponents(contentHtml);
+    if (INIT_CSS) editor.setStyle(INIT_CSS);
+    console.log('[GJS] Loaded from HTML, components:', editor.DomComponents.getWrapper().components().length);
+}
+
+editor.on('load', loadContent);
+editor.on('canvas:frame:load', loadContent);
+setTimeout(function() { if (!contentLoaded) loadContent(); }, 2500);
+
 // ── Save ──
 document.getElementById('g_save').addEventListener('click', function() {
     var title = document.getElementById('g_title').value.trim();
@@ -541,12 +490,8 @@ document.getElementById('g_save').addEventListener('click', function() {
     var slug = document.getElementById('g_slug').value.trim();
     if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-    var gjsProject;
-    try {
-        gjsProject = JSON.stringify(editor.getProjectData());
-    } catch(e) {
-        gjsProject = '';
-    }
+    var gjsProject = '';
+    try { gjsProject = JSON.stringify(editor.getProjectData()); } catch(e) {}
 
     var fd = new FormData();
     fd.append('_csrf', CSRF);
@@ -570,16 +515,7 @@ document.getElementById('g_save').addEventListener('click', function() {
 
 // Ctrl+S
 document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        document.getElementById('g_save').click();
-    }
-});
-
-// ── Debug toggle ──
-document.getElementById('g_debug_toggle').addEventListener('click', function() {
-    var d = document.getElementById('gDebug');
-    d.classList.toggle('visible');
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); document.getElementById('g_save').click(); }
 });
 
 })();
