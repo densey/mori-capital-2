@@ -199,9 +199,13 @@ const editor = grapesjs.init({
     canvas: {
         styles: [
             'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
-            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css'
+            'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
+            '/css/bootstrap.min.css',
+            '/css/custom.css',
+            '/css/mori.css'
         ]
     },
+    protectedCss: 'body { background: #fff !important; color: #2C3E50; font-family: Inter, sans-serif; font-size: 15px; line-height: 1.65; padding: 20px; }',
     plugins: ['grapesjs-preset-webpage'],
     pluginsOpts: {
         'grapesjs-preset-webpage': {
