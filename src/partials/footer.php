@@ -122,3 +122,24 @@ $year = date('Y');
         </div>
     </div>
 </footer>
+
+<!-- Mobile bottom tab bar -->
+<nav class="mori-tabbar" aria-label="Mobile navigation">
+    <div class="mori-tabbar__inner">
+        <a href="<?= asset('/') ?>" class="mori-tabbar__item<?= (\Mori\current_path()==='/' || \Mori\current_path()==='/index.php')?' active':'' ?>" aria-label="Home">
+            <i class="fa-solid fa-house"></i><span>Home</span>
+        </a>
+        <a href="<?= asset('fund-eastern-european.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'fund')?' active':'' ?>" aria-label="Funds">
+            <i class="fa-solid fa-chart-pie"></i><span>Funds</span>
+        </a>
+        <a href="<?= asset('documents.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'documents')?' active':'' ?>" aria-label="Documents">
+            <i class="fa-solid fa-folder-open"></i><span>Docs</span>
+        </a>
+        <a href="<?= asset('insights.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'insight')?' active':'' ?>" aria-label="Insights">
+            <i class="fa-solid fa-newspaper"></i><span>Insights</span>
+        </a>
+        <a href="<?= asset('contact.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'contact')?' active':'' ?>" aria-label="Contact">
+            <i class="fa-solid fa-envelope"></i><span>Contact</span>
+        </a>
+    </div>
+</nav>

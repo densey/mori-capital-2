@@ -182,7 +182,45 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 .mori-mobile-nav .slicknav_nav ul ul li a { font-size: 15px !important; font-weight: 400; color: rgba(255,255,255,.65) !important; padding: 10px 10px !important; }
 .mori-mobile-nav .slicknav_arrow { display: none !important; }
 
+/* ── Mobile bottom tab bar ── */
+.mori-tabbar {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff;
+    border-top: 1px solid #E1E7EE;
+    z-index: 9990;
+    padding: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: 0 -2px 12px rgba(0,0,0,.06);
+}
+.mori-tabbar__inner {
+    display: flex; justify-content: space-around; align-items: stretch;
+    max-width: 500px; margin: 0 auto;
+}
+.mori-tabbar__item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 3px;
+    padding: 8px 4px 6px; text-decoration: none;
+    color: #7A8B99; font-size: 10px; font-weight: 600;
+    letter-spacing: .02em; transition: color .15s;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+}
+.mori-tabbar__item i { font-size: 18px; transition: color .15s; }
+.mori-tabbar__item:hover,
+.mori-tabbar__item.active { color: #1ABC9C; }
+.mori-tabbar__item.active::before {
+    content: ''; position: absolute; top: 0; left: 25%; right: 25%;
+    height: 2px; background: #1ABC9C; border-radius: 0 0 2px 2px;
+}
+
 @media (max-width: 991px) {
+    /* Show tab bar */
+    .mori-tabbar { display: block; }
+    /* Add bottom padding to body so footer content isn't hidden behind tab bar */
+    body { padding-bottom: 64px !important; }
+    /* Adjust gate/cookie modals above tab bar */
+    .mori-cookie { bottom: 70px !important; }
     /* Prevent horizontal overflow */
     html, body { overflow-x: hidden !important; }
 
