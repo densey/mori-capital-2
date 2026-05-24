@@ -226,18 +226,28 @@ const editor = grapesjs.init({
     }
 });
 
+// Force white canvas background
+editor.on('load', function() {
+    var frame = editor.Canvas.getFrameEl();
+    if (frame && frame.contentDocument) {
+        frame.contentDocument.body.style.background = '#fff';
+        frame.contentDocument.body.style.color = '#2C3E50';
+        frame.contentDocument.body.style.fontFamily = 'Inter, Arial, sans-serif';
+        frame.contentDocument.body.style.fontSize = '15px';
+        frame.contentDocument.body.style.lineHeight = '1.65';
+        frame.contentDocument.body.style.padding = '20px';
+    }
+});
+
 // Load existing content AFTER editor is ready
-if (existingHtml.trim()) {
-    editor.setComponents(existingHtml);
-    console.log('GrapesJS: loaded existing HTML');
-}
+var contentToLoad = existingHtml.trim() || '<section style="padding:60px 40px;text-align:center;"><h2 style="color:#1B3A5C;font-size:28px;">Start building your page</h2><p style="color:#7A8B99;font-size:16px;margin-top:12px;">Drag blocks from the right panel, or click the + button to add content.</p></section>';
+
+editor.setComponents(contentToLoad);
+console.log('GrapesJS: setComponents called, components:', editor.getComponents().length);
+console.log('GrapesJS: getHtml preview:', editor.getHtml().substring(0, 300));
+
 if (existingCss.trim()) {
     editor.setStyle(existingCss);
-    console.log('GrapesJS: loaded existing CSS');
-}
-if (!existingHtml.trim()) {
-    editor.setComponents('<section style="padding:60px 40px;text-align:center;"><h2 style="color:#1B3A5C;font-size:28px;">Start building your page</h2><p style="color:#7A8B99;font-size:16px;margin-top:12px;">Drag blocks from the right panel, or click the + button to add content.</p></section>');
-    console.log('GrapesJS: loaded placeholder');
 }
 
 // Auto-fill slug from title
