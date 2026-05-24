@@ -69,8 +69,17 @@ include __DIR__ . '/partials/layout-start.php';
                 <textarea name="excerpt" rows="3"><?= e($ins['excerpt'] ?? '') ?></textarea>
                 <label>Body</label>
                 <textarea name="body" class="wysiwyg"><?= e($ins['body'] ?? '') ?></textarea>
-                <label>Cover image (path or URL)</label>
-                <input type="text" name="cover_image_path" value="<?= e($ins['cover_image_path'] ?? '') ?>">
+                <label>Cover image</label>
+                <div class="a-upload" data-folder="insights">
+                    <input type="hidden" name="cover_image_path" value="<?= e($ins['cover_image_path'] ?? '') ?>">
+                    <input type="file" accept="image/*">
+                    <div class="a-upload__label">
+                        <i class="fa-solid fa-image"></i>
+                        <span>Click or drag to upload cover image</span>
+                    </div>
+                    <img class="a-upload__preview" src="" alt="Preview">
+                    <div class="a-upload__path"><?= e($ins['cover_image_path'] ?? '') ?></div>
+                </div>
             </div></div>
         </div>
         <aside>

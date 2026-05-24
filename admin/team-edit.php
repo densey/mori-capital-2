@@ -70,8 +70,17 @@ include __DIR__ . '/partials/layout-start.php';
                     <div><label>Title (EN) *</label><input type="text" name="title_en" required value="<?= e($m['title_en'] ?? '') ?>"></div>
                     <div><label>Title (DE)</label><input type="text" name="title_de" value="<?= e($m['title_de'] ?? '') ?>"></div>
                 </div>
-                <label>Photo path or URL</label>
-                <input type="text" name="photo_path" value="<?= e($m['photo_path'] ?? '') ?>" placeholder="assets/images/team/name.jpg or https://...">
+                <label>Photo</label>
+                <div class="a-upload" data-folder="team">
+                    <input type="hidden" name="photo_path" value="<?= e($m['photo_path'] ?? '') ?>">
+                    <input type="file" accept="image/*">
+                    <div class="a-upload__label">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                        <span>Click or drag to upload photo</span>
+                    </div>
+                    <img class="a-upload__preview" src="" alt="Preview">
+                    <div class="a-upload__path"><?= e($m['photo_path'] ?? '') ?></div>
+                </div>
                 <div class="row">
                     <div><label>LinkedIn URL</label><input type="url" name="linkedin_url" value="<?= e($m['linkedin_url'] ?? '') ?>"></div>
                     <div><label>Email</label><input type="email" name="email" value="<?= e($m['email'] ?? '') ?>"></div>
