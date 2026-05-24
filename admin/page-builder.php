@@ -1,13 +1,4 @@
 <?php
-/**
- * Visual page builder powered by GrapesJS (free, MIT-licensed).
- * Wix-style drag-and-drop. Saves HTML + CSS into pages.body so the
- * public site renders it as-is.
- *
- * Usage:
- *   /admin/page-builder.php           — new draft
- *   /admin/page-builder.php?id=42     — edit existing page
- */
 require __DIR__ . '/../src/bootstrap.php';
 
 use Mori\Auth;
@@ -23,11 +14,11 @@ use function Mori\redirect;
 Auth::requireLogin();
 $db = Database::instance();
 
-$id     = (int)($_GET['id'] ?? 0);
-$page   = $id ? $db->fetchOne('SELECT * FROM pages WHERE id = :id', ['id' => $id]) : null;
-$isNew  = !$page;
+$id   = (int)($_GET['id'] ?? 0);
+$page = $id ? $db->fetchOne('SELECT * FROM pages WHERE id = :id', ['id' => $id]) : null;
+$isNew = !$page;
 
-// Save (AJAX from GrapesJS or full POST)
+// AJAX Save
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
     if (!Csrf::verify($_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['_csrf'] ?? null)) {
@@ -35,30 +26,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['ok' => false, 'error' => 'CSRF']); exit;
     }
     $html = $_POST['html'] ?? '';
-    $css  = $_POST['css']  ?? '';
-    $body = '<style>' . $css . '</style>' . $html;
+    $css  = $_POST['css'] ?? '';
+    $body = ($css ? '<style>' . $css . '</style>' : '') . $html;
 
     $data = [
-        'slug'             => slugify($_POST['slug'] ?? '') ?: slugify($_POST['title'] ?? ''),
-        'locale'           => in_array($_POST['locale'] ?? 'en', ['en','de'], true) ? $_POST['locale'] : 'en',
-        'title'            => trim($_POST['title'] ?? ''),
-        'meta_title'       => trim($_POST['meta_title'] ?? '') ?: null,
-        'meta_description' => trim($_POST['meta_description'] ?? '') ?: null,
-        'body'             => $body,
-        'status'           => in_array($_POST['status'] ?? 'draft', ['draft','published'], true) ? $_POST['status'] : 'draft',
-        'updated_by'       => Auth::userId(),
+        'slug'   => slugify($_POST['slug'] ?? '') ?: slugify($_POST['title'] ?? ''),
+        'locale' => in_array($_POST['locale'] ?? 'en', ['en','de'], true) ? $_POST['locale'] : 'en',
+        'title'  => trim($_POST['title'] ?? ''),
+        'body'   => $body,
+        'status' => in_array($_POST['status'] ?? 'draft', ['draft','published'], true) ? $_POST['status'] : 'draft',
+        'updated_by' => Auth::userId(),
     ];
     if ($data['title'] === '' || $data['slug'] === '') {
-        echo json_encode(['ok' => false, 'error' => 'Title and slug are required.']); exit;
+        echo json_encode(['ok' => false, 'error' => 'Title and slug required']); exit;
     }
     try {
         if ($isNew) {
             $newId = $db->insert('pages', $data);
-            AuditLog::log(Auth::userId(), 'page_built', 'pages', $newId, $data['slug'] . ' (builder)');
-            echo json_encode(['ok' => true, 'id' => $newId, 'redirect' => asset('admin/page-builder.php?id=' . $newId)]);
+            AuditLog::log(Auth::userId(), 'page_built', 'pages', $newId, $data['slug']);
+            echo json_encode(['ok' => true, 'id' => $newId, 'redirect' => '/admin/page-builder.php?id=' . $newId]);
         } else {
             $db->update('pages', $data, ['id' => $id]);
-            AuditLog::log(Auth::userId(), 'page_built', 'pages', $id, $data['slug'] . ' (builder)');
+            AuditLog::log(Auth::userId(), 'page_built', 'pages', $id, $data['slug']);
             echo json_encode(['ok' => true, 'id' => $id]);
         }
     } catch (\Throwable $ex) {
@@ -67,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Split existing body into html + css so GrapesJS can load it back
+// Parse existing body
 $existingHtml = '';
 $existingCss  = '';
 if ($page && !empty($page['body'])) {
@@ -79,258 +68,140 @@ if ($page && !empty($page['body'])) {
     }
 }
 
-$pageTitle  = $isNew ? 'New page (visual builder)' : 'Editing ' . $page['title'];
-$csrfToken  = Csrf::token();
-?>
-<!DOCTYPE html>
+$csrfToken = Csrf::token();
+$pageTitle = $isNew ? 'New page' : $page['title'];
+?><!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title><?= e($pageTitle) ?> — Mori CMS</title>
-<link rel="icon" type="image/png" href="<?= asset('assets/images/android-icon-192x192.png') ?>">
-
-<!-- GrapesJS -->
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title><?= e($pageTitle) ?> — Visual Builder</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grapesjs@0.21.13/dist/css/grapes.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/grapick@0.1.10/dist/grapick.min.css">
 <script src="https://cdn.jsdelivr.net/npm/grapesjs@0.21.13/dist/grapes.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/grapesjs-preset-webpage@1.0.3/dist/index.js"></script>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet" referrerpolicy="no-referrer">
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
 <style>
-    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #122842; }
-    .pb-top {
-        background: #122842; color: #fff;
-        padding: 12px 22px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
-        border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .pb-top .brand { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; }
-    .pb-top .brand img { width: 28px; height: 28px; border-radius: 50%; }
-    .pb-top .meta-fields { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 320px; }
-    .pb-top input, .pb-top select {
-        background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); color: #fff;
-        padding: 8px 12px; border-radius: 5px; font-family: inherit; font-size: 13px;
-    }
-    .pb-top input::placeholder { color: rgba(255,255,255,.45); }
-    .pb-top input:focus, .pb-top select:focus { outline: none; border-color: #1ABC9C; }
-    .pb-top .title-input { flex: 1; min-width: 220px; }
-    .pb-top .slug-input  { width: 180px; }
-    .pb-top .lang-input  { width: 100px; }
-    .pb-top .status-input{ width: 130px; }
-    .pb-top .actions { display: flex; gap: 8px; }
-    .pb-btn {
-        background: #1ABC9C; color: #fff; border: 1px solid #1ABC9C;
-        padding: 9px 16px; border-radius: 5px; font-weight: 600; font-size: 13px;
-        cursor: pointer; font-family: inherit;
-        display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
-    }
-    .pb-btn:hover { background: #16A085; border-color: #16A085; }
-    .pb-btn.ghost { background: transparent; color: rgba(255,255,255,.85); border-color: rgba(255,255,255,.20); }
-    .pb-btn.ghost:hover { background: rgba(255,255,255,.08); color: #fff; }
-    #gjs { height: calc(100vh - 64px); border: none; }
-
-    /* GrapesJS palette match */
-    .gjs-pn-panels { background: #122842; }
-    .gjs-pn-views, .gjs-pn-views-container { background: #1B3A5C; }
-    .gjs-block { background: #F5F7FA; color: #1B3A5C; font-size: 12px; border-color: #E1E7EE; }
-    .gjs-block:hover { border-color: #1ABC9C; }
-
-    .pb-toast {
-        position: fixed; top: 80px; right: 24px;
-        background: #1ABC9C; color: #fff; padding: 12px 22px; border-radius: 6px;
-        font-size: 13px; font-weight: 600; box-shadow: 0 12px 30px rgba(0,0,0,.25);
-        transform: translateY(-20px); opacity: 0;
-        transition: all .25s ease; pointer-events: none; z-index: 10000;
-    }
-    .pb-toast.show { transform: translateY(0); opacity: 1; }
-    .pb-toast.error { background: #E74C3C; }
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#0E1F36}
+.pb-bar{background:#122842;color:#fff;padding:10px 18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.08);font-size:13px}
+.pb-bar input,.pb-bar select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff;padding:7px 10px;border-radius:4px;font:inherit;font-size:13px}
+.pb-bar input:focus,.pb-bar select:focus{outline:none;border-color:#1ABC9C}
+.pb-btn{background:#1ABC9C;color:#fff;border:none;padding:8px 16px;border-radius:4px;font-weight:600;cursor:pointer;font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.pb-btn:hover{background:#16A085}
+.pb-btn.ghost{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.2)}
+.pb-btn.ghost:hover{background:rgba(255,255,255,.06)}
+.pb-toast{position:fixed;top:60px;right:20px;background:#1ABC9C;color:#fff;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600;z-index:10000;transform:translateY(-30px);opacity:0;transition:all .25s ease;pointer-events:none}
+.pb-toast.show{transform:translateY(0);opacity:1}
+.pb-toast.err{background:#E74C3C}
+#gjs{height:calc(100vh - 52px);overflow:hidden}
+/* Fix GrapesJS canvas to show content */
+.gjs-frame{background:#fff !important}
 </style>
 </head>
 <body>
 
-<header class="pb-top">
-    <a class="brand" href="<?= asset('admin/pages.php') ?>" style="color:#fff;text-decoration:none;">
-        <img src="<?= asset('assets/images/android-icon-192x192.png') ?>" alt="Mori"> Mori CMS · Visual Builder
-    </a>
-    <div class="meta-fields">
-        <input class="title-input" type="text" id="pb_title" placeholder="Page title *" value="<?= e($page['title'] ?? '') ?>">
-        <input class="slug-input"  type="text" id="pb_slug"  placeholder="slug (auto)"  value="<?= e($page['slug'] ?? '') ?>">
-        <select class="lang-input"   id="pb_locale">
-            <option value="en" <?= ($page['locale'] ?? 'en')==='en'?'selected':'' ?>>English</option>
-            <option value="de" <?= ($page['locale'] ?? '')==='de'?'selected':'' ?>>Deutsch</option>
-        </select>
-        <select class="status-input" id="pb_status">
-            <option value="draft"     <?= ($page['status'] ?? 'draft')==='draft'?'selected':'' ?>>Draft</option>
-            <option value="published" <?= ($page['status'] ?? '')==='published'?'selected':'' ?>>Published</option>
-        </select>
-    </div>
-    <div class="actions">
-        <a class="pb-btn ghost" href="<?= asset('admin/pages.php') ?>"><i class="fa-solid fa-arrow-left"></i> Back</a>
-        <?php if (!$isNew): ?>
-        <a class="pb-btn ghost" href="<?= asset($page['slug'] . '.php') ?>" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-eye"></i> Preview</a>
-        <a class="pb-btn ghost" href="<?= asset('admin/page-edit.php?id=' . (int)$page['id']) ?>" title="Switch to classic editor"><i class="fa-solid fa-pen-to-square"></i> Classic editor</a>
-        <?php endif; ?>
-        <button class="pb-btn" id="pb_save"><i class="fa-solid fa-save"></i> Save page</button>
-    </div>
-</header>
+<div class="pb-bar">
+    <a href="/admin/pages.php" class="pb-btn ghost"><i class="fa-solid fa-arrow-left"></i> Back</a>
+    <input type="text" id="pb_title" placeholder="Page title" value="<?= e($page['title'] ?? '') ?>" style="flex:1;min-width:180px">
+    <input type="text" id="pb_slug" placeholder="slug" value="<?= e($page['slug'] ?? '') ?>" style="width:140px">
+    <select id="pb_locale">
+        <option value="en" <?= ($page['locale'] ?? 'en')==='en'?'selected':'' ?>>EN</option>
+        <option value="de" <?= ($page['locale'] ?? '')==='de'?'selected':'' ?>>DE</option>
+    </select>
+    <select id="pb_status">
+        <option value="draft" <?= ($page['status'] ?? 'draft')==='draft'?'selected':'' ?>>Draft</option>
+        <option value="published" <?= ($page['status'] ?? '')==='published'?'selected':'' ?>>Published</option>
+    </select>
+    <?php if (!$isNew): ?>
+    <a href="/admin/page-edit.php?id=<?= $id ?>" class="pb-btn ghost"><i class="fa-solid fa-pen"></i> Classic</a>
+    <?php endif; ?>
+    <button class="pb-btn" id="pb_save"><i class="fa-solid fa-save"></i> Save</button>
+</div>
 
 <div id="gjs"></div>
-<textarea id="gjs-import-html" style="display:none;"><?= htmlspecialchars($existingHtml, ENT_QUOTES, 'UTF-8') ?></textarea>
-<textarea id="gjs-import-css" style="display:none;"><?= htmlspecialchars($existingCss, ENT_QUOTES, 'UTF-8') ?></textarea>
-
 <div class="pb-toast" id="pb_toast"></div>
 
 <script>
-const csrfToken = <?= json_encode($csrfToken) ?>;
-const pageId    = <?= json_encode($id ?: null) ?>;
-const existingHtml = document.getElementById('gjs-import-html').value;
-const existingCss  = document.getElementById('gjs-import-css').value;
+var csrfToken = <?= json_encode($csrfToken) ?>;
+var pageId = <?= json_encode($id ?: null) ?>;
+var initHtml = <?= json_encode($existingHtml ?: '<section style="padding:40px 30px;max-width:900px;margin:0 auto;"><h2>Start editing</h2><p>Click on any text to edit it, or drag blocks from the right panel.</p></section>') ?>;
+var initCss = <?= json_encode($existingCss ?: '') ?>;
 
-console.log('GrapesJS init — HTML length:', existingHtml.length, 'CSS length:', existingCss.length);
-
-const editor = grapesjs.init({
+var editor = grapesjs.init({
     container: '#gjs',
-    height:    '100%',
-    width:     'auto',
+    fromElement: false,
+    height: '100%',
+    width: 'auto',
     storageManager: false,
+    plugins: ['grapesjs-preset-webpage'],
+    pluginsOpts: {
+        'grapesjs-preset-webpage': { useCustomTheme: false }
+    },
     canvas: {
         styles: [
             'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap',
             'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css',
             '/css/bootstrap.min.css'
         ]
-    },
-    protectedCss: [
-        '* { box-sizing: border-box; }',
-        'body { background: #fff !important; color: #2C3E50 !important; font-family: Inter, Arial, sans-serif !important; font-size: 15px; line-height: 1.65; padding: 24px !important; margin: 0; overflow-x: visible !important; visibility: visible !important; opacity: 1 !important; }',
-        'h1, h2, h3, h4, h5, h6 { color: #1B3A5C; font-weight: 700; line-height: 1.2; margin: 0 0 0.5em; }',
-        'h1 { font-size: 32px; } h2 { font-size: 24px; } h3 { font-size: 20px; }',
-        'p { color: #5A6B7B; margin: 0 0 1em; line-height: 1.65; }',
-        'a { color: #1ABC9C; }',
-        'ul, ol { padding-left: 24px; color: #5A6B7B; }',
-        'li { margin-bottom: 6px; }',
-        'img { max-width: 100%; height: auto; border-radius: 8px; }',
-        'blockquote { border-left: 3px solid #1ABC9C; padding-left: 16px; margin: 16px 0; font-style: italic; color: #1B3A5C; }',
-        'hr { border: none; border-top: 1px solid #E1E7EE; margin: 24px 0; }',
-        'section { padding: 20px 0; }',
-        '.container { max-width: 1200px; margin: 0 auto; padding: 0 15px; }',
-        '.row { display: flex; flex-wrap: wrap; margin: 0 -15px; }',
-        '[class*="col-"] { padding: 0 15px; flex: 1; }',
-    ].join('\\n'),
-    plugins: ['grapesjs-preset-webpage'],
-    pluginsOpts: {
-        'grapesjs-preset-webpage': {
-            modalImportTitle: 'Paste HTML to import',
-            modalImportLabel: 'Replace the canvas with the pasted HTML+CSS',
-            modalImportContent: '',
-            useCustomTheme: false
-        }
-    },
-    deviceManager: {
-        devices: [
-            { name: 'Desktop', width: '' },
-            { name: 'Tablet',  width: '768px',  widthMedia: '991px' },
-            { name: 'Mobile',  width: '375px',  widthMedia: '768px' }
-        ]
-    },
-    assetManager: {
-        upload:        '<?= asset('admin/api/upload-image.php') ?>',
-        uploadName:    'file',
-        headers:       { 'X-CSRF-Token': csrfToken },
-        autoAdd:       true
     }
 });
 
-// Force white canvas background
+// Load content after editor is fully ready
 editor.on('load', function() {
-    var frame = editor.Canvas.getFrameEl();
-    if (frame && frame.contentDocument) {
-        frame.contentDocument.body.style.background = '#fff';
-        frame.contentDocument.body.style.color = '#2C3E50';
-        frame.contentDocument.body.style.fontFamily = 'Inter, Arial, sans-serif';
-        frame.contentDocument.body.style.fontSize = '15px';
-        frame.contentDocument.body.style.lineHeight = '1.65';
-        frame.contentDocument.body.style.padding = '20px';
+    // Inject base styles into the canvas iframe
+    var doc = editor.Canvas.getDocument();
+    if (doc) {
+        var style = doc.createElement('style');
+        style.textContent = 'body{background:#fff!important;color:#2C3E50;font-family:Inter,Arial,sans-serif;font-size:15px;line-height:1.65;padding:20px;margin:0}h1,h2,h3,h4{color:#1B3A5C;font-weight:700}p{color:#5A6B7B;margin:0 0 1em}a{color:#1ABC9C}ul,ol{color:#5A6B7B;padding-left:24px}blockquote{border-left:3px solid #1ABC9C;padding-left:16px;color:#1B3A5C;font-style:italic}img{max-width:100%;height:auto;border-radius:8px}';
+        doc.head.appendChild(style);
     }
+
+    // Now set the components
+    editor.setComponents(initHtml);
+    if (initCss) editor.setStyle(initCss);
+
+    console.log('Editor loaded. Components:', editor.getComponents().length, 'HTML:', editor.getHtml().substring(0, 100));
 });
 
-// Load existing content AFTER editor is ready
-var contentToLoad = existingHtml.trim() || '<section style="padding:60px 40px;text-align:center;"><h2 style="color:#1B3A5C;font-size:28px;">Start building your page</h2><p style="color:#7A8B99;font-size:16px;margin-top:12px;">Drag blocks from the right panel, or click the + button to add content.</p></section>';
+// Save
+document.getElementById('pb_save').addEventListener('click', function() {
+    var title = document.getElementById('pb_title').value.trim();
+    if (!title) { toast('Title required', true); return; }
+    var slug = document.getElementById('pb_slug').value.trim();
+    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-editor.setComponents(contentToLoad);
-console.log('GrapesJS: setComponents called, components:', editor.getComponents().length);
-console.log('GrapesJS: getHtml preview:', editor.getHtml().substring(0, 300));
+    var fd = new FormData();
+    fd.append('_csrf', csrfToken);
+    fd.append('title', title);
+    fd.append('slug', slug);
+    fd.append('locale', document.getElementById('pb_locale').value);
+    fd.append('status', document.getElementById('pb_status').value);
+    fd.append('html', editor.getHtml());
+    fd.append('css', editor.getCss());
 
-if (existingCss.trim()) {
-    editor.setStyle(existingCss);
-}
-
-// Auto-fill slug from title
-const $title  = document.getElementById('pb_title');
-const $slug   = document.getElementById('pb_slug');
-const $locale = document.getElementById('pb_locale');
-const $status = document.getElementById('pb_status');
-
-function slugify(s) {
-    return (s || '').toLowerCase()
-        .replace(/[ş]/g,'s').replace(/[ç]/g,'c').replace(/[ğ]/g,'g')
-        .replace(/[ı]/g,'i').replace(/[ö]/g,'o').replace(/[ü]/g,'u')
-        .replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
-}
-$title.addEventListener('blur', () => {
-    if (!$slug.value && $title.value) $slug.value = slugify($title.value);
+    var url = pageId ? '/admin/page-builder.php?id=' + pageId : '/admin/page-builder.php';
+    fetch(url, { method: 'POST', headers: { 'X-CSRF-Token': csrfToken }, body: fd })
+    .then(function(r) { return r.json(); })
+    .then(function(j) {
+        if (j.ok) { toast('Saved ✓'); if (j.redirect) setTimeout(function(){ location.href = j.redirect; }, 500); }
+        else toast(j.error || 'Save failed', true);
+    })
+    .catch(function() { toast('Network error', true); });
 });
 
-function toast(msg, isError) {
-    const el = document.getElementById('pb_toast');
+// Ctrl+S
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); document.getElementById('pb_save').click(); }
+});
+
+function toast(msg, err) {
+    var el = document.getElementById('pb_toast');
     el.textContent = msg;
-    el.classList.toggle('error', !!isError);
-    el.classList.add('show');
-    setTimeout(() => el.classList.remove('show'), 2400);
+    el.className = 'pb-toast show' + (err ? ' err' : '');
+    setTimeout(function() { el.className = 'pb-toast'; }, 2000);
 }
-
-document.getElementById('pb_save').addEventListener('click', async () => {
-    if (!$title.value.trim()) { toast('Title is required', true); $title.focus(); return; }
-    if (!$slug.value.trim()) { $slug.value = slugify($title.value); }
-
-    const fd = new FormData();
-    fd.append('_csrf',            csrfToken);
-    fd.append('title',            $title.value);
-    fd.append('slug',             $slug.value);
-    fd.append('locale',           $locale.value);
-    fd.append('status',           $status.value);
-    fd.append('html',             editor.getHtml());
-    fd.append('css',              editor.getCss());
-
-    try {
-        const url = pageId
-            ? '<?= asset('admin/page-builder.php?id=') ?>' + pageId
-            : '<?= asset('admin/page-builder.php') ?>';
-        const r = await fetch(url, {
-            method: 'POST',
-            headers: { 'X-CSRF-Token': csrfToken },
-            body: fd
-        });
-        const json = await r.json();
-        if (!json.ok) { toast(json.error || 'Save failed', true); return; }
-        toast('Saved ✓');
-        if (json.redirect) setTimeout(() => location.href = json.redirect, 600);
-    } catch (e) {
-        toast('Network error', true);
-    }
-});
-
-// Keyboard shortcut: Ctrl/Cmd + S
-document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-        e.preventDefault();
-        document.getElementById('pb_save').click();
-    }
-});
 </script>
-
 </body>
 </html>
