@@ -33,6 +33,7 @@ $user = Auth::user();
         <li class="a-nav__section">Engagement</li>
         <li><a href="<?= asset('admin/messages.php') ?>" class="<?= is_active_nav('/admin/messages.php')?'active':'' ?>"><i class="fa-regular fa-envelope"></i> Contact Messages</a></li>
         <li><a href="<?= asset('admin/newsletter.php') ?>" class="<?= is_active_nav('/admin/newsletter.php')?'active':'' ?>"><i class="fa-regular fa-paper-plane"></i> Newsletter</a></li>
+        <li><a href="<?= asset('admin/newsletter-send.php') ?>" class="<?= is_active_nav('/admin/newsletter-send.php')?'active':'' ?>"><i class="fa-solid fa-bullhorn"></i> Send Newsletter</a></li>
 
         <li class="a-nav__section">System</li>
         <li><a href="<?= asset('admin/media.php') ?>" class="<?= is_active_nav('/admin/media.php')?'active':'' ?>"><i class="fa-regular fa-images"></i> Media Library</a></li>
