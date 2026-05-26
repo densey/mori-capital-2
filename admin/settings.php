@@ -211,9 +211,9 @@ include __DIR__ . '/partials/layout-start.php';
         <div class="a-card__head"><h2>Security &amp; Uploads</h2></div>
         <div class="a-card__body">
             <div class="row">
-                <div><label>Session timeout (minutes)</label><input type="number" name="settings[session_timeout_min]" value="<?= s($settings,'session_timeout_min') ?>"></div>
+                <div><label>Session timeout (minutes)</label><input type="number" name="settings[session_timeout_min]" value="<?= s($settings,'session_timeout_min') ?>" min="5" max="480" required></div>
                 <div><label>Password min length</label><input type="number" name="settings[password_min_length]" value="<?= s($settings,'password_min_length') ?>"></div>
-                <div><label>Upload max (MB)</label><input type="number" name="settings[upload_max_mb]" value="<?= s($settings,'upload_max_mb') ?>"></div>
+                <div><label>Upload max (MB)</label><input type="number" name="settings[upload_max_mb]" value="<?= s($settings,'upload_max_mb') ?>" min="1" max="100" required></div>
             </div>
         </div>
     </div>

@@ -967,6 +967,43 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
         width: 100%;
     }
 
+    /* ── Global image safety ── */
+    img { max-width: 100% !important; height: auto !important; }
+    figure { max-width: 100% !important; }
+
+    /* About section: single column, image full width */
+    .about-us-image-box { display: flex; flex-direction: column; align-items: center; }
+    .about-us-image-box-1 { width: 100% !important; }
+    .about-us-image-box-2 { display: none !important; }
+    .about-us-image-box-1 .about-us-image::before { display: none; }
+    .about-us-image-box-1 .about-us-image figure { border: none !important; border-radius: 12px !important; }
+    .about-us-content { padding-left: 0 !important; margin-top: 30px; }
+    .contact-us-circle { display: none !important; }
+
+    /* Counter items: 2-column grid */
+    .about-counter-item-list { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 16px !important; }
+    .about-counter-item { text-align: center; }
+
+    /* Why choose section image */
+    .why-choose-us-image { margin-bottom: 30px !important; }
+    .why-choose-us-image figure { border-radius: 12px !important; overflow: hidden; }
+
+    /* Fund cards: proper image containment */
+    .service-item { border-radius: 12px !important; }
+    .service-item-image img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+
+    /* Satisfy client images (fund managers) */
+    .satisfy-client-image { width: 40px !important; height: 40px !important; }
+    .satisfy-client-image figure img { border-radius: 50% !important; }
+
+    /* Icon boxes */
+    .icon-box img { max-width: 48px !important; }
+    .why-choose-body-icon-box img { max-width: 42px !important; }
+
+    /* Cinematic section: tighter on tablet */
+    .mori-cinematic { padding: 70px 0 !important; }
+    .mori-cinematic__glow { display: none !important; }
+
     /* About body image hides bulky overlay decoration on small screens */
     .about-us .about-us-image-box-2 { display: none; }
 }
@@ -987,17 +1024,51 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 
     /* Header compact on phone */
     .main-header .navbar { padding: 8px 0 6px !important; }
-    .main-header .navbar-brand img { height: 40px; max-width: 160px; }
-    .mori-hamburger { width: 36px; height: 36px; }
-    .mori-hamburger span:nth-child(1) { top: 11px; }
-    .mori-hamburger span:nth-child(2) { top: 17px; }
-    .mori-hamburger span:nth-child(3) { top: 23px; }
-    .mori-hamburger.active span:nth-child(1) { top: 17px; }
-    .mori-hamburger.active span:nth-child(3) { top: 17px; }
+    .main-header .navbar-brand img { height: 38px; max-width: 150px; }
 
-    /* Prevent horizontal overflow from button arrows */
-    .hero, .about-us, .our-services, .why-choose-us, .our-awards, .page-team { overflow-x: hidden !important; }
+    /* All sections: prevent overflow from button arrows */
+    .hero, .about-us, .our-services, .why-choose-us, .our-awards, .page-team,
+    .our-blog, .main-footer { overflow-x: hidden !important; }
     .section-btn { overflow: hidden; }
+
+    /* About section: tighter spacing */
+    .about-us { padding: 40px 0 !important; }
+    .about-us-image-box-1 .about-us-image figure { border-radius: 10px !important; }
+    .about-us-image-box-1 .about-us-image figure img { border-radius: 10px !important; aspect-ratio: 16/10 !important; object-fit: cover !important; }
+    .about-highlighted-box { padding: 16px !important; margin-top: 18px !important; }
+    .about-highlighted-box h3 { font-size: 15px !important; line-height: 1.5 !important; }
+    .about-counter-item h2 { font-size: 28px !important; }
+    .about-counter-item p { font-size: 12px !important; }
+
+    /* Fund cards: shorter on phone */
+    .service-item { min-height: 360px !important; border-radius: 10px !important; }
+    .service-item-body { padding: 14px !important; }
+    .service-item-content h2 { font-size: 18px !important; }
+    .service-item-content p { font-size: 13px !important; line-height: 1.5 !important; }
+
+    /* Team section on phone */
+    .team-item-content h2 { font-size: 17px !important; }
+    .team-social-list p { font-size: 11px !important; }
+
+    /* Why choose section */
+    .why-choose-us { padding: 40px 0 !important; }
+    .why-choose-body-list li { font-size: 14px !important; }
+
+    /* Footer: tighter on phone */
+    .main-footer { padding: 40px 0 20px !important; }
+    .footer-links-box { flex-direction: column !important; gap: 24px !important; }
+    .footer-links h3 { font-size: 15px !important; }
+    .footer-links ul li a { font-size: 13px !important; }
+    .footer-cta-box { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+    .footer-logo img { height: 48px !important; }
+    .footer-copyright { flex-direction: column !important; gap: 8px !important; text-align: center !important; }
+    .footer-copyright-text p { font-size: 11px !important; }
+    .footer-privacy-policy ul { justify-content: center !important; }
+    .footer-privacy-policy ul li a { font-size: 11px !important; }
+
+    /* Newsletter form in footer */
+    .footer-newsletter-form { flex-direction: column !important; }
+    .footer-newsletter-form input { width: 100% !important; }
 
     /* Hero — tighter on phone */
     .hero { min-height: 480px !important; padding: 70px 0 50px !important; }
@@ -1053,14 +1124,16 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     .mori-insights .insight-card p { font-size: 13px !important; }
     .mori-insights .insight-meta { font-size: 10.5px !important; }
 
-    /* Cinematic on mobile — reduce padding, hide idle animation */
-    .mori-cinematic { padding: 56px 0 !important; }
-    .mori-cinematic__copy h2 { font-size: 24px !important; }
-    .mori-cinematic__copy p { font-size: 14px !important; }
-    .mori-cinematic__stats { gap: 16px 24px !important; }
-    .mori-cinematic__stats .num { font-size: 22px !important; }
-    .mori-cinematic__stats .lbl { font-size: 10px !important; }
-    .mori-cinematic__card { aspect-ratio: 5/3.2 !important; }
+    /* Cinematic on mobile — reduce padding, optimize performance */
+    .mori-cinematic { padding: 40px 0 !important; overflow: hidden !important; }
+    .mori-cinematic__copy h2 { font-size: 22px !important; }
+    .mori-cinematic__copy p { font-size: 13px !important; line-height: 1.6 !important; }
+    .mori-cinematic__stats { gap: 12px 20px !important; grid-template-columns: 1fr 1fr !important; }
+    .mori-cinematic__stats .num { font-size: 20px !important; }
+    .mori-cinematic__stats .lbl { font-size: 9px !important; }
+    .mori-cinematic__card { aspect-ratio: 5/3 !important; }
+    .mori-cinematic__glow { display: none !important; }
+    .tilt-chip { display: none !important; }
 
     /* FundHub matrix — horizontal scroll, sticky ISIN */
     .fundhub-matrix { min-width: 900px !important; font-size: 12px !important; }

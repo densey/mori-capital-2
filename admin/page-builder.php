@@ -408,6 +408,7 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--pb-bg); co
     <a href="/admin/page-builder-grapes.php?id=<?= $id ?>" class="pb-btn pb-btn-ghost"><i class="fa-solid fa-wand-magic-sparkles"></i> GrapesJS</a>
     <a href="/admin/page-edit.php?id=<?= $id ?>" class="pb-btn pb-btn-ghost"><i class="fa-solid fa-pen"></i> Classic</a>
     <?php endif; ?>
+    <span id="pb_save_status" style="font-size:12px;color:rgba(255,255,255,.5);margin-right:4px;"><i class="fa-solid fa-check"></i> Saved</span>
     <button class="pb-btn pb-btn-ghost" id="pb_preview" title="Preview"><i class="fa-solid fa-eye"></i> Preview</button>
     <button class="pb-btn pb-btn-primary" id="pb_save"><i class="fa-solid fa-floppy-disk"></i> Save</button>
 </div>
@@ -1064,31 +1065,7 @@ function blockToHTML(b) {
 
 // ── Save ──
 document.getElementById('pb_save').addEventListener('click', function() {
-    syncAllEditables();
-    var title = document.getElementById('pb_title').value.trim();
-    if (!title) { toast('Title required', true); return; }
-    var slug = document.getElementById('pb_slug').value.trim();
-    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-
-    var fd = new FormData();
-    fd.append('_csrf', CSRF);
-    fd.append('title', title);
-    fd.append('slug', slug);
-    fd.append('locale', document.getElementById('pb_locale').value);
-    fd.append('status', document.getElementById('pb_status').value);
-    fd.append('html', generateHTML());
-    fd.append('blocks_json', JSON.stringify(blocks));
-
-    var url = PAGE_ID ? '/admin/page-builder.php?id=' + PAGE_ID : '/admin/page-builder.php';
-    fetch(url, { method: 'POST', headers: { 'X-CSRF-Token': CSRF }, body: fd })
-    .then(function(r) { return r.json(); })
-    .then(function(j) {
-        if (j.ok) {
-            toast('Saved!');
-            if (j.redirect) setTimeout(function(){ location.href = j.redirect; }, 600);
-        } else toast(j.error || 'Save failed', true);
-    })
-    .catch(function() { toast('Network error', true); });
+    doSave(false);
 });
 
 function syncAllEditables() {
@@ -1213,9 +1190,104 @@ function toast(msg, isErr) {
     setTimeout(function() { el.className = 'pb-toast'; }, 2200);
 }
 
+// ── Dirty tracking & auto-save ──
+var _dirty = false;
+var _autoSaveTimer = null;
+var _saveStatusEl = document.getElementById('pb_save_status');
+
+function markDirty() {
+    if (_dirty) return;
+    _dirty = true;
+    _saveStatusEl.innerHTML = '<i class="fa-solid fa-pen" style="color:#F39C12;"></i> <span style="color:#F39C12;">Unsaved changes</span>';
+    startAutoSaveTimer();
+}
+
+function markClean() {
+    _dirty = false;
+    _saveStatusEl.innerHTML = '<i class="fa-solid fa-check" style="color:#1ABC9C;"></i> <span style="color:rgba(255,255,255,.5);">Saved</span>';
+    clearAutoSaveTimer();
+}
+
+function markSaving() {
+    _saveStatusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="color:rgba(255,255,255,.5);"></i> <span style="color:rgba(255,255,255,.5);">Saving...</span>';
+}
+
+function startAutoSaveTimer() {
+    clearAutoSaveTimer();
+    _autoSaveTimer = setTimeout(function() {
+        if (_dirty && PAGE_ID) { doSave(true); }
+    }, 60000);
+}
+
+function clearAutoSaveTimer() {
+    if (_autoSaveTimer) { clearTimeout(_autoSaveTimer); _autoSaveTimer = null; }
+}
+
+function doSave(isAutoSave) {
+    syncAllEditables();
+    var title = document.getElementById('pb_title').value.trim();
+    if (!title) { if (!isAutoSave) toast('Title required', true); return; }
+    var slug = document.getElementById('pb_slug').value.trim();
+    if (!slug) slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    markSaving();
+
+    var fd = new FormData();
+    fd.append('_csrf', CSRF);
+    fd.append('title', title);
+    fd.append('slug', slug);
+    fd.append('locale', document.getElementById('pb_locale').value);
+    fd.append('status', document.getElementById('pb_status').value);
+    fd.append('html', generateHTML());
+    fd.append('blocks_json', JSON.stringify(blocks));
+
+    var url = PAGE_ID ? '/admin/page-builder.php?id=' + PAGE_ID : '/admin/page-builder.php';
+    fetch(url, { method: 'POST', headers: { 'X-CSRF-Token': CSRF }, body: fd })
+    .then(function(r) { return r.json(); })
+    .then(function(j) {
+        if (j.ok) {
+            markClean();
+            if (!isAutoSave) toast('Saved!');
+            else toast('Auto-saved');
+            if (j.redirect && !isAutoSave) {
+                PAGE_ID = j.id;
+                setTimeout(function(){ location.href = j.redirect; }, 600);
+            } else if (j.id && !PAGE_ID) {
+                PAGE_ID = j.id;
+                window.history.replaceState(null, '', '/admin/page-builder.php?id=' + PAGE_ID);
+            }
+        } else {
+            if (!isAutoSave) toast(j.error || 'Save failed', true);
+            markDirty();
+        }
+    })
+    .catch(function() {
+        if (!isAutoSave) toast('Network error', true);
+        markDirty();
+    });
+}
+
+// beforeunload warning
+window.addEventListener('beforeunload', function(e) {
+    if (_dirty) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+// Track dirty state from block operations
+var _origSaveHistoryForDirty = saveHistory;
+saveHistory = function() { _origSaveHistoryForDirty(); markDirty(); };
+
+// Track dirty state from topbar field changes
+['pb_title', 'pb_slug', 'pb_locale', 'pb_status'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', markDirty);
+    document.getElementById(id).addEventListener('change', markDirty);
+});
+
 // ── Init ──
 initBlocks();
-saveHistory();
+_origSaveHistoryForDirty(); // save initial history without marking dirty
 
 })();
 </script>

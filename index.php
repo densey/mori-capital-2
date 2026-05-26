@@ -95,7 +95,7 @@ include __DIR__ . '/src/partials/header.php';
                 </div>
 
                 <div class="col-xl-6">
-                    <div class="about-us-content" style="padding-left:20px;">
+                    <div class="about-us-content" style="padding-left:clamp(0px,2vw,20px);">
                         <div class="section-title">
                             <span class="section-sub-title wow fadeInUp">About Mori Capital</span>
                             <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.about.title')) ?></h2>

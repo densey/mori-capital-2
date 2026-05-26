@@ -19,7 +19,95 @@ use function Mori\redirect;
 Auth::requireLogin();
 $db = Database::instance();
 
-// ---- SEND (POST) --------------------------------------------------------
+// ---- AJAX: Get recipient list -----------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'get_recipients') {
+    header('Content-Type: application/json');
+    if (!Csrf::verify($_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['_csrf'] ?? null)) {
+        http_response_code(419);
+        echo json_encode(['ok' => false, 'error' => 'CSRF token invalid']); exit;
+    }
+
+    $locale   = $_POST['locale'] ?? 'all';
+    $testOnly = !empty($_POST['test_only']);
+
+    if ($testOnly) {
+        $recipients = [['id' => 0, 'email' => Auth::user()['email']]];
+    } else {
+        $where = "status IN ('confirmed','pending')";
+        $params = [];
+        if ($locale === 'en' || $locale === 'de') {
+            $where .= ' AND locale = :loc';
+            $params['loc'] = $locale;
+        }
+        $recipients = $db->fetchAll("SELECT id, email FROM newsletter_subscribers WHERE $where ORDER BY created_at", $params);
+    }
+
+    if (empty($recipients)) {
+        echo json_encode(['ok' => false, 'error' => 'No subscribers found for the selected filter.']); exit;
+    }
+
+    // Return only IDs and emails
+    $list = array_map(function($r) { return ['id' => (int)$r['id'], 'email' => $r['email']]; }, $recipients);
+    echo json_encode(['ok' => true, 'recipients' => $list, 'total' => count($list)]);
+    exit;
+}
+
+// ---- AJAX: Send a batch of emails -------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'send_batch') {
+    header('Content-Type: application/json');
+    if (!Csrf::verify($_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['_csrf'] ?? null)) {
+        http_response_code(419);
+        echo json_encode(['ok' => false, 'error' => 'CSRF token invalid']); exit;
+    }
+
+    $subject  = trim($_POST['subject'] ?? '');
+    $body     = $_POST['body'] ?? '';
+    $template = $_POST['template'] ?? 'branded';
+    $emails   = json_decode($_POST['emails'] ?? '[]', true);
+
+    if ($subject === '' || $body === '' || empty($emails)) {
+        echo json_encode(['ok' => false, 'error' => 'Missing required fields']); exit;
+    }
+
+    $siteName = setting('site_title', 'Mori Capital Management');
+    $siteUrl  = \Mori\Config::get('SITE_URL', 'https://mori-capital.com');
+
+    $sent = 0; $failed = 0; $errors = [];
+    foreach ($emails as $email) {
+        $email = trim($email);
+        if (!$email) continue;
+        $htmlBody = buildNewsletterHtml($template, $subject, $body, $siteName, $siteUrl, $email);
+        $ok = Mail::send($email, $subject, $htmlBody, true);
+        if ($ok) { $sent++; } else { $failed++; $errors[] = $email; }
+        usleep(100000); // 100ms between emails to avoid throttling
+    }
+
+    echo json_encode(['ok' => true, 'sent' => $sent, 'failed' => $failed, 'errors' => $errors]);
+    exit;
+}
+
+// ---- AJAX: Log completed send -----------------------------------------------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'log_complete') {
+    header('Content-Type: application/json');
+    if (!Csrf::verify($_SERVER['HTTP_X_CSRF_TOKEN'] ?? $_POST['_csrf'] ?? null)) {
+        http_response_code(419);
+        echo json_encode(['ok' => false, 'error' => 'CSRF']); exit;
+    }
+
+    $subject  = trim($_POST['subject'] ?? '');
+    $locale   = $_POST['locale'] ?? 'all';
+    $testOnly = !empty($_POST['test_only']);
+    $sent     = (int)($_POST['sent'] ?? 0);
+    $failed   = (int)($_POST['failed'] ?? 0);
+
+    AuditLog::log(Auth::userId(), 'newsletter_sent', 'newsletter_subscribers', null,
+        ($testOnly ? 'TEST ' : '') . "Subject: $subject | Sent: $sent | Failed: $failed | Locale: $locale"
+    );
+    echo json_encode(['ok' => true]);
+    exit;
+}
+
+// ---- Legacy SEND (POST) — kept as fallback for test emails ------------------
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'send') {
     Csrf::requireValid();
 
@@ -233,13 +321,30 @@ include __DIR__ . '/partials/layout-start.php';
                     <button class="a-btn ghost" type="submit" name="test_only" value="1" style="width:100%;justify-content:center;margin-bottom:10px;">
                         <i class="fa-solid fa-flask"></i> Send test to my email
                     </button>
-                    <button class="a-btn lg" type="submit" style="width:100%;justify-content:center;" onclick="return confirm('Send this newsletter to ' + document.querySelector('[name=locale]').selectedOptions[0].textContent + '?')">
+                    <button class="a-btn lg" type="button" id="btnSendAll" style="width:100%;justify-content:center;">
                         <i class="fa-solid fa-paper-plane"></i> Send to all subscribers
                     </button>
 
+                    <!-- Progress UI (hidden until sending) -->
+                    <div id="nlProgress" style="display:none;margin-top:14px;">
+                        <div style="background:#E1E7EE;border-radius:6px;height:18px;overflow:hidden;position:relative;">
+                            <div id="nlProgressBar" style="background:linear-gradient(90deg,#1ABC9C,#16A085);height:100%;width:0%;border-radius:6px;transition:width .3s ease;"></div>
+                            <span id="nlProgressPct" style="position:absolute;top:0;left:0;right:0;text-align:center;font-size:11px;font-weight:700;line-height:18px;color:#fff;text-shadow:0 0 3px rgba(0,0,0,.3);">0%</span>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:12px;color:var(--a-muted);">
+                            <span><i class="fa-solid fa-check" style="color:#1ABC9C"></i> Sent: <strong id="nlSent">0</strong></span>
+                            <span><i class="fa-solid fa-xmark" style="color:#E74C3C"></i> Failed: <strong id="nlFailed">0</strong></span>
+                            <span><i class="fa-solid fa-clock"></i> Left: <strong id="nlRemaining">0</strong></span>
+                        </div>
+                        <p id="nlStatusText" style="font-size:11px;color:var(--a-muted);margin-top:8px;text-align:center;">
+                            Preparing...
+                        </p>
+                    </div>
+                    <!-- Final results (hidden until complete) -->
+                    <div id="nlResults" style="display:none;margin-top:14px;"></div>
+
                     <p style="font-size:11px;color:var(--a-muted);margin-top:12px;text-align:center;">
-                        Emails are sent one-by-one with 100ms delay to avoid spam filters.
-                        Large lists may take a few minutes.
+                        Emails are sent in batches of 10 with progress tracking.
                     </p>
                 </div>
             </div>
@@ -270,5 +375,169 @@ include __DIR__ . '/partials/layout-start.php';
         </div>
     </div>
 </div>
+
+<script>
+(function() {
+    var csrfToken = <?= json_encode(Csrf::token()) ?>;
+    var BATCH_SIZE = 10;
+    var btnSendAll = document.getElementById('btnSendAll');
+    var progressWrap = document.getElementById('nlProgress');
+    var progressBar = document.getElementById('nlProgressBar');
+    var progressPct = document.getElementById('nlProgressPct');
+    var elSent = document.getElementById('nlSent');
+    var elFailed = document.getElementById('nlFailed');
+    var elRemaining = document.getElementById('nlRemaining');
+    var statusText = document.getElementById('nlStatusText');
+    var resultsDiv = document.getElementById('nlResults');
+    var sending = false;
+
+    btnSendAll.addEventListener('click', function() {
+        if (sending) return;
+        var localeSelect = document.querySelector('[name=locale]');
+        var localeLabel = localeSelect.selectedOptions[0].textContent;
+        if (!confirm('Send this newsletter to ' + localeLabel + '?')) return;
+
+        var subject = document.querySelector('[name=subject]').value.trim();
+        var body = (typeof tinymce !== 'undefined' && tinymce.activeEditor) ? tinymce.activeEditor.getContent() : document.querySelector('[name=body]').value;
+        var template = document.querySelector('[name=template]').value;
+        var locale = localeSelect.value;
+
+        if (!subject || !body) { alert('Subject and body are required.'); return; }
+
+        sending = true;
+        btnSendAll.disabled = true;
+        btnSendAll.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+        progressWrap.style.display = 'block';
+        resultsDiv.style.display = 'none';
+        statusText.textContent = 'Fetching recipient list...';
+
+        // Step 1: Get recipients
+        var fd = new FormData();
+        fd.append('action', 'get_recipients');
+        fd.append('_csrf', csrfToken);
+        fd.append('locale', locale);
+
+        fetch(window.location.pathname, { method: 'POST', headers: {'X-CSRF-Token': csrfToken}, body: fd })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data.ok) { throw new Error(data.error || 'Failed to get recipients'); }
+            return sendInBatches(data.recipients, subject, body, template, locale);
+        })
+        .catch(function(err) {
+            statusText.textContent = 'Error: ' + err.message;
+            resetSendButton();
+        });
+    });
+
+    function sendInBatches(recipients, subject, body, template, locale) {
+        var total = recipients.length;
+        var totalSent = 0, totalFailed = 0, failedEmails = [];
+        var batchIndex = 0;
+
+        elRemaining.textContent = total;
+        statusText.textContent = 'Sending to ' + total + ' recipients in batches of ' + BATCH_SIZE + '...';
+
+        function sendNextBatch() {
+            var start = batchIndex * BATCH_SIZE;
+            if (start >= total) {
+                // All done — log completion and show results
+                logComplete(subject, locale, false, totalSent, totalFailed);
+                showResults(totalSent, totalFailed, failedEmails);
+                return;
+            }
+
+            var batch = recipients.slice(start, start + BATCH_SIZE);
+            var emails = batch.map(function(r) { return r.email; });
+            var batchNum = batchIndex + 1;
+            var totalBatches = Math.ceil(total / BATCH_SIZE);
+            statusText.textContent = 'Sending batch ' + batchNum + ' of ' + totalBatches + '...';
+
+            var fd = new FormData();
+            fd.append('action', 'send_batch');
+            fd.append('_csrf', csrfToken);
+            fd.append('subject', subject);
+            fd.append('body', body);
+            fd.append('template', template);
+            fd.append('emails', JSON.stringify(emails));
+
+            fetch(window.location.pathname, { method: 'POST', headers: {'X-CSRF-Token': csrfToken}, body: fd })
+            .then(function(r) { return r.json(); })
+            .then(function(result) {
+                if (!result.ok) { throw new Error(result.error || 'Batch failed'); }
+                totalSent += result.sent;
+                totalFailed += result.failed;
+                if (result.errors) failedEmails = failedEmails.concat(result.errors);
+
+                // Update UI
+                var processed = Math.min(start + BATCH_SIZE, total);
+                var pct = Math.round((processed / total) * 100);
+                progressBar.style.width = pct + '%';
+                progressPct.textContent = pct + '%';
+                elSent.textContent = totalSent;
+                elFailed.textContent = totalFailed;
+                elRemaining.textContent = Math.max(0, total - processed);
+
+                batchIndex++;
+                sendNextBatch();
+            })
+            .catch(function(err) {
+                // On network error for this batch, count remaining as failed and continue
+                var batchSize = batch.length;
+                totalFailed += batchSize;
+                failedEmails = failedEmails.concat(emails);
+                elFailed.textContent = totalFailed;
+                statusText.textContent = 'Batch ' + batchNum + ' failed (' + err.message + '), continuing...';
+
+                var processed = Math.min(start + BATCH_SIZE, total);
+                var pct = Math.round((processed / total) * 100);
+                progressBar.style.width = pct + '%';
+                progressPct.textContent = pct + '%';
+                elRemaining.textContent = Math.max(0, total - processed);
+
+                batchIndex++;
+                sendNextBatch();
+            });
+        }
+
+        sendNextBatch();
+    }
+
+    function logComplete(subject, locale, testOnly, sent, failed) {
+        var fd = new FormData();
+        fd.append('action', 'log_complete');
+        fd.append('_csrf', csrfToken);
+        fd.append('subject', subject);
+        fd.append('locale', locale);
+        fd.append('sent', sent);
+        fd.append('failed', failed);
+        if (testOnly) fd.append('test_only', '1');
+        fetch(window.location.pathname, { method: 'POST', headers: {'X-CSRF-Token': csrfToken}, body: fd }).catch(function(){});
+    }
+
+    function showResults(sent, failed, failedEmails) {
+        progressBar.style.width = '100%';
+        progressPct.textContent = '100%';
+        elRemaining.textContent = '0';
+        statusText.textContent = 'Complete!';
+
+        var cls = failed > 0 ? 'a-alert error' : 'a-alert ok';
+        var icon = failed > 0 ? 'fa-triangle-exclamation' : 'fa-circle-check';
+        var html = '<div class="' + cls + '"><i class="fa-solid ' + icon + '"></i> Newsletter sent: <strong>' + sent + '</strong> delivered, <strong>' + failed + '</strong> failed.';
+        if (failedEmails.length > 0) {
+            html += '<br><small style="margin-top:6px;display:block">Failed addresses: ' + failedEmails.join(', ') + '</small>';
+        }
+        html += '</div>';
+        resultsDiv.innerHTML = html;
+        resultsDiv.style.display = 'block';
+        resetSendButton();
+    }
+
+    function resetSendButton() {
+        sending = false;
+        btnSendAll.disabled = false;
+        btnSendAll.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send to all subscribers';
+    }
+})();
+</script>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
