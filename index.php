@@ -75,7 +75,8 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="mori-hero-bg" style="background-image:url('<?= asset(e($slide['media_path'])) ?>');"></div>
                 <?php endif; ?>
                 <div class="mori-hero-overlay" style="opacity:<?= $opacity ?>;"></div>
-                <div class="mori-hero-content container">
+                <div class="mori-hero-content">
+                    <div class="container">
                     <div class="row section-row align-items-center">
                         <div class="col-xl-7">
                             <div class="section-title">
@@ -95,6 +96,7 @@ include __DIR__ . '/src/partials/header.php';
                                 <?php endif; ?>
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>
