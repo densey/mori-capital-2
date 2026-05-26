@@ -74,6 +74,15 @@ return [
     'disclaimer.title'     => 'Wichtige Information',
     'disclaimer.body'      => 'Mori Capital Management Ltd. ist von der Malta Financial Services Authority (MFSA) unter der Firmenreferenz C66999 autorisiert und reguliert und ist berechtigt, Wertpapierdienstleistungen gemäß der MiFID-Richtlinie zu erbringen. Diese Website dient ausschließlich Informationszwecken und stellt weder ein Angebot zum Verkauf noch eine Aufforderung zum Kauf von Wertpapieren oder Finanzprodukten dar. Die beschriebenen Fonds sind auf Nicht-US-Personen und professionelle Anleger beschränkt und sind nicht unter dem U.S. Investment Advisers Act von 1940 registriert. Die frühere Wertentwicklung ist kein verlässlicher Indikator für künftige Ergebnisse. Der Wert der Anlagen und die daraus erzielten Erträge können sowohl fallen als auch steigen. Anleger sollten den Fondsprospekt, das KIID/PRIIPs-KID und die jüngsten Finanzberichte vor einer Anlage lesen.',
 
-    // Demo
-    'demo.toast'           => 'Demo — Unterseiten in Kürze',
+    // Statistics labels
+    'stat.years_expertise'    => 'Jahre EEMEA-Expertise',
+    'stat.securities_coverage'=> 'Abgedeckte Wertpapiere',
+    'stat.team_experience'    => 'Jahre kollektive Erfahrung',
+    'stat.eemea_markets'      => 'EEMEA-Märkte',
+    'stat.securities_tracked' => 'Verfolgte Wertpapiere',
+    'stat.years_experience'   => 'Jahre Erfahrung',
+
+    // Navigation extras
+    'nav.performance'         => 'Performance',
+    'btn.view_fund_docs'      => 'Fondsdokumente anzeigen',
 ];

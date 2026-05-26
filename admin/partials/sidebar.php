@@ -20,6 +20,7 @@ $user = Auth::user();
         <li><a href="<?= asset('admin/dashboard.php') ?>" class="<?= is_active_nav('/admin/dashboard.php')?'active':'' ?>"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
 
         <li class="a-nav__section">Content</li>
+        <li><a href="<?= asset('admin/homepage.php') ?>" class="<?= is_active_nav('/admin/homepage.php')?'active':'' ?>"><i class="fa-solid fa-home"></i> Homepage Content</a></li>
         <li><a href="<?= asset('admin/hero.php') ?>" class="<?= is_active_nav('/admin/hero.php')?'active':'' ?>"><i class="fa-solid fa-panorama"></i> Hero Slider</a></li>
         <li><a href="<?= asset('admin/pages.php') ?>" class="<?= is_active_nav('/admin/pages.php')||is_active_nav('/admin/page-edit.php')?'active':'' ?>"><i class="fa-solid fa-file-lines"></i> Pages</a></li>
         <li><a href="<?= asset('admin/page-builder.php') ?>" class="<?= is_active_nav('/admin/page-builder.php')?'active':'' ?>"><i class="fa-solid fa-wand-magic-sparkles"></i> Visual Builder</a></li>

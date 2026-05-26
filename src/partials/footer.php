@@ -51,13 +51,18 @@ $year = date('Y');
                     <div class="footer-links">
                         <h2><?= e(t('footer.funds_docs')) ?></h2>
                         <ul>
-                            <li><a href="<?= asset('fund-eastern-european.php') ?>">Mori Eastern European Fund</a></li>
-                            <li><a href="<?= asset('fund-ottoman.php') ?>">Mori Ottoman Fund</a></li>
-                            <li><a href="<?= asset('fund-performance.php') ?>">Performance</a></li>
-                            <li><a href="<?= asset('documents.php?type=factsheet') ?>">Factsheets</a></li>
-                            <li><a href="<?= asset('documents.php?type=kiid') ?>">KIIDs &amp; PRIIPs KIDs</a></li>
-                            <li><a href="<?= asset('documents.php?type=annual') ?>">Annual &amp; Semi-Annual Reports</a></li>
-                            <li><a href="<?= asset('documents.php') ?>">Document Hub</a></li>
+                            <?php
+                            try {
+                                $ftFunds = \Mori\Database::instance()->fetchAll('SELECT slug, name_en, name_de FROM funds WHERE status = "active" ORDER BY display_order');
+                            } catch (\Throwable $e) { $ftFunds = []; }
+                            foreach ($ftFunds as $ff):
+                                $ffName = \Mori\I18n::fieldFor($ff, 'name');
+                                $ffUrl = ($ff['slug'] === 'mori-eastern-european-fund') ? 'fund-eastern-european.php' : 'fund-ottoman.php';
+                            ?>
+                            <li><a href="<?= asset($ffUrl) ?>"><?= e($ffName) ?></a></li>
+                            <?php endforeach; ?>
+                            <li><a href="<?= asset('fund-performance.php') ?>"><?= e(t('nav.performance')) ?></a></li>
+                            <li><a href="<?= asset('documents.php') ?>"><?= e(t('btn.document_hub')) ?></a></li>
                         </ul>
                     </div>
 

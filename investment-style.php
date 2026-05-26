@@ -73,13 +73,22 @@ include __DIR__ . '/src/partials/page-header.php';
 
         <div class="row" style="margin-top:24px;">
             <?php
-            $principles = [
-                ['fa-magnifying-glass-chart', 'Bottom-up stock picking with macro overlay', 'We start with fundamental company analysis, then test our conviction against the macro backdrop of each EEMEA market.'],
-                ['fa-route', 'Walking the extra mile', 'Active coverage of 200+ securities across the region — visiting management teams, factories and competitors on the ground.'],
-                ['fa-flask', 'In-house proprietary research', 'No outsourced models. Every position is supported by our own valuation work, risk analysis and scenario testing.'],
-                ['fa-shield-halved', 'Disciplined risk management', 'Position sizing, liquidity monitoring and correlation overlays — rigorously applied at portfolio level.'],
-                ['fa-handshake', 'Active dialogue with stakeholders', 'Direct, ongoing engagement with company management, regulators, sell-side analysts and other shareholders.'],
-            ];
+            $principles = [];
+            for ($pi = 1; $pi <= 5; $pi++) {
+                $icon  = \Mori\setting("principle_{$pi}_icon");
+                $title = \Mori\setting("principle_{$pi}_title");
+                $desc  = \Mori\setting("principle_{$pi}_desc");
+                if ($title) $principles[] = [$icon ?: 'fa-circle-check', $title, $desc ?: ''];
+            }
+            if (empty($principles)) {
+                $principles = [
+                    ['fa-magnifying-glass-chart', 'Bottom-up stock picking with macro overlay', 'We start with fundamental company analysis, then test our conviction against the macro backdrop of each EEMEA market.'],
+                    ['fa-route', 'Walking the extra mile', 'Active coverage of 200+ securities across the region — visiting management teams, factories and competitors on the ground.'],
+                    ['fa-flask', 'In-house proprietary research', 'No outsourced models. Every position is supported by our own valuation work, risk analysis and scenario testing.'],
+                    ['fa-shield-halved', 'Disciplined risk management', 'Position sizing, liquidity monitoring and correlation overlays — rigorously applied at portfolio level.'],
+                    ['fa-handshake', 'Active dialogue with stakeholders', 'Direct, ongoing engagement with company management, regulators, sell-side analysts and other shareholders.'],
+                ];
+            }
             foreach ($principles as $i => $p): ?>
             <div class="col-xl-4 col-md-6" style="margin-bottom:24px;">
                 <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:12px;padding:28px;height:100%;display:flex;flex-direction:column;gap:14px;" class="wow fadeInUp" <?= $i>0?'data-wow-delay="0.'.$i.'s"':'' ?>>

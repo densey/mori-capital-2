@@ -33,9 +33,17 @@ use function Mori\t;
                             <li class="nav-item submenu">
                                 <a class="nav-link" href="#funds"><?= e(t('nav.funds')) ?></a>
                                 <ul>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('fund-eastern-european.php') ?>">Mori Eastern European Fund</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('fund-ottoman.php') ?>">Mori Ottoman Fund</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('fund-performance.php') ?>">Performance</a></li>
+                                    <?php
+                                    try {
+                                        $navFunds = \Mori\Database::instance()->fetchAll('SELECT slug, name_en, name_de FROM funds WHERE status = "active" ORDER BY display_order');
+                                    } catch (\Throwable $e) { $navFunds = []; }
+                                    foreach ($navFunds as $nf):
+                                        $fundName = \Mori\I18n::fieldFor($nf, 'name');
+                                        $fundUrl = ($nf['slug'] === 'mori-eastern-european-fund') ? 'fund-eastern-european.php' : 'fund-ottoman.php';
+                                    ?>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset($fundUrl) ?>"><?= e($fundName) ?></a></li>
+                                    <?php endforeach; ?>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('fund-performance.php') ?>"><?= e(t('nav.performance')) ?></a></li>
                                 </ul>
                             </li>
                             <li class="nav-item <?= is_active_nav('/documents.php')?'active':'' ?>">

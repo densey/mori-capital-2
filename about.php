@@ -49,7 +49,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 </div>
             </div>
             <div class="col-xl-6">
-                <div class="about-us-content" style="padding-left:20px;">
+                <div class="about-us-content" style="padding-left:clamp(0px,2vw,20px);">
                     <div class="section-title">
                         <span class="section-sub-title wow fadeInUp"><?= e(t('nav.about')) ?></span>
                         <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e($pageData['title'] ?? t('section.about.title')) ?></h2>
@@ -59,21 +59,21 @@ include __DIR__ . '/src/partials/page-header.php';
                     </div>
 
                     <div class="about-highlighted-box wow fadeInUp" data-wow-delay="0.4s">
-                        <h3>&ldquo; In the EEMEA region, knowledge isn't found in screens &mdash; it's earned by walking the extra mile. &rdquo;</h3>
+                        <h3>&ldquo; <?= e(\Mori\setting('hp_about_quote', "In the EEMEA region, knowledge isn't found in screens — it's earned by walking the extra mile.")) ?> &rdquo;</h3>
                     </div>
 
                     <div class="about-counter-item-list wow fadeInUp" data-wow-delay="0.6s">
                         <div class="about-counter-item">
-                            <h2><span class="counter">25</span>+</h2>
-                            <p>Years of EEMEA expertise</p>
+                            <h2><span class="counter"><?= e(\Mori\setting('stat_years', '25')) ?></span>+</h2>
+                            <p><?= e(t('stat.years_expertise')) ?></p>
                         </div>
                         <div class="about-counter-item">
-                            <h2><span class="counter">200</span>+</h2>
-                            <p>Securities under coverage</p>
+                            <h2><span class="counter"><?= e(\Mori\setting('stat_securities', '200')) ?></span>+</h2>
+                            <p><?= e(t('stat.securities_coverage')) ?></p>
                         </div>
                         <div class="about-counter-item">
-                            <h2><span class="counter">80</span>+</h2>
-                            <p>Years collective team experience</p>
+                            <h2><span class="counter"><?= e(\Mori\setting('stat_team_experience', '80')) ?></span>+</h2>
+                            <p><?= e(t('stat.team_experience')) ?></p>
                         </div>
                     </div>
                 </div>

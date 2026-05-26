@@ -74,6 +74,15 @@ return [
     'disclaimer.title'     => 'Important information',
     'disclaimer.body'      => 'Mori Capital Management Ltd. is authorised and regulated by the Malta Financial Services Authority (MFSA) under Firm Reference C66999, and is authorised to provide investment services under the MiFID directive. This website is for informational purposes only and does not constitute an offer to sell, or a solicitation of an offer to buy, any security or financial product. The funds described are restricted to non-U.S. persons and professional investors and are not registered under the U.S. Investment Advisers Act of 1940. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them can fall as well as rise. Investors should read the fund prospectus, KIID/PRIIPs KID and the latest financial reports before investing.',
 
-    // Demo
-    'demo.toast'           => 'Demo — sub-pages coming soon',
+    // Statistics labels
+    'stat.years_expertise'    => 'Years of EEMEA expertise',
+    'stat.securities_coverage'=> 'Securities under coverage',
+    'stat.team_experience'    => 'Years collective experience',
+    'stat.eemea_markets'      => 'EEMEA Markets',
+    'stat.securities_tracked' => 'Securities Tracked',
+    'stat.years_experience'   => 'Years Experience',
+
+    // Navigation extras
+    'nav.performance'         => 'Performance',
+    'btn.view_fund_docs'      => 'View Fund Documents',
 ];
