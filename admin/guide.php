@@ -65,6 +65,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 2. Dashboard -->
 <h2 id="dashboard">2. Dashboard</h2>
+<img src="/docs/guide-screenshots/dashboard.png" class="screenshot" alt="Dashboard">
 <p>The dashboard is your starting point. It shows:</p>
 <ul>
     <li><strong>Quick stats</strong> — total pages, funds, team members, documents, insights, unread messages</li>
@@ -75,6 +76,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 3. Homepage Content -->
 <h2 id="homepage">3. Homepage Content</h2>
+<img src="/docs/guide-screenshots/homepage-content.png" class="screenshot" alt="Homepage Content">
 <p>Go to <strong>Content &rarr; Homepage Content</strong> to edit all text and numbers that appear on the homepage.</p>
 <p>This page lets you manage:</p>
 <ul>
@@ -89,6 +91,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 4. Hero Slider -->
 <h2 id="hero">4. Hero Slider</h2>
+<img src="/docs/guide-screenshots/hero-slider.png" class="screenshot" alt="Hero Slider">
 <p>Go to <strong>Content &rarr; Hero Slider</strong> to manage the large banner area at the top of the homepage.</p>
 <p>You can add multiple slides that auto-rotate every 6 seconds. Each slide supports:</p>
 <ul>
@@ -104,6 +107,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 5. Pages -->
 <h2 id="pages">5. Pages</h2>
+<img src="/docs/guide-screenshots/pages.png" class="screenshot" alt="Pages">
 <p>Go to <strong>Content &rarr; Pages</strong> to see all static pages (About, Investment Style, Legal, Privacy, Cookies, etc.).</p>
 <p>For each page you can:</p>
 <ul>
@@ -127,6 +131,7 @@ include __DIR__ . '/partials/layout-start.php';
 </ul>
 
 <h3>Block Builder</h3>
+<img src="/docs/guide-screenshots/page-builder.png" class="screenshot" alt="Block Builder">
 <p>A Notion/Squarespace-style block editor. Best for visually rich pages.</p>
 <ul>
     <li><strong>12 block types:</strong> Heading, Text, Image, Button, Columns, Spacer, Divider, Quote, List, Video, HTML, Section</li>
@@ -152,6 +157,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 7. Insights -->
 <h2 id="insights">7. Mori Views (Insights)</h2>
+<img src="/docs/guide-screenshots/insights.png" class="screenshot" alt="Insights">
 <p>Go to <strong>Content &rarr; Mori Views</strong> to manage blog posts, market outlooks, factsheets, and press releases.</p>
 <ul>
     <li><strong>Create:</strong> Click "New insight" &rarr; fill in title, slug, content (TinyMCE), category, locale, cover image</li>
@@ -162,6 +168,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 8. Team -->
 <h2 id="team">8. Team Members</h2>
+<img src="/docs/guide-screenshots/team.png" class="screenshot" alt="Team">
 <p>Go to <strong>Content &rarr; Team</strong> to manage team member profiles.</p>
 <ul>
     <li><strong>Photo:</strong> Upload via the form (JPG/PNG/WEBP)</li>
@@ -173,6 +180,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 9. Funds -->
 <h2 id="funds">9. Funds &amp; Share Classes</h2>
+<img src="/docs/guide-screenshots/funds.png" class="screenshot" alt="Funds">
 <p>Go to <strong>Funds &rarr; Funds &amp; Share Classes</strong>.</p>
 <p>This page manages the two funds (Mori Eastern European Fund, Mori Ottoman Fund) and their share classes.</p>
 <ul>
@@ -184,6 +192,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 10. Performance -->
 <h2 id="performance">10. Performance (NAV)</h2>
+<img src="/docs/guide-screenshots/performance.png" class="screenshot" alt="Performance">
 <p>Go to <strong>Funds &rarr; Performance (NAV)</strong> to add daily NAV entries for each share class.</p>
 <ul>
     <li>Select a <strong>fund</strong> and <strong>share class</strong></li>
@@ -194,6 +203,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 11. Documents -->
 <h2 id="documents">11. Documents (FundHub)</h2>
+<img src="/docs/guide-screenshots/documents.png" class="screenshot" alt="Documents">
 <p>Go to <strong>Funds &rarr; Documents</strong> to manage the FundHub document repository.</p>
 <ul>
     <li><strong>Upload PDFs:</strong> Click "Add document" &rarr; select file, fund, share class(es), document type, title</li>
@@ -204,6 +214,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 12. Media -->
 <h2 id="media">12. Media Library</h2>
+<img src="/docs/guide-screenshots/media.png" class="screenshot" alt="Media Library">
 <p>Go to <strong>Content &rarr; Media Library</strong> to manage all uploaded files.</p>
 <ul>
     <li><strong>Upload:</strong> JPG, PNG, GIF, WEBP images and MP4/WebM videos</li>
@@ -214,6 +225,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 13. Messages -->
 <h2 id="messages">13. Messages (Contact Inbox)</h2>
+<img src="/docs/guide-screenshots/messages.png" class="screenshot" alt="Messages">
 <p>Go to <strong>Engagement &rarr; Messages</strong> to see messages submitted via the contact form.</p>
 <ul>
     <li>View sender name, email, subject, message, and submission date</li>
@@ -223,6 +235,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 14. Newsletter -->
 <h2 id="newsletter">14. Newsletter</h2>
+<img src="/docs/guide-screenshots/newsletter.png" class="screenshot" alt="Newsletter">
 <p>Go to <strong>Engagement &rarr; Newsletter</strong> to manage subscribers and send bulk emails.</p>
 <ul>
     <li><strong>Subscribers list:</strong> See all subscribers with email, language preference, status, dates</li>
@@ -243,6 +256,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 15. Settings -->
 <h2 id="settings">15. Settings</h2>
+<img src="/docs/guide-screenshots/settings.png" class="screenshot" alt="Settings">
 <p>Go to <strong>System &rarr; Settings</strong> to manage site-wide configuration.</p>
 <ul>
     <li><strong>General:</strong> Site title, tagline, default language</li>
@@ -256,6 +270,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 16. SEO -->
 <h2 id="seo">16. SEO &amp; Custom Code</h2>
+<img src="/docs/guide-screenshots/seo.png" class="screenshot" alt="SEO">
 <p>Go to <strong>System &rarr; SEO &amp; Code</strong> to manage advanced SEO settings and code injection.</p>
 <ul>
     <li><strong>Custom &lt;head&gt; code:</strong> Paste Google Tag Manager, Meta Pixel, or any script that goes in the HTML &lt;head&gt;</li>
@@ -266,6 +281,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 17. Users -->
 <h2 id="users">17. Users</h2>
+<img src="/docs/guide-screenshots/users.png" class="screenshot" alt="Users">
 <p>Go to <strong>System &rarr; Users</strong> to manage admin panel users.</p>
 <ul>
     <li><strong>Roles:</strong> <code>super_admin</code> (full access) or <code>editor</code> (content only)</li>
@@ -277,6 +293,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 18. Audit -->
 <h2 id="audit">18. Audit Log</h2>
+<img src="/docs/guide-screenshots/audit.png" class="screenshot" alt="Audit Log">
 <p>Go to <strong>System &rarr; Audit Log</strong> to see a complete history of all actions taken in the admin panel.</p>
 <ul>
     <li>Every create, update, delete, login, and settings change is recorded</li>
@@ -286,6 +303,7 @@ include __DIR__ . '/partials/layout-start.php';
 
 <!-- 19. Database -->
 <h2 id="database">19. Database &amp; Migrations</h2>
+<img src="/docs/guide-screenshots/database.png" class="screenshot" alt="Database">
 <p>Go to <strong>System &rarr; Database</strong> to manage the database schema.</p>
 <ul>
     <li><strong>Schema sync:</strong> Re-runs the base schema (safe — uses CREATE TABLE IF NOT EXISTS)</li>
