@@ -28,8 +28,9 @@ try {
 
     $name = $_FILES['file']['name'];
     $ext  = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-    if (!in_array($ext, ['jpg','jpeg','png','gif','webp'], true)) {
-        throw new \Exception('Only images allowed (jpg, png, gif, webp)');
+    $allowed = ['jpg','jpeg','png','gif','webp','mp4','webm'];
+    if (!in_array($ext, $allowed, true)) {
+        throw new \Exception('Allowed: ' . implode(', ', $allowed));
     }
 
     $year   = date('Y');

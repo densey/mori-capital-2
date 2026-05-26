@@ -58,6 +58,32 @@ use function Mori\t;
 <script src="<?= asset('js/wow.min.js') ?>"></script>
 <script src="<?= asset('js/function.js') ?>"></script>
 
+<!-- ===== Hero slider ===== -->
+<script>
+(function(){
+    var slides = document.querySelectorAll('.mori-hero-slide');
+    var dots = document.querySelectorAll('.mori-hero-dot');
+    if (slides.length < 2) return;
+    var cur = 0, total = slides.length, timer;
+    function go(n) {
+        slides[cur].classList.remove('active');
+        if (dots[cur]) dots[cur].classList.remove('active');
+        cur = ((n % total) + total) % total;
+        slides[cur].classList.add('active');
+        if (dots[cur]) dots[cur].classList.add('active');
+    }
+    function next() { go(cur + 1); }
+    timer = setInterval(next, 6000);
+    dots.forEach(function(d) {
+        d.addEventListener('click', function() {
+            clearInterval(timer);
+            go(parseInt(this.dataset.slide));
+            timer = setInterval(next, 6000);
+        });
+    });
+})();
+</script>
+
 <!-- ===== Mobile menu ===== -->
 <script>
 (function($){
