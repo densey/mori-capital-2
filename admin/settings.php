@@ -126,7 +126,6 @@ include __DIR__ . '/partials/layout-start.php';
                 <div style="font-weight:600;color:var(--a-navy);">SMTP_SECURE</div><div style="font-family:monospace;color:var(--a-text-soft);"><?= e(\Mori\Config::get('SMTP_SECURE','tls')) ?></div>
             </div>
             <p style="font-size:12px;color:var(--a-muted);margin-bottom:14px;">To change these: SSH into the server → <code>nano .env</code> → fill SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM.</p>
-            </form>
             <form method="post" class="a-form" style="display:flex;gap:10px;align-items:end;margin-top:12px;">
                 <?= Csrf::field() ?>
                 <input type="hidden" name="action" value="smtp_test">

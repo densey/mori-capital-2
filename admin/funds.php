@@ -198,7 +198,7 @@ include __DIR__ . '/partials/layout-start.php';
                 <textarea name="objective_de" rows="3"><?= e($fund['objective_de'] ?? '') ?></textarea>
                 <div class="row">
                     <div><label>Cover image path</label><input type="text" name="cover_image_path" value="<?= e($fund['cover_image_path']) ?>"></div>
-                    <div><label>Status</label><select name="status"><option <?= $fund['status']==='active'?'selected':'' ?>>active</option><option <?= $fund['status']==='inactive'?'selected':'' ?>>inactive</option></select></div>
+                    <div><label>Status</label><select name="status"><option value="active" <?= $fund['status']==='active'?'selected':'' ?>>active</option><option value="inactive" <?= $fund['status']==='inactive'?'selected':'' ?>>inactive</option></select></div>
                     <div><label>Order</label><input type="number" name="display_order" value="<?= e($fund['display_order']) ?>"></div>
                 </div>
                 <button class="a-btn lg" type="submit" style="margin-top:18px;">Save fund</button>

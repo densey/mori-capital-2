@@ -89,7 +89,7 @@ include __DIR__ . '/partials/layout-start.php';
             <?= Csrf::field() ?>
             <input type="hidden" name="action" value="upload">
             <div><label>Folder (optional)</label><input type="text" name="folder" placeholder="team / hero / insights …"></div>
-            <div style="flex:2;"><label>Files (JPG / PNG / GIF / WEBP / SVG)</label><input type="file" name="files[]" multiple accept="image/*" required></div>
+            <div style="flex:2;"><label>Files (JPG / PNG / GIF / WEBP)</label><input type="file" name="files[]" multiple accept=".jpg,.jpeg,.png,.gif,.webp" required></div>
             <button class="a-btn"><i class="fa-solid fa-upload"></i> Upload</button>
         </form>
     </div>

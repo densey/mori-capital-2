@@ -132,15 +132,16 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 
 /* ── Custom hamburger button ── */
 .mori-hamburger {
-    display: none; /* hidden on desktop */
-    width: 42px; height: 42px;
+    display: none;
+    width: 44px; height: 44px;
     background: rgba(255,255,255,.15);
     border: 1px solid rgba(255,255,255,.3);
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     position: relative;
     flex-shrink: 0;
     padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 .mori-hamburger span {
     display: block; width: 20px; height: 2px;
@@ -148,39 +149,56 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     position: absolute; left: 50%; transform: translateX(-50%);
     transition: all .25s ease;
 }
-.mori-hamburger span:nth-child(1) { top: 13px; }
-.mori-hamburger span:nth-child(2) { top: 20px; }
-.mori-hamburger span:nth-child(3) { top: 27px; }
-.mori-hamburger.active span:nth-child(1) { top: 20px; transform: translateX(-50%) rotate(45deg); }
+.mori-hamburger span:nth-child(1) { top: 14px; }
+.mori-hamburger span:nth-child(2) { top: 21px; }
+.mori-hamburger span:nth-child(3) { top: 28px; }
+.mori-hamburger.active span:nth-child(1) { top: 21px; transform: translateX(-50%) rotate(45deg); }
 .mori-hamburger.active span:nth-child(2) { opacity: 0; }
-.mori-hamburger.active span:nth-child(3) { top: 20px; transform: translateX(-50%) rotate(-45deg); }
+.mori-hamburger.active span:nth-child(3) { top: 21px; transform: translateX(-50%) rotate(-45deg); }
 
 /* ── Mobile nav overlay ── */
 .mori-mobile-nav {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(14,31,54,.97);
     z-index: 10000;
-    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    display: flex; flex-direction: column; justify-content: flex-start;
+    align-items: center; padding-top: 90px;
     opacity: 0; visibility: hidden;
     transition: opacity .3s ease, visibility .3s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 .mori-mobile-nav.open { opacity: 1; visibility: visible; }
 .mori-mobile-nav .slicknav_nav {
     display: block !important;
-    list-style: none; margin: 0; padding: 0;
-    text-align: center; width: 100%; max-width: 320px;
+    list-style: none; margin: 0; padding: 0 20px;
+    text-align: center; width: 100%; max-width: 340px;
 }
 .mori-mobile-nav .slicknav_nav li { border-bottom: 1px solid rgba(255,255,255,.06); }
 .mori-mobile-nav .slicknav_nav li a,
 .mori-mobile-nav .slicknav_nav .slicknav_row {
-    display: block; color: #fff !important; font-size: 18px !important; font-weight: 600;
-    padding: 16px 10px !important; text-decoration: none;
+    display: block; color: #fff !important; font-size: 17px !important; font-weight: 600;
+    padding: 15px 8px !important; text-decoration: none;
     transition: color .15s; background: none !important; border-radius: 0 !important;
 }
 .mori-mobile-nav .slicknav_nav li a:hover { color: var(--accent-color) !important; }
 .mori-mobile-nav .slicknav_nav ul { list-style: none; padding: 0; margin: 0; }
-.mori-mobile-nav .slicknav_nav ul ul li a { font-size: 15px !important; font-weight: 400; color: rgba(255,255,255,.65) !important; padding: 10px 10px !important; }
+.mori-mobile-nav .slicknav_nav ul ul li a { font-size: 14px !important; font-weight: 400; color: rgba(255,255,255,.55) !important; padding: 10px 8px !important; }
 .mori-mobile-nav .slicknav_arrow { display: none !important; }
+/* Language switcher inside mobile nav */
+.mori-mobile-nav .mori-nav-lang {
+    display: flex; gap: 12px; margin-top: 24px; justify-content: center;
+}
+.mori-mobile-nav .mori-nav-lang a {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border-radius: 50%;
+    font-size: 13px; font-weight: 700; letter-spacing: .05em;
+    text-decoration: none; transition: all .2s;
+    color: rgba(255,255,255,.6); border: 1px solid rgba(255,255,255,.15);
+}
+.mori-mobile-nav .mori-nav-lang a.active {
+    background: var(--accent-color); color: #fff; border-color: var(--accent-color);
+}
 
 /* ── Mobile bottom tab bar ── */
 .mori-tabbar {
@@ -195,23 +213,23 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 }
 .mori-tabbar__inner {
     display: flex; justify-content: space-around; align-items: stretch;
-    max-width: 500px; margin: 0 auto;
 }
 .mori-tabbar__item {
     flex: 1; display: flex; flex-direction: column; align-items: center;
-    justify-content: center; gap: 3px;
-    padding: 8px 4px 6px; text-decoration: none;
+    justify-content: center; gap: 2px;
+    padding: 10px 4px 8px; text-decoration: none;
     color: #7A8B99; font-size: 10px; font-weight: 600;
     letter-spacing: .02em; transition: color .15s;
     -webkit-tap-highlight-color: transparent;
     position: relative;
+    min-height: 48px;
 }
-.mori-tabbar__item i { font-size: 18px; transition: color .15s; }
+.mori-tabbar__item i { font-size: 19px; transition: color .15s; }
 .mori-tabbar__item:hover,
 .mori-tabbar__item.active { color: #1ABC9C; }
 .mori-tabbar__item.active::before {
-    content: ''; position: absolute; top: 0; left: 25%; right: 25%;
-    height: 2px; background: #1ABC9C; border-radius: 0 0 2px 2px;
+    content: ''; position: absolute; top: 0; left: 20%; right: 20%;
+    height: 2.5px; background: #1ABC9C; border-radius: 0 0 3px 3px;
 }
 
 @media (max-width: 991px) {
@@ -929,8 +947,8 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     .why-choose-us .section-title h2,
     .our-awards .section-title h2,
     .page-team .section-title h2 {
-        font-size: 28px !important;
-        line-height: 1.2em !important;
+        font-size: 24px !important;
+        line-height: 1.25em !important;
     }
 
     .our-awards { padding: 56px 0 !important; }
@@ -957,18 +975,15 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 @media (max-width: 767px) {
     /* Hero buttons: contain arrow circle overflow */
     .hero .section-content-btn { overflow: hidden; }
-    .hero .btn-default { font-size: 14px !important; padding: 14px 22px !important; }
+    .hero .btn-default { font-size: 14px !important; padding: 13px 20px !important; }
 
-    /* Slicknav button position adjust for smaller header */
-    .slicknav_btn { top: 10px !important; }
+    /* Body text slightly smaller on phones */
+    .section-title-content p,
+    .about-us-content p,
+    .service-item-content p { font-size: 14px !important; }
 
-    /* Topbar — already hidden by 991px rule, but belt and braces */
-    .topbar { display: none !important; }
-    .lang-switcher { margin-left: 0; }
-
-    /* Hide the long contact info on phones, just show email */
-    .topbar .topbar-contact-info p span { display: none !important; }
-    .topbar .topbar-contact-info p a[href^="tel:"] { display: none; }
+    /* Footer disclaimer readable */
+    .footer-disclaimer { font-size: 11.5px !important; line-height: 1.65 !important; }
 
     /* Header compact on phone */
     .main-header .navbar { padding: 8px 0 6px !important; }

@@ -67,6 +67,20 @@ use function Mori\t;
 
     var overlay = $('<div class="mori-mobile-nav"></div>');
     nav.clone(true).appendTo(overlay);
+
+    // Add language switcher to mobile nav
+    var path = location.pathname;
+    var qs = new URLSearchParams(location.search);
+    qs.delete('lang');
+    var base = path + (qs.toString() ? '?' + qs.toString() + '&' : '?');
+    var curLang = document.documentElement.lang || 'en';
+    overlay.append(
+        '<div class="mori-nav-lang">' +
+        '<a href="' + base + 'lang=en"' + (curLang==='en' ? ' class="active"' : '') + '>EN</a>' +
+        '<a href="' + base + 'lang=de"' + (curLang==='de' ? ' class="active"' : '') + '>DE</a>' +
+        '</div>'
+    );
+
     $('body').append(overlay);
 
     var open = false;
@@ -77,7 +91,7 @@ use function Mori\t;
         $('body').css('overflow', open ? 'hidden' : '');
     }
     btn.on('click', toggle);
-    overlay.on('click', 'a', function() { if (open) toggle(); });
+    overlay.on('click', 'a:not(.mori-nav-lang a)', function() { if (open) toggle(); });
     overlay.on('click', function(e) { if (e.target === this) toggle(); });
 })(jQuery);
 </script>
