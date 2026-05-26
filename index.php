@@ -45,71 +45,46 @@ include __DIR__ . '/src/partials/topbar.php';
 include __DIR__ . '/src/partials/header.php';
 ?>
 
-    <!-- Hero Slider -->
+    <!-- Hero -->
     <?php
-    // Fallback if no slides in DB
-    if (empty($heroSlides)) {
-        $heroSlides = [[
-            'media_type' => 'image',
-            'media_path' => 'assets/images/hero/hero-istanbul.jpg',
-            'title' => t('hero.title'),
-            'subtitle' => t('hero.lead'),
-            'overlay_opacity' => 0.70,
-            'cta_text' => t('hero.cta_funds'),
-            'cta_url' => '#funds',
-        ]];
-    }
-    $multiSlide = count($heroSlides) > 1;
+    $heroSlide = $heroSlides[0] ?? null;
+    $heroBg   = $heroSlide ? $heroSlide['media_path'] : 'assets/images/hero/hero-istanbul.jpg';
+    $heroIsVid = $heroSlide && ($heroSlide['media_type'] ?? 'image') === 'video';
+    $heroTitle = $heroSlide['title'] ?? t('hero.title');
+    $heroSub   = $heroSlide['subtitle'] ?? t('hero.lead');
+    $heroCta   = $heroSlide['cta_text'] ?? t('hero.cta_funds');
+    $heroCtaUrl = $heroSlide['cta_url'] ?? '#funds';
     ?>
-    <div class="hero dark-section mori-hero-slider" style="position:relative;">
-        <!-- Slides -->
-        <div class="mori-hero-slides" id="heroSlides">
-            <?php foreach ($heroSlides as $si => $slide):
-                $opacity = (float)($slide['overlay_opacity'] ?? 0.70);
-                $isVideo = ($slide['media_type'] ?? 'image') === 'video';
-            ?>
-            <div class="mori-hero-slide <?= $si === 0 ? 'active' : '' ?>" data-index="<?= $si ?>">
-                <?php if ($isVideo): ?>
-                <video class="mori-hero-bg" src="<?= asset(e($slide['media_path'])) ?>" autoplay muted loop playsinline></video>
-                <?php else: ?>
-                <div class="mori-hero-bg" style="background-image:url('<?= asset(e($slide['media_path'])) ?>');"></div>
-                <?php endif; ?>
-                <div class="mori-hero-overlay" style="opacity:<?= $opacity ?>;"></div>
-                <div class="mori-hero-content">
-                    <div class="container">
-                    <div class="row section-row align-items-center">
-                        <div class="col-xl-7">
-                            <div class="section-title">
-                                <span class="section-sub-title"><?= e(t('hero.eyebrow')) ?></span>
-                                <h1><?= e($slide['title'] ?: t('hero.title')) ?></h1>
-                            </div>
-                        </div>
-                        <div class="col-xl-5">
-                            <div class="section-content-btn">
-                                <?php if (!empty($slide['subtitle'])): ?>
-                                <div class="section-title-content"><p><?= e($slide['subtitle']) ?></p></div>
-                                <?php endif; ?>
-                                <?php if (!empty($slide['cta_text'])): ?>
-                                <div class="section-btn">
-                                    <a class="btn-default btn-highlighted" href="<?= e($slide['cta_url'] ?: '#') ?>"><?= e($slide['cta_text']) ?></a>
-                                </div>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+    <div class="hero dark-section" style="background:#0E1F36 url('<?= $heroIsVid ? '' : asset(e($heroBg)) ?>') center/cover no-repeat;">
+        <?php if ($heroIsVid): ?>
+        <div class="hero-bg-video">
+            <video autoplay muted playsinline loop poster="<?= asset('assets/images/hero/hero-istanbul.jpg') ?>">
+                <source src="<?= asset(e($heroBg)) ?>" type="video/mp4">
+            </video>
+        </div>
+        <?php endif; ?>
+        <div class="hero-bg-overlay" style="position:absolute;inset:0;background:linear-gradient(125deg, rgba(8,18,33,.78) 0%, rgba(18,40,66,.62) 50%, rgba(27,58,92,.45) 100%);pointer-events:none;z-index:1;"></div>
+
+        <div class="container">
+            <div class="row section-row align-items-center">
+                <div class="col-xl-7">
+                    <div class="section-title">
+                        <span class="section-sub-title wow fadeInUp"><?= e(t('hero.eyebrow')) ?></span>
+                        <h1 class="text-anime-style-3" data-cursor="-opaque"><?= e($heroTitle) ?></h1>
                     </div>
+                </div>
+                <div class="col-xl-5">
+                    <div class="section-content-btn">
+                        <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
+                            <p><?= e($heroSub) ?></p>
+                        </div>
+                        <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
+                            <a class="btn-default btn-highlighted" href="<?= e($heroCtaUrl) ?>"><?= e($heroCta) ?></a>
+                        </div>
                     </div>
                 </div>
             </div>
-            <?php endforeach; ?>
         </div>
-        <?php if ($multiSlide): ?>
-        <!-- Navigation dots -->
-        <div class="mori-hero-dots">
-            <?php foreach ($heroSlides as $si => $s): ?>
-            <button class="mori-hero-dot <?= $si === 0 ? 'active' : '' ?>" data-slide="<?= $si ?>"></button>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
     </div>
 
     <!-- About Mori -->
