@@ -63,7 +63,7 @@ include __DIR__ . '/src/partials/header.php';
             </video>
         </div>
         <?php endif; ?>
-        <div class="hero-bg-overlay" style="position:absolute;inset:0;background:linear-gradient(125deg, rgba(8,18,33,.55) 0%, rgba(18,40,66,.35) 50%, rgba(27,58,92,.20) 100%);pointer-events:none;z-index:1;"></div>
+        <div class="hero-bg-overlay" style="position:absolute;inset:0;background:linear-gradient(125deg, rgba(8,18,33,.70) 0%, rgba(18,40,66,.50) 50%, rgba(27,58,92,.35) 100%);pointer-events:none;z-index:1;"></div>
 
         <div class="container">
             <div class="row section-row align-items-center">
@@ -125,7 +125,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-6">
                     <div class="about-us-content" style="padding-left:clamp(0px,2vw,20px);">
                         <div class="section-title">
-                            <span class="section-sub-title wow fadeInUp"><?= e(setting('hp_about_eyebrow', 'About Mori Capital')) ?></span>
+                            <span class="section-sub-title wow fadeInUp"><?= e(setting('hp_about_eyebrow', t('section.about.eyebrow'))) ?></span>
                             <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.about.title')) ?></h2>
                             <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e($aboutText) ?></p>
                         </div>
@@ -326,7 +326,7 @@ include __DIR__ . '/src/partials/header.php';
                         <h2 class="text-anime-style-3" data-cursor="-opaque"><?= setting('hp_cine_title', 'Disciplined investing,<br>powered by data.') ?></h2>
                         <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e(setting('hp_cine_desc', 'Real-time portfolio analytics, on-the-ground research and active risk management — all converging into a single conviction-led process across Emerging European, Middle Eastern and African markets.')) ?></p>
                         <div class="mori-cinematic__cta wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default btn-highlighted" href="<?= asset('investment-style.php') ?>">Discover the Mori Style</a>
+                            <a class="btn-default btn-highlighted" href="<?= asset('investment-style.php') ?>"><?= e(t('cine.cta')) ?></a>
                         </div>
                         <div class="mori-cinematic__stats">
                             <div><span class="num"><?= e(setting('stat_markets', '15')) ?>+</span><span class="lbl"><?= e(t('stat.eemea_markets')) ?></span></div>

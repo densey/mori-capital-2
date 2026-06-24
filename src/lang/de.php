@@ -134,4 +134,11 @@ return [
 
     // Investment style page CTA
     'style.cta_text'             => 'Zwei Spezialstrategien, die den Mori-Stil über die EEMEA-Region hinweg in die Praxis umsetzen.',
+    'style.eyebrow'              => 'Der Mori-Stil',
+
+    // Section eyebrows
+    'section.about.eyebrow'      => 'Über Mori Capital',
+
+    // Cinematic CTA button
+    'cine.cta'                   => 'Entdecken Sie den Mori-Stil',
 ];

@@ -134,4 +134,11 @@ return [
 
     // Investment style page CTA
     'style.cta_text'             => 'Two specialist strategies that put the Mori Style into practice across the EEMEA region.',
+    'style.eyebrow'              => 'The Mori Style',
+
+    // Section eyebrows
+    'section.about.eyebrow'      => 'About Mori Capital',
+
+    // Cinematic CTA button
+    'cine.cta'                   => 'Discover the Mori Style',
 ];

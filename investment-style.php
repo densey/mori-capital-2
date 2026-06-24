@@ -37,7 +37,7 @@ include __DIR__ . '/src/partials/page-header.php';
             <div class="col-xl-6">
                 <div class="why-choose-us-content">
                     <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp">The Mori Style</span>
+                        <span class="section-sub-title wow fadeInUp"><?= e(t('style.eyebrow')) ?></span>
                         <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.style.title')) ?></h2>
                         <p class="wow fadeInUp" data-wow-delay="0.2s">Our investment philosophy is built on bottom-up stock picking with a macro overlay, in-house proprietary research, and active dialogue with company management.</p>
                     </div>
