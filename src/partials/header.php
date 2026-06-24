@@ -46,8 +46,17 @@ use function Mori\t;
                                     <li class="nav-item"><a class="nav-link" href="<?= asset('fund-performance.php') ?>"><?= e(t('nav.performance')) ?></a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item <?= is_active_nav('/documents.php')?'active':'' ?>">
+                            <li class="nav-item submenu <?= is_active_nav('/documents.php')||is_active_nav('/company-policies.php')||is_active_nav('/other-documents.php')||is_active_nav('/updates-during-suspension.php')?'active':'' ?>">
                                 <a class="nav-link" href="<?= asset('documents.php') ?>"><?= e(t('nav.documents')) ?></a>
+                                <ul>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('documents.php') ?>"><?= e(t('doc.share_class_docs')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('company-policies.php') ?>"><?= e(t('doc.company_policies')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('other-documents.php') ?>"><?= e(t('doc.other_documents')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('updates-during-suspension.php') ?>"><?= e(t('doc.suspension_updates')) ?></a></li>
+                                </ul>
+                            </li>
+                            <li class="nav-item <?= is_active_nav('/announcements.php')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('announcements.php') ?>"><?= e(t('nav.announcements')) ?></a>
                             </li>
                             <li class="nav-item <?= is_active_nav('/contact.php')?'active':'' ?>">
                                 <a class="nav-link" href="<?= asset('contact.php') ?>"><?= e(t('nav.contact')) ?></a>

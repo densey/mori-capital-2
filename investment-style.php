@@ -106,8 +106,8 @@ include __DIR__ . '/src/partials/page-header.php';
 <div class="our-services" style="padding:70px 0;">
     <div class="container">
         <div style="background:linear-gradient(135deg,var(--primary-color,#1B3A5C),var(--accent-secondary-color,#122842));color:#fff;border-radius:14px;padding:50px;text-align:center;">
-            <h2 style="color:#fff;font-size:clamp(22px,2.6vw,30px);margin-bottom:14px;">Explore our funds</h2>
-            <p style="color:rgba(255,255,255,.8);max-width:620px;margin:0 auto 24px;font-size:15px;line-height:1.6;">Two specialist strategies that put the Mori Style into practice across the EEMEA region.</p>
+            <h2 style="color:#fff;font-size:clamp(22px,2.6vw,30px);margin-bottom:14px;"><?= e(t('hero.cta_funds')) ?></h2>
+            <p style="color:rgba(255,255,255,.8);max-width:620px;margin:0 auto 24px;font-size:15px;line-height:1.6;"><?= e(t('style.cta_text')) ?></p>
             <div style="display:inline-flex;gap:10px;flex-wrap:wrap;">
                 <a href="<?= asset('fund-eastern-european.php') ?>" class="btn-default">Eastern European Fund</a>
                 <a href="<?= asset('fund-ottoman.php') ?>" class="btn-default">Ottoman Fund</a>

@@ -85,8 +85,8 @@ include __DIR__ . '/src/partials/page-header.php';
             <!-- Info -->
             <div class="col-lg-5" style="padding-right:clamp(15px,3vw,30px);">
                 <div class="section-title">
-                    <span class="section-sub-title wow fadeInUp">Get in touch</span>
-                    <h2 style="font-size:clamp(24px,2.6vw,32px);">We'd love to hear from you</h2>
+                    <span class="section-sub-title wow fadeInUp"><?= e(t('contact.eyebrow')) ?></span>
+                    <h2 style="font-size:clamp(24px,2.6vw,32px);"><?= e(t('contact.heading')) ?></h2>
                 </div>
                 <p style="font-size:15px;color:var(--mori-text-soft,#5A6B7B);line-height:1.7;">Investors, intermediaries and journalists can reach us via the form, by phone or by email. Office hours are weekdays 09:00–18:00 CET.</p>
 

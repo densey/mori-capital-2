@@ -84,5 +84,54 @@ return [
 
     // Navigation extras
     'nav.performance'         => 'Performance',
+    'nav.announcements'       => 'Fondsmitteilungen',
     'btn.view_fund_docs'      => 'Fondsdokumente anzeigen',
+
+    // Document categories
+    'doc.share_class_docs'       => 'Anteilsklassen-Dokumente',
+    'doc.share_class_docs_title' => 'Dokumentenarchiv nach Anteilsklasse',
+    'doc.share_class_intro'      => 'Wählen Sie eine Anteilsklasse, um auf den Verkaufsprospekt, KIID, PRIIPs-KID, Berichte, Factsheets und das Performance-Diagramm der jeweiligen Klasse zuzugreifen. Teilfonds des Mori Umbrella Fund plc.',
+    'doc.company_policies'       => 'Unternehmensrichtlinien',
+    'doc.policies.intro'         => 'Aktuelle Unternehmens- und Betriebsrichtlinien der Mori Capital Management Ltd., jährlich aktualisiert.',
+    'doc.other_documents'        => 'Weitere Dokumente',
+    'doc.other.intro'            => 'Weitere fondsbezogene Dokumente, nach Jahr gruppiert.',
+    'doc.suspension_updates'     => 'Mitteilungen während der Aussetzung',
+    'doc.suspension.intro'       => 'Anlegerinformationen, die während der Aussetzung des Handels veröffentlicht wurden.',
+    'doc.fundhub.title'          => 'FundHub — Dokumentenarchiv',
+    'doc.fundhub.eyebrow'        => 'FundHub',
+    'doc.fundhub.desc'           => 'Dokumentenarchiv nach Anteilsklasse: Verkaufsprospekt, KIIDs, PRIIPs-KIDs, geprüfte Jahresberichte, Halbjahresberichte, Factsheets und Performance je Klasse.',
+    'doc.share_class'            => 'Anteilsklasse',
+    'doc.performance'            => 'Performance',
+    'doc.view_chart'             => 'Diagramm ansehen',
+    'doc.notes'                  => 'Hinweise',
+    'doc.matrix_notes'           => 'Verkaufsprospekt, geprüfte Jahres- und Halbjahresberichte gelten für alle Anteilsklassen des Umbrella-Fonds. KIID, PRIIPs-KID und Performance werden je Anteilsklasse geführt. Factsheet gilt je Fonds. Die PDF-Links öffnen jeweils die neueste Version; frühere Versionen sind auf Anfrage erhältlich.',
+    'doc.no_share_classes'       => 'Noch keine Anteilsklassen konfiguriert.',
+    'doc.no_policies'            => 'Noch keine Richtlinien veröffentlicht.',
+    'doc.no_other'               => 'Noch keine Dokumente in diesem Bereich.',
+    'doc.no_suspension'          => 'Keine Mitteilungen während der Aussetzung veröffentlicht.',
+    'doc.policy'                 => 'Richtlinie',
+    'doc.date'                   => 'Datum',
+
+    // Document types (matrix headers)
+    'doc.prospectus'             => 'Verkaufsprospekt',
+    'doc.kiid'                   => 'KIID',
+    'doc.priips'                 => 'PRIIPs',
+    'doc.annual'                 => 'Geprüfter Jahresbericht',
+    'doc.semi_annual'            => 'Halbjahresbericht',
+    'doc.factsheet'              => 'Factsheet',
+    'doc.freq.annually'          => 'Jährlich',
+    'doc.freq.quarterly'         => 'Quartalsweise',
+    'doc.freq.monthly'           => 'Monatlich',
+
+    // Announcements
+    'ann.eyebrow'                => 'Mitteilungen',
+    'ann.intro'                  => 'Anlegerinformationen und kurze Updates von Mori Capital Management Ltd.',
+    'ann.empty'                  => 'Derzeit keine Mitteilungen vorhanden.',
+
+    // Contact
+    'contact.eyebrow'            => 'Kontakt aufnehmen',
+    'contact.heading'            => 'Wir freuen uns auf Ihre Nachricht',
+
+    // Investment style page CTA
+    'style.cta_text'             => 'Zwei Spezialstrategien, die den Mori-Stil über die EEMEA-Region hinweg in die Praxis umsetzen.',
 ];

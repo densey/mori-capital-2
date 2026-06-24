@@ -84,5 +84,54 @@ return [
 
     // Navigation extras
     'nav.performance'         => 'Performance',
+    'nav.announcements'       => 'Fund Announcements',
     'btn.view_fund_docs'      => 'View Fund Documents',
+
+    // Document categories
+    'doc.share_class_docs'       => 'Share Class Documents',
+    'doc.share_class_docs_title' => 'Share-class document repository',
+    'doc.share_class_intro'      => 'Pick any share class to access the Prospectus, KIID, PRIIPs KID, accounts, factsheets and a per-class performance chart. Sub-fund of Mori Umbrella Fund plc.',
+    'doc.company_policies'       => 'Company Policies',
+    'doc.policies.intro'         => 'Current corporate and operational policies of Mori Capital Management Ltd., updated on an annual basis.',
+    'doc.other_documents'        => 'Other Documents',
+    'doc.other.intro'            => 'Additional fund-related documents, grouped by year.',
+    'doc.suspension_updates'     => 'Updates During Suspension',
+    'doc.suspension.intro'       => 'Investor updates issued during periods of dealing suspension.',
+    'doc.fundhub.title'          => 'FundHub — Document Repository',
+    'doc.fundhub.eyebrow'        => 'FundHub',
+    'doc.fundhub.desc'           => 'Share-class document repository: Prospectus, KIIDs, PRIIPs KIDs, Audited Accounts, Semi-Annual Accounts, Factsheets and per-class performance.',
+    'doc.share_class'            => 'Share class',
+    'doc.performance'            => 'Performance',
+    'doc.view_chart'             => 'View chart',
+    'doc.notes'                  => 'Notes',
+    'doc.matrix_notes'           => 'Prospectus, Audited Accounts and Semi-Annual Accounts apply to all share classes of the umbrella. KIID, PRIIPs KID and Performance are per share class. Factsheet is one per fund. PDF links open the latest version on file; previous versions are available on request.',
+    'doc.no_share_classes'       => 'No share classes configured yet.',
+    'doc.no_policies'            => 'No policies published yet.',
+    'doc.no_other'               => 'No documents in this section yet.',
+    'doc.no_suspension'          => 'No suspension-period updates published.',
+    'doc.policy'                 => 'Policy',
+    'doc.date'                   => 'Date',
+
+    // Document types (matrix headers)
+    'doc.prospectus'             => 'Prospectus',
+    'doc.kiid'                   => 'KIID',
+    'doc.priips'                 => 'PRIIPs',
+    'doc.annual'                 => 'Audited Accounts',
+    'doc.semi_annual'            => 'Semi-Annual Accounts',
+    'doc.factsheet'              => 'Factsheet',
+    'doc.freq.annually'          => 'Annually',
+    'doc.freq.quarterly'         => 'Quarterly',
+    'doc.freq.monthly'           => 'Monthly',
+
+    // Announcements
+    'ann.eyebrow'                => 'Announcements',
+    'ann.intro'                  => 'Investor notices and brief updates from Mori Capital Management Ltd.',
+    'ann.empty'                  => 'No announcements at this time.',
+
+    // Contact
+    'contact.eyebrow'            => 'Get in touch',
+    'contact.heading'            => "We'd love to hear from you",
+
+    // Investment style page CTA
+    'style.cta_text'             => 'Two specialist strategies that put the Mori Style into practice across the EEMEA region.',
 ];

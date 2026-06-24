@@ -69,7 +69,7 @@ include __DIR__ . '/src/partials/page-header.php';
                         </div>
                         <h3><?= e($ins['title']) ?></h3>
                         <p><?= e($ins['excerpt']) ?></p>
-                        <span class="insight-link">Read more <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></span>
+                        <span class="insight-link"><?= e(t('btn.read_more')) ?> <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></span>
                     </a>
                 </div>
                 <?php endforeach; ?>

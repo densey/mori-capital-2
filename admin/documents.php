@@ -73,15 +73,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
             throw new \Exception('Could not store the uploaded file.');
         }
 
+        $category = $_POST['category'] ?? 'share_class';
+        $allowedCats = ['share_class','company_policy','other','suspension_update'];
+        if (!in_array($category, $allowedCats, true)) $category = 'share_class';
+
         $id = $db->insert('documents', [
             'fund_id'       => $fundId,
             'document_type' => $type,
+            'category'      => $category,
             'title'         => $title,
+            'description'   => trim($_POST['description'] ?? '') ?: null,
             'file_path'     => $stored,
             'file_name'     => $orig,
             'file_size'     => filesize($target),
             'mime_type'     => mime_content_type($target) ?: null,
             'document_date' => $_POST['document_date'] ?: null,
+            'display_year'  => !empty($_POST['display_year']) ? (int)$_POST['display_year'] : null,
             'locale'        => in_array($_POST['locale'] ?? 'any', ['en','de','any'], true) ? $_POST['locale'] : 'any',
             'version_notes' => trim($_POST['version_notes'] ?? '') ?: null,
             'uploaded_by'   => Auth::userId(),
@@ -151,6 +158,24 @@ include __DIR__ . '/partials/layout-start.php';
 
             <div class="row">
                 <div>
+                    <label>Category *</label>
+                    <select name="category" required>
+                        <option value="share_class">Share Class Document (FundHub matrix)</option>
+                        <option value="company_policy">Company Policy</option>
+                        <option value="other">Other Document (year-grouped)</option>
+                        <option value="suspension_update">Update During Suspension</option>
+                    </select>
+                    <div class="hint">Determines where the document appears on the public site.</div>
+                </div>
+                <div>
+                    <label>Display year (for "Other Documents")</label>
+                    <input type="number" name="display_year" min="2020" max="2099" placeholder="e.g. 2026">
+                    <div class="hint">Used to group documents in the "Other Documents" section. Defaults to document date's year.</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div>
                     <label>Fund / Scope</label>
                     <select name="fund_id">
                         <option value="">— Umbrella / global (applies to all share classes)</option>
@@ -158,7 +183,6 @@ include __DIR__ . '/partials/layout-start.php';
                         <option value="<?= e($f['id']) ?>"><?= e($f['name_en']) ?> (per-fund)</option>
                         <?php endforeach; ?>
                     </select>
-                    <div class="hint">Leave empty for documents that cover all share classes (Prospectus, Audited &amp; Semi-Annual Accounts). Pick a fund for per-fund docs (Factsheet). Use the share-class multi-select below for per-class docs (KIID, PRIIPs).</div>
                 </div>
                 <div>
                     <label>Document type *</label>
@@ -174,14 +198,17 @@ include __DIR__ . '/partials/layout-start.php';
                     </select>
                 </div>
                 <div>
-                    <label>Language</label>
-                    <select name="locale">
-                        <option value="any">Any (no language)</option>
+                    <label>Language *</label>
+                    <select name="locale" required>
                         <option value="en">English</option>
                         <option value="de">Deutsch</option>
+                        <option value="any">Any (shown to both languages)</option>
                     </select>
                 </div>
             </div>
+
+            <label>Description (shown to users)</label>
+            <textarea name="description" rows="2" placeholder="Brief description shown on Company Policies / Other Documents listing"></textarea>
 
             <label>File * (PDF / DOC / XLS / CSV / TXT, max <?= e(setting('upload_max_mb','20')) ?>MB)</label>
             <input type="file" name="file" required accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt">

@@ -31,6 +31,7 @@ $user = Auth::user();
         <li><a href="<?= asset('admin/funds.php') ?>" class="<?= is_active_nav('/admin/funds.php')||is_active_nav('/admin/fund-edit.php')?'active':'' ?>"><i class="fa-solid fa-chart-pie"></i> Funds &amp; Share Classes</a></li>
         <li><a href="<?= asset('admin/performance.php') ?>" class="<?= is_active_nav('/admin/performance.php')?'active':'' ?>"><i class="fa-solid fa-chart-line"></i> Performance (NAV)</a></li>
         <li><a href="<?= asset('admin/documents.php') ?>" class="<?= is_active_nav('/admin/documents.php')?'active':'' ?>"><i class="fa-regular fa-folder-open"></i> Documents</a></li>
+        <li><a href="<?= asset('admin/announcements.php') ?>" class="<?= is_active_nav('/admin/announcements.php')?'active':'' ?>"><i class="fa-solid fa-bullhorn"></i> Fund Announcements</a></li>
 
         <li class="a-nav__section">Engagement</li>
         <li><a href="<?= asset('admin/messages.php') ?>" class="<?= is_active_nav('/admin/messages.php')?'active':'' ?>"><i class="fa-regular fa-envelope"></i> Contact Messages</a></li>

@@ -182,7 +182,7 @@ include __DIR__ . '/src/partials/header.php';
                             <p><?= e($fundsDesc) ?></p>
                         </div>
                         <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default" href="<?= asset('documents.php') ?>">Fund Documents</a>
+                            <a class="btn-default" href="<?= asset('documents.php') ?>"><?= e(t('btn.view_fund_docs')) ?></a>
                         </div>
                     </div>
                 </div>
@@ -244,7 +244,7 @@ include __DIR__ . '/src/partials/header.php';
                             if (!$styleDesc) $styleDesc = setting('hp_style_desc_en', 'Our investment philosophy is built on bottom-up stock picking with a macro overlay, in-house proprietary research, and active dialogue with company management.');
                         ?>
                         <div class="section-title">
-                            <span class="section-sub-title wow fadeInUp">The Mori Style</span>
+                            <span class="section-sub-title wow fadeInUp"><?= e(t('nav.investment_style')) ?></span>
                             <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.style.title')) ?></h2>
                             <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e($styleDesc) ?></p>
                         </div>
@@ -443,7 +443,7 @@ include __DIR__ . '/src/partials/header.php';
                         </div>
                         <h3><?= e($ins['title']) ?></h3>
                         <p><?= e($ins['excerpt']) ?></p>
-                        <span class="insight-link">Read more <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></span>
+                        <span class="insight-link"><?= e(t('btn.read_more')) ?> <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></span>
                     </a>
                 </div>
                 <?php endforeach; ?>
