@@ -63,7 +63,7 @@ include __DIR__ . '/src/partials/header.php';
             </video>
         </div>
         <?php endif; ?>
-        <div class="hero-bg-overlay" style="position:absolute;inset:0;background:linear-gradient(125deg, rgba(8,18,33,.78) 0%, rgba(18,40,66,.62) 50%, rgba(27,58,92,.45) 100%);pointer-events:none;z-index:1;"></div>
+        <div class="hero-bg-overlay" style="position:absolute;inset:0;background:linear-gradient(125deg, rgba(8,18,33,.55) 0%, rgba(18,40,66,.35) 50%, rgba(27,58,92,.20) 100%);pointer-events:none;z-index:1;"></div>
 
         <div class="container">
             <div class="row section-row align-items-center">

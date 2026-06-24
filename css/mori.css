@@ -26,8 +26,9 @@ body {
     padding-bottom: clamp(60px, 8vh, 100px) !important;
     overflow: hidden !important;
 }
+/* Theme's ::before overlay disabled — we use .hero-bg-overlay div instead */
 .hero::before {
-    background: linear-gradient(125deg, rgba(8,18,33,.78) 0%, rgba(18,40,66,.62) 50%, rgba(27,58,92,.45) 100%) !important;
+    display: none !important;
 }
 
 /* ----- Sub-page header (.page-header) — slim banner -------------------- */
@@ -36,7 +37,7 @@ body {
     min-height: auto !important;
 }
 .page-header:before {
-    background: linear-gradient(135deg, rgba(8,18,33,.78) 0%, rgba(27,58,92,.55) 100%) !important;
+    background: linear-gradient(135deg, rgba(8,18,33,.62) 0%, rgba(27,58,92,.38) 100%) !important;
 }
 .page-header .page-header-box {
     padding: 0 !important;                /* partial inline-padding is now unnecessary */
@@ -99,11 +100,17 @@ body {
 
 /* ----- Tighter menu spacing + smaller font ------------------------------- */
 .main-menu ul li a {
-    font-size: 16px !important;
-    padding: 10px 7px !important;
+    font-size: 14px !important;
+    padding: 10px 6px !important;
+    white-space: nowrap;
 }
 .main-menu .nav-menu-wrapper {
-    margin: 0 0.5vw !important;
+    margin: 0 0.4vw !important;
+}
+/* On large screens, shrink slightly more if needed */
+@media (min-width: 992px) and (max-width: 1399px) {
+    .main-menu ul li a { font-size: 13px !important; padding: 9px 5px !important; }
+    .main-header .navbar-brand img { height: 90px !important; }
 }
 .main-menu ul li {
     margin: 0 1px !important;
