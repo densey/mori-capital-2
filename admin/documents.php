@@ -189,12 +189,13 @@ include __DIR__ . '/partials/layout-start.php';
                     </select>
                 </div>
                 <div>
-                    <label>Language *</label>
+                    <label>Language *  <span style="font-size:11px;color:var(--a-muted);font-weight:400;">— who sees this file?</span></label>
                     <select name="locale" required>
-                        <option value="en">English</option>
-                        <option value="de">Deutsch</option>
-                        <option value="any">Any (shown to both languages)</option>
+                        <option value="any" selected>🌐 Both — shown on EN and DE sites (default)</option>
+                        <option value="en">🇬🇧 English only — hidden on DE site</option>
+                        <option value="de">🇩🇪 Deutsch only — hidden on EN site</option>
                     </select>
+                    <div class="hint">Pick "Both" for documents like policies that are language-neutral. Pick a specific language when you have separate EN and DE files of the same document.</div>
                 </div>
             </div>
 
