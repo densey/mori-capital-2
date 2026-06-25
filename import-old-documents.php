@@ -73,14 +73,17 @@ function import_one(array $doc, string $category, ?int $year, $db, string $SOURC
     // Make file name safe + collision-free
     $stored = 'imported-other/' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $basename);
 
-    // Already imported?
+    // Explicit locale wins; fall back to title-based detection
+    $locale = $doc['locale'] ?? detect_locale((string)$doc['title']);
+
+    // Already imported? Match by file_name within the same category — locale is
+    // updated, not used as a uniqueness key.
     $exists = $db->fetchColumn(
-        'SELECT id FROM documents WHERE file_path = :p OR file_name = :n LIMIT 1',
-        ['p' => $stored, 'n' => $basename]
+        'SELECT id FROM documents WHERE file_name = :n AND category = :c LIMIT 1',
+        ['n' => $basename, 'c' => $category]
     );
 
     $title  = clean_title((string)$doc['title']);
-    $locale = detect_locale((string)$doc['title']);
 
     if ($exists) {
         // Update title, description, category, year, locale on the existing row.
