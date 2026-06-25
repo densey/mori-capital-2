@@ -176,15 +176,6 @@ include __DIR__ . '/partials/layout-start.php';
 
             <div class="row">
                 <div>
-                    <label>Fund / Scope</label>
-                    <select name="fund_id">
-                        <option value="">— Umbrella / global (applies to all share classes)</option>
-                        <?php foreach ($funds as $f): ?>
-                        <option value="<?= e($f['id']) ?>"><?= e($f['name_en']) ?> (per-fund)</option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div>
                     <label>Document type *</label>
                     <select name="document_type" required>
                         <option value="prospectus">Prospectus</option>
@@ -207,24 +198,89 @@ include __DIR__ . '/partials/layout-start.php';
                 </div>
             </div>
 
-            <label>Description (shown to users)</label>
-            <textarea name="description" rows="2" placeholder="Brief description shown on Company Policies / Other Documents listing"></textarea>
+            <!-- Scope selector with 3 explicit modes -->
+            <div style="background:var(--a-border-soft);padding:14px 18px;border-radius:8px;margin:14px 0;">
+                <label style="font-weight:700;">Scope *  <span style="color:var(--a-muted);font-weight:400;font-size:11px;">— who sees this document in the matrix?</span></label>
+                <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+                    <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-weight:400;font-size:13px;">
+                        <input type="radio" name="scope_mode" value="share_class" checked onchange="updScope()">
+                        <span><strong>Per share class</strong> — for KIID, PRIIPs KID. Choose specific share class(es) below. Each share class sees its own file in the matrix.</span>
+                    </label>
+                    <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-weight:400;font-size:13px;">
+                        <input type="radio" name="scope_mode" value="fund" onchange="updScope()">
+                        <span><strong>Per fund</strong> — for Factsheet (one per fund). Choose the fund below. All share classes of that fund see the same file.</span>
+                    </label>
+                    <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-weight:400;font-size:13px;">
+                        <input type="radio" name="scope_mode" value="umbrella" onchange="updScope()">
+                        <span><strong>Umbrella (all share classes)</strong> — for Prospectus, Audited Accounts, Semi-Annual Accounts. Applies to every share class.</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Per-fund picker (visible when scope=fund) -->
+            <div id="scope-fund" style="display:none;">
+                <label>Fund</label>
+                <select name="fund_id_select">
+                    <option value="">— select a fund —</option>
+                    <?php foreach ($funds as $f): ?>
+                    <option value="<?= e($f['id']) ?>"><?= e($f['name_en']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
+            <!-- Per-share-class picker (visible when scope=share_class) -->
+            <?php if (!empty($shareClasses)): ?>
+            <div id="scope-sc">
+                <label>Share class(es) — tick one or more</label>
+                <div style="background:#fff;border:1px solid var(--a-border);border-radius:6px;padding:12px 14px;max-height:220px;overflow-y:auto;">
+                    <?php $lastFundId = null; foreach ($shareClasses as $sc):
+                        if ($lastFundId !== $sc['fund_id']):
+                            if ($lastFundId !== null) echo '</div>';
+                            $lastFundId = $sc['fund_id']; ?>
+                        <div style="margin-top:8px;font-size:11px;font-weight:700;color:var(--a-navy);text-transform:uppercase;letter-spacing:0.08em;padding-top:6px;border-top:1px solid var(--a-border-soft);"><?= e($sc['fund_name']) ?></div>
+                        <div style="padding:6px 0;">
+                    <?php endif; ?>
+                    <label style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;margin:2px 4px 2px 0;background:var(--a-border-soft);border-radius:4px;font-size:12.5px;cursor:pointer;font-weight:400;">
+                        <input type="checkbox" name="share_classes[]" value="<?= e($sc['id']) ?>">
+                        <?= e($sc['name']) ?> (<?= e($sc['currency']) ?>)
+                    </label>
+                    <?php endforeach; if ($lastFundId !== null) echo '</div>'; ?>
+                </div>
+            </div>
+            <?php endif; ?>
+            <input type="hidden" name="fund_id" id="fund_id_hidden" value="">
+
+            <label>Description (shown to users on Company Policies / Other Documents listing)</label>
+            <textarea name="description" rows="2" placeholder="Optional — shown beneath the title on policy/other-documents pages"></textarea>
 
             <label>File * (PDF / DOC / XLS / CSV / TXT, max <?= e(setting('upload_max_mb','20')) ?>MB)</label>
             <input type="file" name="file" required accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt">
 
-            <label>Version notes (optional)</label>
+            <label>Version notes (optional, internal)</label>
             <textarea name="version_notes" rows="2" placeholder="e.g. v2 — corrects holdings table on p.3"></textarea>
 
-            <?php if (!empty($shareClasses)): ?>
-            <label>Applies to share classes (optional — multi-select)</label>
-            <select name="share_classes[]" multiple size="6" style="height:auto;">
-                <?php foreach ($shareClasses as $sc): ?>
-                <option value="<?= e($sc['id']) ?>"><?= e($sc['fund_name']) ?> — <?= e($sc['name']) ?> (<?= e($sc['currency']) ?>)</option>
-                <?php endforeach; ?>
-            </select>
-            <div class="hint">Hold Ctrl/Cmd to select multiple.</div>
-            <?php endif; ?>
+            <script>
+            function updScope() {
+                var mode = document.querySelector('input[name="scope_mode"]:checked').value;
+                document.getElementById('scope-fund').style.display = mode === 'fund' ? 'block' : 'none';
+                var sc = document.getElementById('scope-sc');
+                if (sc) sc.style.display = mode === 'share_class' ? 'block' : 'none';
+                // Sync fund_id hidden field
+                var hidden = document.getElementById('fund_id_hidden');
+                if (mode === 'fund') {
+                    var sel = document.querySelector('select[name="fund_id_select"]');
+                    hidden.value = sel ? sel.value : '';
+                    if (sel) sel.onchange = function() { hidden.value = this.value; };
+                } else {
+                    hidden.value = '';  // share_class + umbrella → no fund_id (umbrella) or fund inferred from share class
+                }
+                // Clear share class checkboxes when not in share_class mode
+                if (mode !== 'share_class') {
+                    document.querySelectorAll('input[name="share_classes[]"]').forEach(function(c){ c.checked = false; });
+                }
+            }
+            window.addEventListener('DOMContentLoaded', updScope);
+            </script>
 
             <button class="a-btn lg" type="submit" style="margin-top:20px;"><i class="fa-solid fa-cloud-arrow-up"></i> Upload document</button>
         </form>

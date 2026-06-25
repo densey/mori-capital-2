@@ -393,15 +393,15 @@ include __DIR__ . '/src/partials/header.php';
                             </div>
                             <div class="tilt-layer tilt-chip tilt-chip--ccy">
                                 <i class="fa-solid fa-coins"></i>
-                                <div><div class="chip-lbl">Multi-currency</div><div class="chip-val">EUR · USD · GBP · TRY</div></div>
+                                <div><div class="chip-lbl"><?= e(setting('hp_cine_ccy_lbl', 'Multi-currency')) ?></div><div class="chip-val"><?= e(setting('hp_cine_ccy_val', 'EUR · USD · GBP')) ?></div></div>
                             </div>
                             <div class="tilt-layer tilt-chip tilt-chip--perf">
                                 <i class="fa-solid fa-arrow-trend-up"></i>
-                                <div><div class="chip-lbl">10Y Annualised</div><div class="chip-val"><?= e(setting('hp_cine_10y', '+11.7%')) ?> <span style="color:#1ABC9C;font-size:11px;">vs benchmark</span></div></div>
+                                <div><div class="chip-lbl"><?= e(setting('hp_cine_10y_lbl', '10Y Annualised')) ?></div><div class="chip-val"><?= e(setting('hp_cine_10y', '+11.7%')) ?> <span style="color:#1ABC9C;font-size:11px;"><?= e(setting('hp_cine_10y_suffix', 'vs benchmark')) ?></span></div></div>
                             </div>
                             <div class="tilt-layer tilt-chip tilt-chip--aum">
                                 <i class="fa-solid fa-shield-halved"></i>
-                                <div><div class="chip-lbl">UCITS · Daily liquidity</div><div class="chip-val">MFSA C66999</div></div>
+                                <div><div class="chip-lbl"><?= e(setting('hp_cine_aum_lbl', 'UCITS · Daily liquidity')) ?></div><div class="chip-val"><?= e(setting('hp_cine_aum_val', 'MFSA C66999')) ?></div></div>
                             </div>
                         </div>
                     </div>

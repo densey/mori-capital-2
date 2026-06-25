@@ -148,6 +148,20 @@ include __DIR__ . '/partials/layout-start.php';
                 <div><label>Showcase YTD %</label><input type="text" name="settings[hp_cine_ytd]" value="<?= hp('hp_cine_ytd', '▲ 18.4% YTD') ?>"></div>
                 <div><label>10Y annualised display</label><input type="text" name="settings[hp_cine_10y]" value="<?= hp('hp_cine_10y', '+11.7%') ?>"></div>
             </div>
+
+            <p style="font-size:12px;color:var(--a-muted);margin:18px 0 10px;font-weight:600;">Floating info chips around the showcase card</p>
+            <div class="row">
+                <div><label>Currency chip label</label><input type="text" name="settings[hp_cine_ccy_lbl]" value="<?= hp('hp_cine_ccy_lbl', 'Multi-currency') ?>"></div>
+                <div><label>Currency chip value</label><input type="text" name="settings[hp_cine_ccy_val]" value="<?= hp('hp_cine_ccy_val', 'EUR · USD · GBP') ?>"><small style="font-size:11px;color:var(--a-muted);">Separate currencies with " · "</small></div>
+            </div>
+            <div class="row">
+                <div><label>10Y chip label</label><input type="text" name="settings[hp_cine_10y_lbl]" value="<?= hp('hp_cine_10y_lbl', '10Y Annualised') ?>"></div>
+                <div><label>10Y chip suffix</label><input type="text" name="settings[hp_cine_10y_suffix]" value="<?= hp('hp_cine_10y_suffix', 'vs benchmark') ?>"></div>
+            </div>
+            <div class="row">
+                <div><label>Regulatory chip label</label><input type="text" name="settings[hp_cine_aum_lbl]" value="<?= hp('hp_cine_aum_lbl', 'UCITS · Daily liquidity') ?>"></div>
+                <div><label>Regulatory chip value</label><input type="text" name="settings[hp_cine_aum_val]" value="<?= hp('hp_cine_aum_val', 'MFSA C66999') ?>"></div>
+            </div>
         </div>
     </div>
 
