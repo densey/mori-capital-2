@@ -35,3 +35,6 @@ node_modules/
 *.bak
 *.swp
 *~
+
+# One-shot importer artefacts (committed only the .json source lists)
+/uploads/documents/imported-other/
