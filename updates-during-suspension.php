@@ -13,7 +13,7 @@ try {
         'SELECT d.* FROM documents d
           WHERE d.category = "suspension_update"
             AND (d.locale = :loc OR d.locale = "any")
-          ORDER BY COALESCE(d.document_date, d.created_at) DESC',
+          ORDER BY d.display_order ASC, COALESCE(d.document_date, d.created_at) DESC',
         ['loc' => I18n::locale()]
     );
 } catch (\Throwable) {}

@@ -16,6 +16,29 @@ use function Mori\setting;
 Auth::requireLogin();
 $db = Database::instance();
 
+// AJAX: reorder documents (drag-and-drop)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reorder') {
+    header('Content-Type: application/json');
+    try {
+        Csrf::requireValid();
+        $ids = $_POST['ids'] ?? [];
+        if (!is_array($ids) || empty($ids)) throw new \Exception('No IDs provided.');
+        $pdo = $db->pdo();
+        $pdo->beginTransaction();
+        $stmt = $pdo->prepare('UPDATE documents SET display_order = :ord WHERE id = :id');
+        foreach ($ids as $pos => $id) {
+            $stmt->execute(['ord' => (int)$pos + 1, 'id' => (int)$id]);
+        }
+        $pdo->commit();
+        AuditLog::log(Auth::userId(), 'documents_reordered', 'documents', null, count($ids) . ' rows');
+        echo json_encode(['ok' => true, 'count' => count($ids)]);
+    } catch (\Throwable $e) {
+        if (isset($pdo) && $pdo->inTransaction()) $pdo->rollBack();
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 // Delete document
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
     Csrf::requireValid();
@@ -115,11 +138,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
 
 // List
 $where = []; $params = [];
-if (!empty($_GET['fund'])) { $where[] = 'd.fund_id = :f'; $params['f'] = (int)$_GET['fund']; }
-if (!empty($_GET['type'])) { $where[] = 'd.document_type = :t'; $params['t'] = (string)$_GET['type']; }
+if (!empty($_GET['fund']))     { $where[] = 'd.fund_id = :f';     $params['f'] = (int)$_GET['fund']; }
+if (!empty($_GET['type']))     { $where[] = 'd.document_type = :t'; $params['t'] = (string)$_GET['type']; }
+if (!empty($_GET['category'])) { $where[] = 'd.category = :c';     $params['c'] = (string)$_GET['category']; }
+// When a single category is being filtered, order by display_order so the admin
+// view matches what visitors see and drag-reorder takes effect immediately.
+$orderBy = !empty($_GET['category'])
+    ? ' ORDER BY d.display_order ASC, d.created_at DESC'
+    : ' ORDER BY d.created_at DESC';
 $sql = 'SELECT d.*, f.name_en AS fund_name FROM documents d LEFT JOIN funds f ON f.id = d.fund_id'
      . ($where ? ' WHERE ' . implode(' AND ', $where) : '')
-     . ' ORDER BY d.created_at DESC';
+     . $orderBy;
 $documents = $db->fetchAll($sql, $params);
 $funds = $db->fetchAll('SELECT * FROM funds ORDER BY display_order');
 $shareClasses = $db->fetchAll('SELECT sc.*, f.name_en AS fund_name FROM share_classes sc LEFT JOIN funds f ON f.id=sc.fund_id ORDER BY f.display_order, sc.display_order');
@@ -291,7 +320,16 @@ include __DIR__ . '/partials/layout-start.php';
 
 <div class="a-card">
     <div class="a-card__head">
-        <form method="get" style="display:flex;gap:8px;align-items:end;">
+        <form method="get" style="display:flex;gap:8px;align-items:end;flex-wrap:wrap;">
+            <div>
+                <label style="display:block;font-size:11px;color:var(--a-muted);font-weight:600;margin-bottom:4px;">Section</label>
+                <select name="category" onchange="this.form.submit()" class="input" style="padding:6px 10px;font-size:13px;">
+                    <option value="">All sections</option>
+                    <?php foreach (['share_class'=>'Share Class (FundHub)','company_policy'=>'Company Policies','other'=>'Other Documents','suspension_update'=>'Updates During Suspension'] as $k => $lbl): ?>
+                    <option value="<?= e($k) ?>" <?= ($_GET['category'] ?? '') === $k?'selected':'' ?>><?= e($lbl) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
             <div>
                 <label style="display:block;font-size:11px;color:var(--a-muted);font-weight:600;margin-bottom:4px;">Fund</label>
                 <select name="fund" onchange="this.form.submit()" class="input" style="padding:6px 10px;font-size:13px;">
@@ -313,16 +351,33 @@ include __DIR__ . '/partials/layout-start.php';
         </form>
         <a class="a-btn" href="<?= asset('admin/documents.php?action=upload') ?>"><i class="fa-solid fa-upload"></i> Upload</a>
     </div>
+    <?php $canReorder = !empty($_GET['category']); ?>
+    <?php if ($canReorder): ?>
+    <div style="padding:10px 18px;background:#E8F8F4;border-bottom:1px solid var(--a-border);color:#0F6B5C;font-size:12.5px;">
+        <i class="fa-solid fa-grip-vertical"></i> Drag any row by its handle to reorder. Changes save automatically.
+        <span id="reorderStatus" style="margin-left:10px;font-weight:600;"></span>
+    </div>
+    <?php else: ?>
+    <div style="padding:10px 18px;background:var(--a-border-soft);border-bottom:1px solid var(--a-border);color:var(--a-muted);font-size:12px;">
+        <i class="fa-solid fa-circle-info"></i> Choose a <strong>Section</strong> above to enable drag-and-drop reordering.
+    </div>
+    <?php endif; ?>
     <div class="a-card__body" style="padding:0;">
-        <table class="a-table">
+        <table class="a-table" id="docTable">
             <thead>
-                <tr><th>Title</th><th>Fund</th><th>Type</th><th>Date</th><th>Size</th><th>Downloads</th><th></th></tr>
-            </thead>
-            <tbody>
-                <?php if (empty($documents)): ?>
-                <tr><td colspan="7" style="padding:30px;text-align:center;color:var(--a-muted);">No documents yet.</td></tr>
-                <?php else: foreach ($documents as $d): ?>
                 <tr>
+                    <?php if ($canReorder): ?><th style="width:30px;"></th><?php endif; ?>
+                    <th>Title</th><th>Fund</th><th>Type</th><th>Date</th><th>Size</th><th>Downloads</th><th></th>
+                </tr>
+            </thead>
+            <tbody id="docRows">
+                <?php if (empty($documents)): ?>
+                <tr><td colspan="<?= $canReorder ? 8 : 7 ?>" style="padding:30px;text-align:center;color:var(--a-muted);">No documents yet.</td></tr>
+                <?php else: foreach ($documents as $d): ?>
+                <tr data-id="<?= e($d['id']) ?>">
+                    <?php if ($canReorder): ?>
+                    <td style="cursor:grab;color:var(--a-muted);text-align:center;" class="drag-handle" title="Drag to reorder"><i class="fa-solid fa-grip-vertical"></i></td>
+                    <?php endif; ?>
                     <td><strong><?= e($d['title']) ?></strong><br><small><?= e($d['file_name']) ?></small></td>
                     <td><?= e($d['fund_name'] ?? '—') ?></td>
                     <td><span class="a-badge teal"><?= e(strtoupper(str_replace('_',' ',$d['document_type']))) ?></span></td>
@@ -344,5 +399,52 @@ include __DIR__ . '/partials/layout-start.php';
         </table>
     </div>
 </div>
+
+<?php if ($canReorder): ?>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+<script>
+(function () {
+    var tbody = document.getElementById('docRows');
+    var status = document.getElementById('reorderStatus');
+    var csrf = <?= json_encode(Csrf::token()) ?>;
+    if (!tbody) return;
+
+    var sortable = Sortable.create(tbody, {
+        handle: '.drag-handle',
+        animation: 150,
+        ghostClass: 'reorder-ghost',
+        onEnd: function () {
+            var rows = tbody.querySelectorAll('tr[data-id]');
+            var ids = Array.from(rows).map(function (r) { return r.getAttribute('data-id'); });
+            status.textContent = 'Saving…';
+            status.style.color = '#0F6B5C';
+            var fd = new FormData();
+            fd.append('action', 'reorder');
+            fd.append('_csrf', csrf);
+            ids.forEach(function (id) { fd.append('ids[]', id); });
+            fetch(window.location.pathname, { method: 'POST', body: fd, headers: { 'X-CSRF-Token': csrf } })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (j && j.ok) {
+                        status.textContent = '✓ Saved (' + j.count + ' rows)';
+                        setTimeout(function () { status.textContent = ''; }, 2500);
+                    } else {
+                        status.textContent = 'Save failed: ' + (j && j.error || 'unknown');
+                        status.style.color = '#C0392B';
+                    }
+                })
+                .catch(function () {
+                    status.textContent = 'Network error — try again.';
+                    status.style.color = '#C0392B';
+                });
+        }
+    });
+})();
+</script>
+<style>
+.reorder-ghost { opacity: .4; background: #E8F8F4 !important; }
+#docTable tr[data-id]:hover .drag-handle { color: var(--a-teal) !important; }
+</style>
+<?php endif; ?>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

@@ -15,6 +15,7 @@ try {
             AND (d.locale = :loc OR d.locale = "any")
             AND COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) >= 2024
           ORDER BY COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) DESC,
+                   d.display_order ASC,
                    COALESCE(d.document_date, d.created_at) DESC',
         ['loc' => I18n::locale()]
     );

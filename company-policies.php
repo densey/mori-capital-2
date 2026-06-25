@@ -13,7 +13,7 @@ try {
         'SELECT d.* FROM documents d
           WHERE d.category = "company_policy"
             AND (d.locale = :loc OR d.locale = "any")
-          ORDER BY d.title ASC',
+          ORDER BY d.display_order ASC, d.title ASC',
         ['loc' => I18n::locale()]
     );
 } catch (\Throwable) {}
