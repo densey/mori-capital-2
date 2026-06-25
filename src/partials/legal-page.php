@@ -41,7 +41,7 @@ include __DIR__ . '/page-header.php';
                         <?= $pageData['body'] ?? '<p>Content not yet published. Add it from the admin panel.</p>' ?>
                     </article>
                     <div style="margin-top:30px;padding-top:18px;border-top:1px solid var(--mori-border,#E1E7EE);font-size:12px;color:var(--mori-muted,#7A8B99);">
-                        Last updated: <?= e(\Mori\format_date($pageData['updated_at'] ?? null) ?: '—') ?>
+                        <?= e(\Mori\t('legal.last_updated')) ?>: <?= e(\Mori\format_date($pageData['updated_at'] ?? null) ?: '—') ?>
                     </div>
                 </div>
             </div>

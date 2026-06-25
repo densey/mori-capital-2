@@ -75,7 +75,7 @@ $year = date('Y');
                             <?= Csrf::field() ?>
                             <div class="form-group">
                                 <input type="email" name="mail" class="form-control" id="mail" placeholder="<?= e(t('contact.form.email')) ?>" required>
-                                <button type="submit" class="newsletter-btn" aria-label="Subscribe"><i class="fa-regular fa-paper-plane"></i></button>
+                                <button type="submit" class="newsletter-btn" aria-label="<?= e(t('btn.subscribe')) ?>"><i class="fa-regular fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>

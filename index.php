@@ -35,8 +35,8 @@ try {
 }
 
 $page = [
-    'title'       => setting('seo_default_title', 'Mori Capital Management — Specialists in EEMEA Markets'),
-    'description' => setting('seo_default_desc'),
+    'title'       => setting('seo_default_title', t('page.home.title')),
+    'description' => setting('seo_default_desc', t('page.home.desc')),
     'body_class'  => 'home',
 ];
 

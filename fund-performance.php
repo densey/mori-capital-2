@@ -21,7 +21,7 @@ try {
 }
 
 $page = [
-    'title' => 'Fund Performance — Mori Capital',
+    'title' => t('page.fund_performance.title') . ' — Mori Capital',
     'description' => 'Interactive performance chart and NAV history for Mori funds and share classes.',
     'breadcrumb' => [
         ['label' => t('nav.home'), 'url' => asset('/')],
@@ -40,7 +40,7 @@ include __DIR__ . '/src/partials/page-header.php';
         <!-- Selectors -->
         <form method="get" style="display:flex;gap:16px;flex-wrap:wrap;align-items:end;background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:22px 24px;margin-bottom:30px;">
             <div style="flex:1;min-width:0;">
-                <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;">Fund</label>
+                <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e(t('nav.funds')) ?></label>
                 <select name="fund" onchange="this.form.submit()" style="width:100%;padding:10px 12px;border:1px solid var(--mori-border,#E1E7EE);border-radius:6px;font-family:inherit;font-size:14px;">
                     <?php foreach ($funds as $f): ?>
                         <option value="<?= e($f['id']) ?>" <?= $selectedFundId==$f['id']?'selected':'' ?>><?= e($f['name_en']) ?></option>
@@ -48,7 +48,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 </select>
             </div>
             <div style="flex:1;min-width:0;">
-                <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;">Share class</label>
+                <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e(t('doc.share_class')) ?></label>
                 <select name="class" onchange="this.form.submit()" style="width:100%;padding:10px 12px;border:1px solid var(--mori-border,#E1E7EE);border-radius:6px;font-family:inherit;font-size:14px;">
                     <?php foreach ($shareClasses as $sc): ?>
                         <option value="<?= e($sc['id']) ?>" <?= $selectedScId==$sc['id']?'selected':'' ?>>

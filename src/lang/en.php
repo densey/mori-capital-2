@@ -141,4 +141,16 @@ return [
 
     // Cinematic CTA button
     'cine.cta'                   => 'Discover the Mori Style',
+
+    // Page titles (DE locale-aware)
+    'page.home.title'            => 'Mori Capital Management — Specialists in EEMEA Markets',
+    'page.home.desc'             => 'Independent EEMEA-focused asset manager. Mori Eastern European Fund and Mori Ottoman Fund — research-led investing across Emerging Europe, the Middle East and Africa since 1998.',
+    'page.fund_performance.title'=> 'Fund Performance',
+    'page.insights.subtitle'     => 'Insights & Market Commentary',
+
+    // Buttons / labels
+    'btn.subscribe'              => 'Subscribe',
+
+    // Legal page
+    'legal.last_updated'         => 'Last updated',
 ];

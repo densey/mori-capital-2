@@ -28,7 +28,7 @@ $categories = [
 ];
 
 $page = [
-    'title'       => 'Mori Views — Insights & Market Commentary',
+    'title'       => 'Mori Views — ' . t('page.insights.subtitle'),
     'description' => 'Quarterly outlooks, fund factsheets and shareholder communications.',
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],

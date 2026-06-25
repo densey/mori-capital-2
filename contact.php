@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $page = [
-    'title'       => 'Contact — Mori Capital',
+    'title'       => t('nav.contact') . ' — Mori Capital',
     'description' => 'Reach our Malta office. Mori Capital Management Ltd., Regent House, Sliema.',
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
