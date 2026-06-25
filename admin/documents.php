@@ -137,13 +137,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
 }
 
 // List
+// Detect whether the display_order migration has been applied yet — without it
+// the SELECT below would 500 on staging. If the column is missing the admin
+// list still works, just without drag-reorder.
+$hasOrderCol = false;
+try {
+    $hasOrderCol = (int)$db->fetchColumn(
+        "SELECT COUNT(*) FROM information_schema.COLUMNS
+          WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = 'documents'
+            AND COLUMN_NAME = 'display_order'"
+    ) > 0;
+} catch (\Throwable) {}
+
 $where = []; $params = [];
 if (!empty($_GET['fund']))     { $where[] = 'd.fund_id = :f';     $params['f'] = (int)$_GET['fund']; }
 if (!empty($_GET['type']))     { $where[] = 'd.document_type = :t'; $params['t'] = (string)$_GET['type']; }
-if (!empty($_GET['category'])) { $where[] = 'd.category = :c';     $params['c'] = (string)$_GET['category']; }
-// When a single category is being filtered, order by display_order so the admin
-// view matches what visitors see and drag-reorder takes effect immediately.
-$orderBy = !empty($_GET['category'])
+if (!empty($_GET['category']) && $hasOrderCol) { $where[] = 'd.category = :c'; $params['c'] = (string)$_GET['category']; }
+elseif (!empty($_GET['category'])) { $where[] = 'd.category = :c'; $params['c'] = (string)$_GET['category']; }
+
+// When a single category is being filtered AND the migration has been applied,
+// order by display_order so the admin view matches what visitors see and
+// drag-reorder takes effect immediately.
+$orderBy = (!empty($_GET['category']) && $hasOrderCol)
     ? ' ORDER BY d.display_order ASC, d.created_at DESC'
     : ' ORDER BY d.created_at DESC';
 $sql = 'SELECT d.*, f.name_en AS fund_name FROM documents d LEFT JOIN funds f ON f.id = d.fund_id'
@@ -351,11 +367,15 @@ include __DIR__ . '/partials/layout-start.php';
         </form>
         <a class="a-btn" href="<?= asset('admin/documents.php?action=upload') ?>"><i class="fa-solid fa-upload"></i> Upload</a>
     </div>
-    <?php $canReorder = !empty($_GET['category']); ?>
+    <?php $canReorder = !empty($_GET['category']) && $hasOrderCol; ?>
     <?php if ($canReorder): ?>
     <div style="padding:10px 18px;background:#E8F8F4;border-bottom:1px solid var(--a-border);color:#0F6B5C;font-size:12.5px;">
         <i class="fa-solid fa-grip-vertical"></i> Drag any row by its handle to reorder. Changes save automatically.
         <span id="reorderStatus" style="margin-left:10px;font-weight:600;"></span>
+    </div>
+    <?php elseif (!empty($_GET['category']) && !$hasOrderCol): ?>
+    <div style="padding:10px 18px;background:#FFF3CD;border-bottom:1px solid var(--a-border);color:#8B5A00;font-size:12.5px;">
+        <i class="fa-solid fa-triangle-exclamation"></i> Drag-and-drop reordering needs a one-time database update. Visit <a href="<?= asset('install.php') ?>" style="color:#8B5A00;text-decoration:underline;font-weight:600;">install.php</a> to apply pending migrations.
     </div>
     <?php else: ?>
     <div style="padding:10px 18px;background:var(--a-border-soft);border-bottom:1px solid var(--a-border);color:var(--a-muted);font-size:12px;">

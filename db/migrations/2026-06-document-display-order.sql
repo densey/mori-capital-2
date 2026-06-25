@@ -17,18 +17,8 @@ SET @sql := IF(@idx_exists = 0,
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
 -- Seed initial ordering so the lists don't reshuffle the moment the column appears.
--- Order within each (category, display_year, locale) bucket follows current visible
--- ordering: newest date first, then created_at desc.
-SET @rownum := 0;
-UPDATE documents d
-JOIN (
-    SELECT id,
-           (@rownum := @rownum + 1) AS rn
-      FROM documents
-     ORDER BY category,
-              COALESCE(display_year, YEAR(document_date), YEAR(created_at)) DESC,
-              COALESCE(document_date, created_at) DESC,
-              id ASC
-) ranked ON ranked.id = d.id
-SET d.display_order = ranked.rn
-WHERE d.display_order = 0;
+-- We simply use the row id as a proxy for "creation order" — older rows get
+-- lower display_order (appear first), newer ones go to the end. The admin can
+-- then drag to reorder. We avoid @rownum-based UPDATEs because they fail on
+-- some MariaDB/MySQL strict-mode setups.
+UPDATE documents SET display_order = id WHERE display_order = 0;

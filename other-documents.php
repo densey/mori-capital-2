@@ -9,16 +9,28 @@ use function Mori\t;
 
 $grouped = [];
 try {
-    $rows = Database::instance()->fetchAll(
-        'SELECT d.* FROM documents d
-          WHERE d.category = "other"
-            AND (d.locale = :loc OR d.locale = "any")
-            AND COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) >= 2024
-          ORDER BY COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) DESC,
-                   d.display_order ASC,
-                   COALESCE(d.document_date, d.created_at) DESC',
-        ['loc' => I18n::locale()]
-    );
+    try {
+        $rows = Database::instance()->fetchAll(
+            'SELECT d.* FROM documents d
+              WHERE d.category = "other"
+                AND (d.locale = :loc OR d.locale = "any")
+                AND COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) >= 2024
+              ORDER BY COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) DESC,
+                       d.display_order ASC,
+                       COALESCE(d.document_date, d.created_at) DESC',
+            ['loc' => I18n::locale()]
+        );
+    } catch (\Throwable) {
+        $rows = Database::instance()->fetchAll(
+            'SELECT d.* FROM documents d
+              WHERE d.category = "other"
+                AND (d.locale = :loc OR d.locale = "any")
+                AND COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) >= 2024
+              ORDER BY COALESCE(d.display_year, YEAR(d.document_date), YEAR(d.created_at)) DESC,
+                       COALESCE(d.document_date, d.created_at) DESC',
+            ['loc' => I18n::locale()]
+        );
+    }
     foreach ($rows as $d) {
         $y = $d['display_year'] ?: (int)date('Y', strtotime($d['document_date'] ?: $d['created_at']));
         if ($y < 2024) continue;

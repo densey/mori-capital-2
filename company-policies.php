@@ -9,13 +9,24 @@ use function Mori\t;
 
 $docs = [];
 try {
-    $docs = Database::instance()->fetchAll(
-        'SELECT d.* FROM documents d
-          WHERE d.category = "company_policy"
-            AND (d.locale = :loc OR d.locale = "any")
-          ORDER BY d.display_order ASC, d.title ASC',
-        ['loc' => I18n::locale()]
-    );
+    try {
+        $docs = Database::instance()->fetchAll(
+            'SELECT d.* FROM documents d
+              WHERE d.category = "company_policy"
+                AND (d.locale = :loc OR d.locale = "any")
+              ORDER BY d.display_order ASC, d.title ASC',
+            ['loc' => I18n::locale()]
+        );
+    } catch (\Throwable) {
+        // Fallback if migration hasn't been applied yet
+        $docs = Database::instance()->fetchAll(
+            'SELECT d.* FROM documents d
+              WHERE d.category = "company_policy"
+                AND (d.locale = :loc OR d.locale = "any")
+              ORDER BY d.title ASC',
+            ['loc' => I18n::locale()]
+        );
+    }
 } catch (\Throwable) {}
 
 $page = [
