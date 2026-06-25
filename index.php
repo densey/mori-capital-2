@@ -6,6 +6,7 @@ use Mori\I18n;
 use function Mori\e;
 use function Mori\asset;
 use function Mori\setting;
+use function Mori\setting_i18n;
 use function Mori\safe_url;
 use function Mori\t;
 
@@ -116,16 +117,15 @@ include __DIR__ . '/src/partials/header.php';
                 </div>
 
                 <?php
-                    $aboutText = I18n::locale() === 'de' ? setting('hp_about_text_de') : null;
-                    if (!$aboutText) $aboutText = setting('hp_about_text_en', 'Founded in 1998 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets. We combine bottom-up stock picking with rigorous in-house research and active dialogue with company management.');
-                    $aboutQuote = setting('hp_about_quote', "In the EEMEA region, knowledge isn't found in screens — it's earned by walking the extra mile.");
+                    $aboutText = setting_i18n('hp_about_text', 'Founded in 1998 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets. We combine bottom-up stock picking with rigorous in-house research and active dialogue with company management.');
+                    $aboutQuote = setting_i18n('hp_about_quote', "In the EEMEA region, knowledge isn't found in screens — it's earned by walking the extra mile.");
                     $statYears = setting('stat_years', '25');
                     $statSecurities = setting('stat_securities', '200');
                 ?>
                 <div class="col-xl-6">
                     <div class="about-us-content" style="padding-left:clamp(0px,2vw,20px);">
                         <div class="section-title">
-                            <span class="section-sub-title wow fadeInUp"><?= e(setting('hp_about_eyebrow', t('section.about.eyebrow'))) ?></span>
+                            <span class="section-sub-title wow fadeInUp"><?= e(setting_i18n('hp_about_eyebrow', t('section.about.eyebrow'))) ?></span>
                             <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.about.title')) ?></h2>
                             <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e($aboutText) ?></p>
                         </div>
@@ -175,8 +175,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-6">
                     <div class="section-content-btn">
                         <?php
-                            $fundsDesc = I18n::locale() === 'de' ? setting('hp_funds_desc_de') : null;
-                            if (!$fundsDesc) $fundsDesc = setting('hp_funds_desc_en', 'Our flagship vehicles offer differentiated access to distinct EEMEA market opportunities — both managed with the same disciplined, research-led approach.');
+                            $fundsDesc = setting_i18n('hp_funds_desc', 'Our flagship vehicles offer differentiated access to distinct EEMEA market opportunities — both managed with the same disciplined, research-led approach.');
                         ?>
                         <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
                             <p><?= e($fundsDesc) ?></p>
@@ -226,7 +225,7 @@ include __DIR__ . '/src/partials/header.php';
                             </div>
                             <?php endforeach; ?>
                         </div>
-                        <p><?= e(setting('hp_funds_footer_note', 'Managed by portfolio managers with 20+ years of EEMEA experience.')) ?> &mdash; <a href="<?= asset('documents.php') ?>"><?= e(t('btn.view_fund_docs')) ?></a></p>
+                        <p><?= e(setting_i18n('hp_funds_footer_note', 'Managed by portfolio managers with 20+ years of EEMEA experience.')) ?> &mdash; <a href="<?= asset('documents.php') ?>"><?= e(t('btn.view_fund_docs')) ?></a></p>
                     </div>
                 </div>
             </div>
@@ -240,8 +239,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-6">
                     <div class="why-choose-us-content">
                         <?php
-                            $styleDesc = I18n::locale() === 'de' ? setting('hp_style_desc_de') : null;
-                            if (!$styleDesc) $styleDesc = setting('hp_style_desc_en', 'Our investment philosophy is built on bottom-up stock picking with a macro overlay, in-house proprietary research, and active dialogue with company management.');
+                            $styleDesc = setting_i18n('hp_style_desc', 'Our investment philosophy is built on bottom-up stock picking with a macro overlay, in-house proprietary research, and active dialogue with company management.');
                         ?>
                         <div class="section-title">
                             <span class="section-sub-title wow fadeInUp"><?= e(t('nav.investment_style')) ?></span>
@@ -251,23 +249,23 @@ include __DIR__ . '/src/partials/header.php';
 
                         <div class="why-choose-list wow fadeInUp" data-wow-delay="0.4s">
                             <ul>
-                                <li><?= e(setting('hp_style_bullet_1', 'Bottom-up stock picking with a top-down macro overlay across EEMEA markets')) ?></li>
-                                <li><?= e(setting('hp_style_bullet_2', 'Active dialogue with company management and on-the-ground research visits')) ?></li>
+                                <li><?= e(setting_i18n('hp_style_bullet_1', 'Bottom-up stock picking with a top-down macro overlay across EEMEA markets')) ?></li>
+                                <li><?= e(setting_i18n('hp_style_bullet_2', 'Active dialogue with company management and on-the-ground research visits')) ?></li>
                             </ul>
                         </div>
 
                         <div class="why-choose-items-list wow fadeInUp" data-wow-delay="0.6s">
                             <div class="why-choose-item">
                                 <div class="icon-box"><img src="<?= asset('images/icon-why-choose-body-1.svg') ?>" alt=""></div>
-                                <div class="why-choose-item-content"><h3><?= e(setting('hp_style_feature_1', 'In-house proprietary research')) ?></h3></div>
+                                <div class="why-choose-item-content"><h3><?= e(setting_i18n('hp_style_feature_1', 'In-house proprietary research')) ?></h3></div>
                             </div>
                             <div class="why-choose-item">
                                 <div class="icon-box"><img src="<?= asset('images/icon-why-choose-body-2.svg') ?>" alt=""></div>
-                                <div class="why-choose-item-content"><h3><?= e(setting('hp_style_feature_2', 'Walking the extra mile — 200+ securities')) ?></h3></div>
+                                <div class="why-choose-item-content"><h3><?= e(setting_i18n('hp_style_feature_2', 'Walking the extra mile — 200+ securities')) ?></h3></div>
                             </div>
                             <div class="why-choose-item">
                                 <div class="icon-box"><img src="<?= asset('images/icon-why-choose-body-3.svg') ?>" alt=""></div>
-                                <div class="why-choose-item-content"><h3><?= e(setting('hp_style_feature_3', 'Disciplined risk management')) ?></h3></div>
+                                <div class="why-choose-item-content"><h3><?= e(setting_i18n('hp_style_feature_3', 'Disciplined risk management')) ?></h3></div>
                             </div>
                         </div>
 
@@ -290,7 +288,7 @@ include __DIR__ . '/src/partials/header.php';
                         ?>
                         <div class="why-choose-cta-box">
                             <div class="why-choose-cta-box-content">
-                                <h3>&ldquo;<?= e(setting('hp_style_quote', "We don't just analyse companies — we visit them, walk their factories, and meet their stakeholders.")) ?>&rdquo;</h3>
+                                <h3>&ldquo;<?= e(setting_i18n('hp_style_quote', "We don't just analyse companies — we visit them, walk their factories, and meet their stakeholders.")) ?>&rdquo;</h3>
                             </div>
                             <div class="why-choose-author-box">
                                 <div class="why-choose-author-image">
@@ -322,9 +320,9 @@ include __DIR__ . '/src/partials/header.php';
             <div class="row align-items-center">
                 <div class="col-xl-5 col-lg-6">
                     <div class="mori-cinematic__copy">
-                        <span class="section-sub-title wow fadeInUp"><?= e(setting('hp_cine_eyebrow', 'EEMEA in motion')) ?></span>
-                        <h2 class="text-anime-style-3" data-cursor="-opaque"><?= setting('hp_cine_title', 'Disciplined investing,<br>powered by data.') ?></h2>
-                        <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e(setting('hp_cine_desc', 'Real-time portfolio analytics, on-the-ground research and active risk management — all converging into a single conviction-led process across Emerging European, Middle Eastern and African markets.')) ?></p>
+                        <span class="section-sub-title wow fadeInUp"><?= e(setting_i18n('hp_cine_eyebrow', 'EEMEA in motion')) ?></span>
+                        <h2 class="text-anime-style-3" data-cursor="-opaque"><?= setting_i18n('hp_cine_title', 'Disciplined investing,<br>powered by data.') ?></h2>
+                        <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e(setting_i18n('hp_cine_desc', 'Real-time portfolio analytics, on-the-ground research and active risk management — all converging into a single conviction-led process across Emerging European, Middle Eastern and African markets.')) ?></p>
                         <div class="mori-cinematic__cta wow fadeInUp" data-wow-delay="0.4s">
                             <a class="btn-default btn-highlighted" href="<?= asset('investment-style.php') ?>"><?= e(t('cine.cta')) ?></a>
                         </div>

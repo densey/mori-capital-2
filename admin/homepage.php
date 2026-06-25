@@ -49,14 +49,18 @@ include __DIR__ . '/partials/layout-start.php';
     <div class="a-card" style="margin-bottom:22px;">
         <div class="a-card__head"><h2><i class="fa-solid fa-building-columns"></i> About Section</h2></div>
         <div class="a-card__body">
-            <label>Eyebrow label</label>
-            <input type="text" name="settings[hp_about_eyebrow]" value="<?= hp('hp_about_eyebrow', 'About Mori Capital') ?>">
+            <div class="row">
+                <div><label>Eyebrow label (EN)</label><input type="text" name="settings[hp_about_eyebrow]" value="<?= hp('hp_about_eyebrow', 'About Mori Capital') ?>"></div>
+                <div><label>Eyebrow label (DE)</label><input type="text" name="settings[hp_about_eyebrow_de]" value="<?= hp('hp_about_eyebrow_de', 'Über Mori Capital') ?>"></div>
+            </div>
             <label>Description (EN)</label>
             <textarea name="settings[hp_about_text_en]" rows="3"><?= hp('hp_about_text_en', 'Founded in 1998 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets. We combine bottom-up stock picking with rigorous in-house research and active dialogue with company management.') ?></textarea>
             <label>Description (DE)</label>
             <textarea name="settings[hp_about_text_de]" rows="3"><?= hp('hp_about_text_de', '') ?></textarea>
-            <label>Quote</label>
+            <label>Quote (EN)</label>
             <textarea name="settings[hp_about_quote]" rows="2"><?= hp('hp_about_quote', 'In the EEMEA region, knowledge isn\'t found in screens — it\'s earned by walking the extra mile.') ?></textarea>
+            <label>Quote (DE)</label>
+            <textarea name="settings[hp_about_quote_de]" rows="2"><?= hp('hp_about_quote_de', '') ?></textarea>
             <div class="row" style="margin-top:12px;">
                 <div><label>About image path</label><input type="text" name="settings[hp_about_image]" value="<?= hp('hp_about_image', 'assets/images/service/h6-service-1.webp') ?>"></div>
                 <div><label>About body image path</label><input type="text" name="settings[hp_about_body_image]" value="<?= hp('hp_about_body_image', 'assets/images/about/about-hd.jpg') ?>"></div>
@@ -102,8 +106,10 @@ include __DIR__ . '/partials/layout-start.php';
             <textarea name="settings[hp_funds_desc_en]" rows="2"><?= hp('hp_funds_desc_en', 'Our flagship vehicles offer differentiated access to distinct EEMEA market opportunities — both managed with the same disciplined, research-led approach.') ?></textarea>
             <label>Section description (DE)</label>
             <textarea name="settings[hp_funds_desc_de]" rows="2"><?= hp('hp_funds_desc_de', '') ?></textarea>
-            <label>Footer note under fund cards</label>
-            <input type="text" name="settings[hp_funds_footer_note]" value="<?= hp('hp_funds_footer_note', 'Managed by portfolio managers with 20+ years of EEMEA experience.') ?>">
+            <div class="row">
+                <div><label>Footer note under fund cards (EN)</label><input type="text" name="settings[hp_funds_footer_note]" value="<?= hp('hp_funds_footer_note', 'Managed by portfolio managers with 20+ years of EEMEA experience.') ?>"></div>
+                <div><label>Footer note (DE)</label><input type="text" name="settings[hp_funds_footer_note_de]" value="<?= hp('hp_funds_footer_note_de', '') ?>"></div>
+            </div>
         </div>
     </div>
 
@@ -115,18 +121,30 @@ include __DIR__ . '/partials/layout-start.php';
             <textarea name="settings[hp_style_desc_en]" rows="2"><?= hp('hp_style_desc_en', 'Our investment philosophy is built on bottom-up stock picking with a macro overlay, in-house proprietary research, and active dialogue with company management.') ?></textarea>
             <label>Description (DE)</label>
             <textarea name="settings[hp_style_desc_de]" rows="2"><?= hp('hp_style_desc_de', '') ?></textarea>
-            <label>Bullet point 1</label>
-            <input type="text" name="settings[hp_style_bullet_1]" value="<?= hp('hp_style_bullet_1', 'Bottom-up stock picking with a top-down macro overlay across EEMEA markets') ?>">
-            <label>Bullet point 2</label>
-            <input type="text" name="settings[hp_style_bullet_2]" value="<?= hp('hp_style_bullet_2', 'Active dialogue with company management and on-the-ground research visits') ?>">
-            <label>Feature item 1</label>
-            <input type="text" name="settings[hp_style_feature_1]" value="<?= hp('hp_style_feature_1', 'In-house proprietary research') ?>">
-            <label>Feature item 2</label>
-            <input type="text" name="settings[hp_style_feature_2]" value="<?= hp('hp_style_feature_2', 'Walking the extra mile — 200+ securities') ?>">
-            <label>Feature item 3</label>
-            <input type="text" name="settings[hp_style_feature_3]" value="<?= hp('hp_style_feature_3', 'Disciplined risk management') ?>">
-            <label>Quote</label>
+            <div class="row">
+                <div><label>Bullet point 1 (EN)</label><input type="text" name="settings[hp_style_bullet_1]" value="<?= hp('hp_style_bullet_1', 'Bottom-up stock picking with a top-down macro overlay across EEMEA markets') ?>"></div>
+                <div><label>Bullet point 1 (DE)</label><input type="text" name="settings[hp_style_bullet_1_de]" value="<?= hp('hp_style_bullet_1_de', '') ?>"></div>
+            </div>
+            <div class="row">
+                <div><label>Bullet point 2 (EN)</label><input type="text" name="settings[hp_style_bullet_2]" value="<?= hp('hp_style_bullet_2', 'Active dialogue with company management and on-the-ground research visits') ?>"></div>
+                <div><label>Bullet point 2 (DE)</label><input type="text" name="settings[hp_style_bullet_2_de]" value="<?= hp('hp_style_bullet_2_de', '') ?>"></div>
+            </div>
+            <div class="row">
+                <div><label>Feature 1 (EN)</label><input type="text" name="settings[hp_style_feature_1]" value="<?= hp('hp_style_feature_1', 'In-house proprietary research') ?>"></div>
+                <div><label>Feature 1 (DE)</label><input type="text" name="settings[hp_style_feature_1_de]" value="<?= hp('hp_style_feature_1_de', '') ?>"></div>
+            </div>
+            <div class="row">
+                <div><label>Feature 2 (EN)</label><input type="text" name="settings[hp_style_feature_2]" value="<?= hp('hp_style_feature_2', 'Walking the extra mile — 200+ securities') ?>"></div>
+                <div><label>Feature 2 (DE)</label><input type="text" name="settings[hp_style_feature_2_de]" value="<?= hp('hp_style_feature_2_de', '') ?>"></div>
+            </div>
+            <div class="row">
+                <div><label>Feature 3 (EN)</label><input type="text" name="settings[hp_style_feature_3]" value="<?= hp('hp_style_feature_3', 'Disciplined risk management') ?>"></div>
+                <div><label>Feature 3 (DE)</label><input type="text" name="settings[hp_style_feature_3_de]" value="<?= hp('hp_style_feature_3_de', '') ?>"></div>
+            </div>
+            <label>Quote (EN)</label>
             <textarea name="settings[hp_style_quote]" rows="2"><?= hp('hp_style_quote', 'We don\'t just analyse companies — we visit them, walk their factories, and meet their stakeholders.') ?></textarea>
+            <label>Quote (DE)</label>
+            <textarea name="settings[hp_style_quote_de]" rows="2"><?= hp('hp_style_quote_de', '') ?></textarea>
             <label>Style section image</label>
             <input type="text" name="settings[hp_style_image]" value="<?= hp('hp_style_image', 'assets/images/hero/hero-corporate-2.jpg') ?>">
         </div>
@@ -136,12 +154,18 @@ include __DIR__ . '/partials/layout-start.php';
     <div class="a-card" style="margin-bottom:22px;">
         <div class="a-card__head"><h2><i class="fa-solid fa-film"></i> Cinematic Section</h2></div>
         <div class="a-card__body">
-            <label>Eyebrow</label>
-            <input type="text" name="settings[hp_cine_eyebrow]" value="<?= hp('hp_cine_eyebrow', 'EEMEA in motion') ?>">
-            <label>Title (HTML allowed for line breaks)</label>
+            <div class="row">
+                <div><label>Eyebrow (EN)</label><input type="text" name="settings[hp_cine_eyebrow]" value="<?= hp('hp_cine_eyebrow', 'EEMEA in motion') ?>"></div>
+                <div><label>Eyebrow (DE)</label><input type="text" name="settings[hp_cine_eyebrow_de]" value="<?= hp('hp_cine_eyebrow_de', 'EEMEA in Bewegung') ?>"></div>
+            </div>
+            <label>Title (EN — HTML allowed for line breaks)</label>
             <input type="text" name="settings[hp_cine_title]" value="<?= hp('hp_cine_title', 'Disciplined investing, powered by data.') ?>">
-            <label>Description</label>
+            <label>Title (DE)</label>
+            <input type="text" name="settings[hp_cine_title_de]" value="<?= hp('hp_cine_title_de', '') ?>">
+            <label>Description (EN)</label>
             <textarea name="settings[hp_cine_desc]" rows="2"><?= hp('hp_cine_desc', 'Real-time portfolio analytics, on-the-ground research and active risk management — all converging into a single conviction-led process across Emerging European, Middle Eastern and African markets.') ?></textarea>
+            <label>Description (DE)</label>
+            <textarea name="settings[hp_cine_desc_de]" rows="2"><?= hp('hp_cine_desc_de', '') ?></textarea>
             <div class="row" style="margin-top:12px;">
                 <div><label>Showcase fund name</label><input type="text" name="settings[hp_cine_fund_name]" value="<?= hp('hp_cine_fund_name', 'Mori Ottoman Fund') ?>"></div>
                 <div><label>Showcase NAV display</label><input type="text" name="settings[hp_cine_nav_display]" value="<?= hp('hp_cine_nav_display', '€ 142.86') ?>"></div>
@@ -175,9 +199,11 @@ include __DIR__ . '/partials/layout-start.php';
                 <div style="font-weight:700;font-size:12px;color:var(--a-navy);margin-bottom:8px;">Principle <?= $pi ?></div>
                 <div style="display:grid;grid-template-columns:140px 1fr;gap:10px;">
                     <div><label style="font-size:11px;">Icon class</label><input type="text" name="settings[principle_<?= $pi ?>_icon]" value="<?= hp("principle_{$pi}_icon") ?>" placeholder="fa-magnifying-glass-chart"></div>
-                    <div><label style="font-size:11px;">Title</label><input type="text" name="settings[principle_<?= $pi ?>_title]" value="<?= hp("principle_{$pi}_title") ?>"></div>
+                    <div><label style="font-size:11px;">Title (EN)</label><input type="text" name="settings[principle_<?= $pi ?>_title]" value="<?= hp("principle_{$pi}_title") ?>"></div>
                 </div>
-                <div style="margin-top:8px;"><label style="font-size:11px;">Description</label><textarea name="settings[principle_<?= $pi ?>_desc]" rows="2" style="font-size:12px;"><?= hp("principle_{$pi}_desc") ?></textarea></div>
+                <div style="margin-top:8px;"><label style="font-size:11px;">Title (DE)</label><input type="text" name="settings[principle_<?= $pi ?>_title_de]" value="<?= hp("principle_{$pi}_title_de") ?>"></div>
+                <div style="margin-top:8px;"><label style="font-size:11px;">Description (EN)</label><textarea name="settings[principle_<?= $pi ?>_desc]" rows="2" style="font-size:12px;"><?= hp("principle_{$pi}_desc") ?></textarea></div>
+                <div style="margin-top:8px;"><label style="font-size:11px;">Description (DE)</label><textarea name="settings[principle_<?= $pi ?>_desc_de]" rows="2" style="font-size:12px;"><?= hp("principle_{$pi}_desc_de") ?></textarea></div>
             </div>
             <?php endfor; ?>
         </div>

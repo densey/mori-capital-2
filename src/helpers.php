@@ -75,6 +75,19 @@ function setting(string $key, ?string $default = null): ?string
     }
 }
 
+/**
+ * Locale-aware setting fetcher. Looks up <key>_<locale> first; if missing or
+ * empty, falls back to plain <key>; if that is also missing, returns $default.
+ * Use for any user-editable copy where DE / EN versions live as two settings.
+ */
+function setting_i18n(string $key, ?string $default = null): ?string
+{
+    $loc = I18n::locale();
+    $localised = setting($key . '_' . $loc, null);
+    if ($localised !== null && $localised !== '') return $localised;
+    return setting($key, $default);
+}
+
 function format_bytes(int $bytes, int $precision = 1): string
 {
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];

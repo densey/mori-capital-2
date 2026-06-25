@@ -59,7 +59,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     </div>
 
                     <div class="about-highlighted-box wow fadeInUp" data-wow-delay="0.4s">
-                        <h3>&ldquo; <?= e(\Mori\setting('hp_about_quote', "In the EEMEA region, knowledge isn't found in screens — it's earned by walking the extra mile.")) ?> &rdquo;</h3>
+                        <h3>&ldquo; <?= e(\Mori\setting_i18n('hp_about_quote', "In the EEMEA region, knowledge isn't found in screens — it's earned by walking the extra mile.")) ?> &rdquo;</h3>
                     </div>
 
                     <div class="about-counter-item-list wow fadeInUp" data-wow-delay="0.6s">

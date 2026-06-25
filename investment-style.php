@@ -76,8 +76,8 @@ include __DIR__ . '/src/partials/page-header.php';
             $principles = [];
             for ($pi = 1; $pi <= 5; $pi++) {
                 $icon  = \Mori\setting("principle_{$pi}_icon");
-                $title = \Mori\setting("principle_{$pi}_title");
-                $desc  = \Mori\setting("principle_{$pi}_desc");
+                $title = \Mori\setting_i18n("principle_{$pi}_title");
+                $desc  = \Mori\setting_i18n("principle_{$pi}_desc");
                 if ($title) $principles[] = [$icon ?: 'fa-circle-check', $title, $desc ?: ''];
             }
             if (empty($principles)) {
