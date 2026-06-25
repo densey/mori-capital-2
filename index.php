@@ -397,7 +397,8 @@ include __DIR__ . '/src/partials/header.php';
                             </div>
                             <div class="tilt-layer tilt-chip tilt-chip--perf">
                                 <i class="fa-solid fa-arrow-trend-up"></i>
-                                <div><div class="chip-lbl"><?= e(setting('hp_cine_10y_lbl', '10Y Annualised')) ?></div><div class="chip-val"><?= e(setting('hp_cine_10y', '+11.7%')) ?> <span style="color:#1ABC9C;font-size:11px;"><?= e(setting('hp_cine_10y_suffix', 'vs benchmark')) ?></span></div></div>
+                                <?php $cine10ySuffix = setting('hp_cine_10y_suffix', 'vs benchmark'); ?>
+                                <div><div class="chip-lbl"><?= e(setting('hp_cine_10y_lbl', '10Y Annualised')) ?></div><div class="chip-val"><?= e(setting('hp_cine_10y', '+11.7%')) ?><?php if (!empty($cine10ySuffix)): ?> <span style="color:#1ABC9C;font-size:11px;"><?= e($cine10ySuffix) ?></span><?php endif; ?></div></div>
                             </div>
                             <div class="tilt-layer tilt-chip tilt-chip--aum">
                                 <i class="fa-solid fa-shield-halved"></i>

@@ -135,9 +135,10 @@ include __DIR__ . '/src/partials/footer.php';
 <script>
 var navData = <?= json_encode(array_map(fn($r) => ['x' => $r['entry_date'], 'y' => (float)$r['nav']], $navData)) ?>;
 var benchData = <?= json_encode(array_values(array_filter(array_map(fn($r) => $r['benchmark_value'] !== null ? ['x' => $r['entry_date'], 'y' => (float)$r['benchmark_value']] : null, $navData)))) ?>;
+var showBenchmark = <?= \Mori\setting('show_benchmark', '1') === '1' ? 'true' : 'false' ?>;
 if (navData.length > 0) {
     var series = [{name: 'NAV', data: navData}];
-    if (benchData.length > 0) series.push({name: 'Benchmark', data: benchData});
+    if (showBenchmark && benchData.length > 0) series.push({name: 'Benchmark', data: benchData});
     var options = {
         chart: { type: 'area', height: 420, fontFamily: 'Inter, sans-serif', toolbar: { show: false }, zoom: { enabled: true } },
         colors: ['#1ABC9C', '#1B3A5C'],

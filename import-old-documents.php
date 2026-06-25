@@ -83,16 +83,17 @@ function import_one(array $doc, string $category, ?int $year, $db, string $SOURC
     $locale = detect_locale((string)$doc['title']);
 
     if ($exists) {
-        // Update its category/year/description if needed
+        // Update title, description, category, year, locale on the existing row.
         if (!$DRY_RUN) {
             $db->update('documents', [
+                'title'        => $title,
+                'description'  => $doc['title'],
                 'category'     => $category,
                 'display_year' => $year,
-                'description'  => $doc['title'],
                 'locale'       => $locale,
             ], ['id' => (int)$exists]);
         }
-        echo "  [SKIP/UPDATE] $title  (cat=$category, year=" . ($year ?: '-') . ", locale=$locale)\n";
+        echo "  [UPDATE #{$exists}] {$title}  (cat={$category}, year=" . ($year ?: '-') . ", locale={$locale})\n";
         $summary['skipped']++;
         return;
     }

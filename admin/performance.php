@@ -35,36 +35,106 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_n
     redirect(asset('admin/performance.php?class=' . $scId));
 }
 
+// CSV template download
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'csv_template') {
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="mori-nav-template.csv"');
+    $out = fopen('php://output', 'w');
+    fputcsv($out, ['date', 'nav', 'benchmark']);
+    fputcsv($out, ['2026-03-31', '142.86', '']);
+    fputcsv($out, ['2026-02-29', '139.42', '']);
+    fputcsv($out, ['2026-01-31', '137.15', '']);
+    fputcsv($out, ['2025-12-31', '134.88', '']);
+    fputcsv($out, ['# date: YYYY-MM-DD', '# nav: numeric (e.g. 142.86)', '# benchmark: optional, leave blank if not used']);
+    fclose($out);
+    exit;
+}
+
 // CSV import
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'import_csv') {
     Csrf::requireValid();
     $scId = (int)($_POST['share_class_id'] ?? 0);
+    $mode = in_array($_POST['mode'] ?? 'upsert', ['add','upsert','replace'], true) ? $_POST['mode'] : 'upsert';
     try {
         if (empty($_FILES['csv']) || $_FILES['csv']['error'] !== UPLOAD_ERR_OK) throw new \Exception('Choose a CSV file.');
         $fh = fopen($_FILES['csv']['tmp_name'], 'r');
         if (!$fh) throw new \Exception('Cannot open CSV.');
-        $imported = 0; $skipped = 0; $header = null;
+
+        // Mode: replace → wipe existing entries for this share class first
+        $deleted = 0;
+        if ($mode === 'replace') {
+            $deleted = (int) $db->fetchColumn('SELECT COUNT(*) FROM nav_entries WHERE share_class_id = :s', ['s' => $scId]);
+            $db->query('DELETE FROM nav_entries WHERE share_class_id = :s', ['s' => $scId]);
+        }
+
+        $inserted = 0; $updated = 0; $skipped = 0; $header = null;
         while (($row = fgetcsv($fh)) !== false) {
             if ($header === null) { $header = array_map('strtolower', array_map('trim', $row)); continue; }
-            $r = array_combine($header, $row);
-            if (empty($r['date']) || $r['nav'] === '') { $skipped++; continue; }
-            try {
-                $db->insert('nav_entries', [
-                    'share_class_id'  => $scId,
-                    'entry_date'      => date('Y-m-d', strtotime($r['date'])),
-                    'nav'             => (float)$r['nav'],
-                    'benchmark_value' => !empty($r['benchmark']) ? (float)$r['benchmark'] : null,
-                ]);
-                $imported++;
-            } catch (\Throwable) { $skipped++; }
+            // Skip comment rows
+            if (!empty($row[0]) && str_starts_with(trim((string)$row[0]), '#')) { continue; }
+            $r = @array_combine($header, $row);
+            if (!$r || empty($r['date']) || !isset($r['nav']) || $r['nav'] === '') { $skipped++; continue; }
+            $date = date('Y-m-d', strtotime((string)$r['date']));
+            $nav  = (float)$r['nav'];
+            $bench = !empty($r['benchmark']) ? (float)$r['benchmark'] : null;
+
+            if ($mode === 'add') {
+                try {
+                    $db->insert('nav_entries', [
+                        'share_class_id'  => $scId,
+                        'entry_date'      => $date,
+                        'nav'             => $nav,
+                        'benchmark_value' => $bench,
+                    ]);
+                    $inserted++;
+                } catch (\Throwable) { $skipped++; }
+            } else {
+                // upsert (or replace, after wipe) — both use INSERT … ON DUPLICATE KEY UPDATE
+                $existing = $db->fetchColumn(
+                    'SELECT id FROM nav_entries WHERE share_class_id = :s AND entry_date = :d',
+                    ['s' => $scId, 'd' => $date]
+                );
+                if ($existing) {
+                    $db->update('nav_entries', [
+                        'nav'             => $nav,
+                        'benchmark_value' => $bench,
+                    ], ['id' => (int)$existing]);
+                    $updated++;
+                } else {
+                    $db->insert('nav_entries', [
+                        'share_class_id'  => $scId,
+                        'entry_date'      => $date,
+                        'nav'             => $nav,
+                        'benchmark_value' => $bench,
+                    ]);
+                    $inserted++;
+                }
+            }
         }
         fclose($fh);
-        AuditLog::log(Auth::userId(), 'nav_csv_imported', 'nav_entries', null, "SC #{$scId} - {$imported} imported / {$skipped} skipped");
-        flash('ok', "Imported {$imported} entries, skipped {$skipped} (duplicates or invalid).");
+
+        $msg = "Imported {$inserted}, updated {$updated}, skipped {$skipped}";
+        if ($mode === 'replace') $msg .= " (replaced — {$deleted} previous entries deleted)";
+        AuditLog::log(Auth::userId(), 'nav_csv_imported', 'nav_entries', null, "SC #{$scId} mode={$mode} : {$msg}");
+        flash('ok', $msg . '.');
     } catch (\Throwable $e) {
         flash('error', $e->getMessage());
     }
     redirect(asset('admin/performance.php?class=' . $scId));
+}
+
+// Toggle benchmark display
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle_benchmark') {
+    Csrf::requireValid();
+    $val = isset($_POST['show_benchmark']) ? '1' : '0';
+    $db->query(
+        'INSERT INTO settings (setting_key, setting_value, updated_at) VALUES (:k, :v, NOW())
+         ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value), updated_at = NOW()',
+        ['k' => 'show_benchmark', 'v' => $val]
+    );
+    AuditLog::log(Auth::userId(), 'benchmark_toggled', 'settings', null, "show_benchmark={$val}");
+    flash('ok', $val === '1' ? 'Benchmark is now visible on the performance chart.' : 'Benchmark is now hidden from the performance chart.');
+    redirect(asset('admin/performance.php?class=' . (int)($_POST['class'] ?? 0)));
 }
 
 // Delete entry
@@ -139,17 +209,57 @@ include __DIR__ . '/partials/layout-start.php';
         </div>
     </div>
 
+    <!-- Benchmark toggle -->
+    <div class="a-card" style="margin-bottom:22px;">
+        <div class="a-card__head"><h2>Chart display</h2></div>
+        <div class="a-card__body">
+            <form method="post" class="a-form">
+                <?= Csrf::field() ?>
+                <input type="hidden" name="action" value="toggle_benchmark">
+                <input type="hidden" name="class" value="<?= e($selectedScId) ?>">
+                <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:500;">
+                    <input type="checkbox" name="show_benchmark" value="1" <?= \Mori\setting('show_benchmark', '1') === '1' ? 'checked' : '' ?> onchange="this.form.submit()">
+                    <span>Show benchmark on the NAV chart  <span style="font-size:11px;color:var(--a-muted);font-weight:400;">— untick to hide benchmark line from all share class charts on the public site</span></span>
+                </label>
+            </form>
+        </div>
+    </div>
+
     <!-- CSV import -->
     <div class="a-card">
-        <div class="a-card__head"><h2>Bulk import (CSV)</h2></div>
+        <div class="a-card__head">
+            <h2>Bulk import (CSV)</h2>
+            <a class="a-btn ghost" href="<?= asset('admin/performance.php?action=csv_template') ?>"><i class="fa-solid fa-download"></i> Download template</a>
+        </div>
         <div class="a-card__body">
-            <p style="font-size:13px;color:var(--a-muted);margin-bottom:14px;">CSV header: <code>date,nav,benchmark</code>. Date in YYYY-MM-DD or DD/MM/YYYY. Duplicates are skipped.</p>
+            <p style="font-size:13px;color:var(--a-text-soft);margin-bottom:14px;line-height:1.6;">
+                CSV columns: <code>date,nav,benchmark</code> (header row required). Date format <code>YYYY-MM-DD</code>. Benchmark column is optional — leave blank if you don't track one.<br>
+                <a href="<?= asset('admin/performance.php?action=csv_template') ?>" style="color:var(--a-teal);">Download the template</a> for a ready-to-fill example.
+            </p>
             <form method="post" enctype="multipart/form-data" class="a-form">
                 <?= Csrf::field() ?>
                 <input type="hidden" name="action" value="import_csv">
                 <input type="hidden" name="share_class_id" value="<?= e($selectedScId) ?>">
+
+                <label style="font-weight:700;">Mode  <span style="color:var(--a-muted);font-weight:400;font-size:11px;">— how to handle existing dates</span></label>
+                <div style="background:var(--a-border-soft);padding:12px 16px;border-radius:8px;margin:8px 0 14px;">
+                    <label style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;cursor:pointer;font-size:13px;font-weight:400;">
+                        <input type="radio" name="mode" value="upsert" checked>
+                        <span><strong>Update existing + add new</strong> (recommended) — if a date already exists, its NAV is overwritten with the new value. New dates are inserted. Nothing is deleted.</span>
+                    </label>
+                    <label style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;cursor:pointer;font-size:13px;font-weight:400;">
+                        <input type="radio" name="mode" value="add">
+                        <span><strong>Add new only</strong> — existing dates are skipped (kept as they are). Only new dates are inserted.</span>
+                    </label>
+                    <label style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;cursor:pointer;font-size:13px;font-weight:400;color:var(--a-danger);">
+                        <input type="radio" name="mode" value="replace">
+                        <span><strong>Replace all</strong> — deletes every existing NAV entry for this share class first, then imports the CSV. Use this when you want a clean slate.</span>
+                    </label>
+                </div>
+
+                <label>CSV file</label>
                 <input type="file" name="csv" accept=".csv" required>
-                <button class="a-btn" type="submit" style="margin-top:14px;"><i class="fa-solid fa-file-csv"></i> Import CSV</button>
+                <button class="a-btn lg" type="submit" style="margin-top:14px;"><i class="fa-solid fa-file-csv"></i> Import CSV</button>
             </form>
         </div>
     </div>
