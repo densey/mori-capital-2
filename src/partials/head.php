@@ -91,10 +91,15 @@ $customHead = setting('custom_head_code', '');
 	<link href="<?= asset('css/animate.css') ?>" rel="stylesheet">
 	<link rel="stylesheet" href="<?= asset('css/magnific-popup.css') ?>">
 	<link rel="stylesheet" href="<?= asset('css/mousecursor.css') ?>">
-	<link href="<?= asset('css/custom.css') ?>" rel="stylesheet" media="screen">
+	<?php
+		// Cache-busting: append filemtime so browsers re-fetch when CSS changes.
+		$customCssV = @filemtime(dirname(__DIR__, 2) . '/css/custom.css') ?: time();
+		$moriCssV   = @filemtime(dirname(__DIR__, 2) . '/css/mori.css')   ?: time();
+	?>
+	<link href="<?= asset('css/custom.css') ?>?v=<?= $customCssV ?>" rel="stylesheet" media="screen">
 
 	<!-- Mori override stylesheet -->
-	<link href="<?= asset('css/mori.css') ?>" rel="stylesheet" media="screen">
+	<link href="<?= asset('css/mori.css') ?>?v=<?= $moriCssV ?>" rel="stylesheet" media="screen">
 
 	<?php if ($ga): ?>
 	<!-- Google Analytics (Settings → SEO → Google Analytics ID) -->

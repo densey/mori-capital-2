@@ -39,3 +39,11 @@ if (\Mori\Config::get('APP_ENV', 'production') === 'development') {
 \Mori\I18n::init();
 
 date_default_timezone_set((string) \Mori\Config::get('APP_TZ', 'Europe/Malta'));
+
+// Disable browser + intermediary caching while the site is in staging review,
+// so users always see the latest version after each deployment.
+if (!headers_sent()) {
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+}
