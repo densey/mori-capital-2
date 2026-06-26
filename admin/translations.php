@@ -279,6 +279,18 @@ include __DIR__ . '/partials/layout-start.php';
 .tc-field { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
 .tc-field__col label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--a-muted); font-weight: 600; display: block; margin-bottom: 4px; }
 .tc-field__en { background: var(--a-border-soft); padding: 10px 12px; border-radius: 5px; font-size: 12.5px; color: var(--a-text-soft); white-space: pre-wrap; max-height: 200px; overflow-y: auto; line-height: 1.55; }
+.tc-field__en--html { white-space: normal; max-height: 400px; background: #fff; border: 1px solid var(--a-border); color: var(--a-text); font-size: 13px; }
+.tc-field__en--html h1, .tc-field__en--html h2, .tc-field__en--html h3, .tc-field__en--html h4 { color: var(--a-navy); margin: 14px 0 6px; line-height: 1.3; }
+.tc-field__en--html h2 { font-size: 17px; }
+.tc-field__en--html h3 { font-size: 15px; }
+.tc-field__en--html h4 { font-size: 14px; }
+.tc-field__en--html p { margin: 0 0 .8em; line-height: 1.6; }
+.tc-field__en--html ul, .tc-field__en--html ol { padding-left: 22px; margin: 0 0 .8em; }
+.tc-field__en--html li { margin-bottom: 4px; }
+.tc-field__en--html a { color: var(--a-teal); }
+.tc-field__en--html strong { color: var(--a-navy); }
+.tc-field__en--html table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+.tc-field__en--html th, .tc-field__en--html td { border: 1px solid var(--a-border); padding: 6px 10px; text-align: left; }
 .tc-field__de input, .tc-field__de textarea { width: 100%; padding: 9px 11px; border: 1px solid var(--a-border); border-radius: 5px; font: inherit; font-size: 13px; }
 .tc-field__de textarea { resize: vertical; min-height: 88px; line-height: 1.55; }
 .tc-field__de textarea.big { min-height: 240px; font-family: 'Courier New', monospace; font-size: 12px; }
@@ -323,10 +335,18 @@ include __DIR__ . '/partials/layout-start.php';
                 <div class="tc-empty"><?= e($f['note']) ?></div>
             <?php continue; endif;
         ?>
+        <?php $isHtml = ($f['type'] ?? '') === 'textarea_big'; ?>
         <div class="tc-field" data-type="<?= e($type) ?>" data-id="<?= e($row['id']) ?>" data-field="<?= e($f['field']) ?>">
             <div class="tc-field__col">
-                <label>English source</label>
-                <div class="tc-field__en"><?= e((string)$f['en']) ?: '<em>(empty)</em>' ?></div>
+                <label>English source<?= $isHtml ? ' <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--a-muted);">(rendered preview)</span>' : '' ?></label>
+                <?php if ($isHtml): ?>
+                    <div class="tc-field__en tc-field__en--html"><?php
+                        $src = (string)$f['en'];
+                        echo $src !== '' ? $src : '<em>(empty)</em>';
+                    ?></div>
+                <?php else: ?>
+                    <div class="tc-field__en"><?= e((string)$f['en']) ?: '<em>(empty)</em>' ?></div>
+                <?php endif; ?>
             </div>
             <div class="tc-field__col tc-field__de">
                 <label><?= e($f['label']) ?></label>
