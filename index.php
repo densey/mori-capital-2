@@ -11,7 +11,7 @@ use function Mori\safe_url;
 use function Mori\t;
 
 // Pull live data from DB (gracefully degrade if DB unreachable)
-$funds = $team = $insights = [];
+$funds = $team = [];
 try {
     $db = Database::instance();
     $funds = $db->fetchAll(
@@ -20,11 +20,6 @@ try {
     $team = $db->fetchAll(
         'SELECT * FROM team_members WHERE status = "active" ORDER BY display_order ASC'
     );
-    $insights = $db->fetchAll(
-        'SELECT * FROM insights WHERE status = "published" AND locale = :loc
-           ORDER BY publish_date DESC LIMIT 3',
-        ['loc' => I18n::locale()]
-    );
     // Hero slides
     try {
         $heroSlides = $db->fetchAll(
@@ -32,7 +27,7 @@ try {
         );
     } catch (\Throwable $e) { $heroSlides = []; }
 } catch (\Throwable $ex) {
-    $funds = $team = $insights = $heroSlides = [];
+    $funds = $team = $heroSlides = [];
 }
 
 $page = [
@@ -413,53 +408,6 @@ include __DIR__ . '/src/partials/header.php';
             </div>
         </div>
     </div>
-
-    <?php if (!empty($insights)): ?>
-    <!-- Latest Insights -->
-    <div class="mori-insights" style="padding:80px 0;background:#FFFFFF;">
-        <div class="container">
-            <div class="row section-row align-items-end">
-                <div class="col-xl-6">
-                    <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp"><?= e(t('home.views.eyebrow')) ?></span>
-                        <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.views.title')) ?></h2>
-                    </div>
-                </div>
-                <div class="col-xl-6">
-                    <div class="section-content-btn">
-                        <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
-                            <p><?= e(t('home.views.intro')) ?></p>
-                        </div>
-                        <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default" href="<?= asset('insights.php') ?>"><?= e(t('home.cta.all_views')) ?></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row" style="margin-top:24px;">
-                <?php $ix = 0; foreach ($insights as $ins): $ix++;
-                    $cat = (string)($ins['category'] ?? '');
-                    $catKey = 'insights.cat.' . ($cat === 'shareholder_notice' ? 'shareholder' : $cat);
-                    $catLabel = t($catKey);
-                    if ($catLabel === $catKey) { $catLabel = ucwords(str_replace('_', ' ', $cat)); }
-                ?>
-                <div class="col-xl-4 col-md-6">
-                    <a href="<?= asset('insight.php?slug=' . urlencode($ins['slug'])) ?>" class="insight-card wow fadeInUp" <?= $ix>1?'data-wow-delay="0.'.($ix-1).'s"':'' ?>>
-                        <div class="insight-meta">
-                            <span><?= e($catLabel) ?></span>
-                            <span class="date"><?= e(\Mori\format_date($ins['publish_date'])) ?></span>
-                        </div>
-                        <h3><?= e($ins['title']) ?></h3>
-                        <p><?= e($ins['excerpt']) ?></p>
-                        <span class="insight-link"><?= e(t('btn.read_more')) ?> <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i></span>
-                    </a>
-                </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    </div>
-    <?php endif; ?>
 
     <!-- Team -->
     <div class="page-team" style="padding:80px 0;">
