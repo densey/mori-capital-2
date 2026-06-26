@@ -4,15 +4,16 @@
 --      that uses setting('seo_default_title')/setting('seo_default_desc').
 --   2. German bio for Jean-Paul Gauci (was still mostly English on the public team page).
 -- Idempotent: every UPDATE/INSERT is guarded by a WHERE/ON DUPLICATE KEY clause.
+-- Settings table columns are `setting_key` / `setting_value` (NOT `key` / `value`).
 
 -- ---------------------------------------------------------------------------
 -- 1. SEO defaults — German overrides for index.php meta
 -- ---------------------------------------------------------------------------
 
-INSERT INTO settings (`key`, `value`) VALUES
+INSERT INTO settings (`setting_key`, `setting_value`) VALUES
 ('seo_default_title_de', 'Mori Capital Management — Spezialist für die EEMEA-Region'),
 ('seo_default_desc_de',  'Unabhängiger EEMEA-fokussierter Vermögensverwalter. Mori Eastern European Fund und Mori Ottoman Fund — research-getriebenes Investieren in Emerging Europe, dem Nahen Osten und Afrika seit 1998.')
-ON DUPLICATE KEY UPDATE `value` = VALUES(`value`);
+ON DUPLICATE KEY UPDATE `setting_value` = VALUES(`setting_value`);
 
 
 -- ---------------------------------------------------------------------------
