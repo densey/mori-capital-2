@@ -262,4 +262,21 @@ return [
     // Misc
     'aria.breadcrumb'            => 'Breadcrumb',
     'preloader.alt'              => 'Mori Capital',
+
+    // Homepage CTAs / section copy
+    'home.cta.more_about_mori'   => 'More about Mori',
+    'home.cta.explore_style'     => 'Explore the Mori Style',
+    'home.cta.all_views'         => 'All Mori Views',
+    'home.views.eyebrow'         => 'Mori Views',
+    'home.views.intro'           => 'Quarterly outlooks, fund factsheets and shareholder communications from our portfolio managers.',
+
+    // About page
+    'page.about.title'           => 'About Mori Capital Management',
+    'page.about.desc'            => 'Independent EEMEA specialist asset manager — Mori Capital Management Ltd.',
+    'about.alt_research'         => 'Mori Capital — EEMEA research-led approach',
+    'about.body_fallback'        => '<p>Founded in 1998 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets.</p>',
+    'about.regulatory_eyebrow'   => 'Regulatory information',
+    'about.regulatory_body'      => 'Mori Capital Management Ltd. is authorised and regulated by the <strong>Malta Financial Services Authority (MFSA)</strong> under Firm Reference <strong>:license</strong>, and is authorised to provide investment services under the MiFID directive.',
+    'about.regulator_badge'      => 'Regulated by MFSA · Firm Reference',
+    'about.registered_office'    => 'Registered office',
 ];

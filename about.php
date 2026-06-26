@@ -19,8 +19,8 @@ try {
 } catch (\Throwable) { $pageData = null; $team = []; }
 
 $page = [
-    'title'       => ($pageData['meta_title'] ?? 'About Mori Capital Management'),
-    'description' => ($pageData['meta_description'] ?? 'Independent EEMEA specialist asset manager — Mori Capital Management Ltd.'),
+    'title'       => ($pageData['meta_title'] ?? null) ?: t('page.about.title'),
+    'description' => ($pageData['meta_description'] ?? null) ?: t('page.about.desc'),
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
         ['label' => t('nav.about')],
@@ -42,7 +42,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     <div class="about-us-image-box-1">
                         <div class="about-us-image">
                             <figure class="image-anime">
-                                <img src="<?= asset('assets/images/about/about-hd.jpg') ?>" alt="Mori Capital — EEMEA research-led approach">
+                                <img src="<?= asset('assets/images/about/about-hd.jpg') ?>" alt="<?= e(t('about.alt_research')) ?>">
                             </figure>
                         </div>
                     </div>
@@ -55,7 +55,7 @@ include __DIR__ . '/src/partials/page-header.php';
                         <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e($pageData['title'] ?? t('section.about.title')) ?></h2>
                     </div>
                     <div class="wow fadeInUp" data-wow-delay="0.2s">
-                        <?= $pageData['body'] ?? '<p>Founded in 1998 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets.</p>' ?>
+                        <?= $pageData['body'] ?? t('about.body_fallback') ?>
                     </div>
 
                     <div class="about-highlighted-box wow fadeInUp" data-wow-delay="0.4s">
@@ -88,13 +88,13 @@ include __DIR__ . '/src/partials/page-header.php';
         <div class="row align-items-center">
             <div class="col-xl-6">
                 <div class="section-title">
-                    <span class="section-sub-title wow fadeInUp">Regulatory information</span>
+                    <span class="section-sub-title wow fadeInUp"><?= e(t('about.regulatory_eyebrow')) ?></span>
                     <h2 style="font-size:clamp(24px,2.8vw,32px);"><?= e(setting('mfsa_authority', 'Malta Financial Services Authority')) ?></h2>
                 </div>
-                <p style="font-size:15px;line-height:1.7;color:var(--mori-text-soft,#5A6B7B);">Mori Capital Management Ltd. is authorised and regulated by the <strong>Malta Financial Services Authority (MFSA)</strong> under Firm Reference <strong><?= e(setting('mfsa_license', 'C66999')) ?></strong>, and is authorised to provide investment services under the MiFID directive.</p>
+                <p style="font-size:15px;line-height:1.7;color:var(--mori-text-soft,#5A6B7B);"><?= str_replace(':license', '<strong>' . e(setting('mfsa_license', 'C66999')) . '</strong>', t('about.regulatory_body')) ?></p>
                 <div style="display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--mori-border,#E1E7EE);padding:14px 18px;border-radius:8px;font-size:13px;color:var(--primary-color,#1B3A5C);font-weight:600;margin-top:10px;">
                     <i class="fa-solid fa-shield-halved" style="color:var(--accent-color,#1ABC9C);"></i>
-                    Regulated by MFSA · Firm Reference <?= e(setting('mfsa_license', 'C66999')) ?>
+                    <?= e(t('about.regulator_badge')) ?> <?= e(setting('mfsa_license', 'C66999')) ?>
                 </div>
             </div>
             <div class="col-xl-6">
@@ -102,7 +102,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
                         <div style="width:46px;height:46px;border-radius:8px;background:rgba(26,188,156,.12);color:var(--accent-color,#1ABC9C);display:inline-flex;align-items:center;justify-content:center;"><i class="fa-solid fa-location-dot"></i></div>
                         <div>
-                            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;color:var(--mori-muted,#7A8B99);">Registered office</div>
+                            <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;font-weight:600;color:var(--mori-muted,#7A8B99);"><?= e(t('about.registered_office')) ?></div>
                             <div style="font-size:14px;color:var(--primary-color,#1B3A5C);font-weight:600;margin-top:2px;">Mori Capital Management Ltd.</div>
                         </div>
                     </div>

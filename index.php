@@ -152,7 +152,7 @@ include __DIR__ . '/src/partials/header.php';
                                     </div>
                                 </div>
                                 <div class="about-us-btn wow fadeInUp" data-wow-delay="0.2s">
-                                    <a class="btn-default" href="<?= asset('about.php') ?>">More about Mori</a>
+                                    <a class="btn-default" href="<?= asset('about.php') ?>"><?= e(t('home.cta.more_about_mori')) ?></a>
                                 </div>
                             </div>
                             <div class="about-us-body-image wow fadeInUp" data-wow-delay="0.2s">
@@ -275,7 +275,7 @@ include __DIR__ . '/src/partials/header.php';
                         </div>
 
                         <div class="why-choose-btn wow fadeInUp" data-wow-delay="0.8s">
-                            <a href="<?= asset('investment-style.php') ?>" class="btn-default">Explore the Mori Style</a>
+                            <a href="<?= asset('investment-style.php') ?>" class="btn-default"><?= e(t('home.cta.explore_style')) ?></a>
                         </div>
                     </div>
                 </div>
@@ -421,28 +421,33 @@ include __DIR__ . '/src/partials/header.php';
             <div class="row section-row align-items-end">
                 <div class="col-xl-6">
                     <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp">Mori Views</span>
+                        <span class="section-sub-title wow fadeInUp"><?= e(t('home.views.eyebrow')) ?></span>
                         <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.views.title')) ?></h2>
                     </div>
                 </div>
                 <div class="col-xl-6">
                     <div class="section-content-btn">
                         <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
-                            <p>Quarterly outlooks, fund factsheets and shareholder communications from our portfolio managers.</p>
+                            <p><?= e(t('home.views.intro')) ?></p>
                         </div>
                         <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default" href="<?= asset('insights.php') ?>">All Mori Views</a>
+                            <a class="btn-default" href="<?= asset('insights.php') ?>"><?= e(t('home.cta.all_views')) ?></a>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="row" style="margin-top:24px;">
-                <?php $ix = 0; foreach ($insights as $ins): $ix++; ?>
+                <?php $ix = 0; foreach ($insights as $ins): $ix++;
+                    $cat = (string)($ins['category'] ?? '');
+                    $catKey = 'insights.cat.' . ($cat === 'shareholder_notice' ? 'shareholder' : $cat);
+                    $catLabel = t($catKey);
+                    if ($catLabel === $catKey) { $catLabel = ucwords(str_replace('_', ' ', $cat)); }
+                ?>
                 <div class="col-xl-4 col-md-6">
                     <a href="<?= asset('insight.php?slug=' . urlencode($ins['slug'])) ?>" class="insight-card wow fadeInUp" <?= $ix>1?'data-wow-delay="0.'.($ix-1).'s"':'' ?>>
                         <div class="insight-meta">
-                            <span><?= e(ucwords(str_replace('_',' ',$ins['category']))) ?></span>
+                            <span><?= e($catLabel) ?></span>
                             <span class="date"><?= e(\Mori\format_date($ins['publish_date'])) ?></span>
                         </div>
                         <h3><?= e($ins['title']) ?></h3>
