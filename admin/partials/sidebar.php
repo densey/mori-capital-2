@@ -26,6 +26,7 @@ $user = Auth::user();
         <li><a href="<?= asset('admin/page-builder.php') ?>" class="<?= is_active_nav('/admin/page-builder.php')?'active':'' ?>"><i class="fa-solid fa-wand-magic-sparkles"></i> Visual Builder</a></li>
         <li><a href="<?= asset('admin/insights.php') ?>" class="<?= is_active_nav('/admin/insights.php')||is_active_nav('/admin/insight-edit.php')?'active':'' ?>"><i class="fa-solid fa-newspaper"></i> Mori Views</a></li>
         <li><a href="<?= asset('admin/team.php') ?>" class="<?= is_active_nav('/admin/team.php')||is_active_nav('/admin/team-edit.php')?'active':'' ?>"><i class="fa-solid fa-users"></i> Team</a></li>
+        <li><a href="<?= asset('admin/translations.php') ?>" class="<?= is_active_nav('/admin/translations.php')?'active':'' ?>"><i class="fa-solid fa-language"></i> Translation Center</a></li>
 
         <li class="a-nav__section">Funds</li>
         <li><a href="<?= asset('admin/funds.php') ?>" class="<?= is_active_nav('/admin/funds.php')||is_active_nav('/admin/fund-edit.php')?'active':'' ?>"><i class="fa-solid fa-chart-pie"></i> Funds &amp; Share Classes</a></li>
