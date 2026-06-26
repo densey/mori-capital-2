@@ -40,9 +40,11 @@ include __DIR__ . '/partials/layout-start.php';
         <li><a href="#editors">Page Editors (TinyMCE / Block Builder / GrapesJS)</a></li>
         <li><a href="#insights">Mori Views (Insights)</a></li>
         <li><a href="#team">Team Members</a></li>
+        <li><a href="#translations">Translation Center</a></li>
         <li><a href="#funds">Funds &amp; Share Classes</a></li>
-        <li><a href="#performance">Performance (NAV)</a></li>
-        <li><a href="#documents">Documents (FundHub)</a></li>
+        <li><a href="#performance">Performance (NAV) &mdash; CSV import &amp; benchmark toggle</a></li>
+        <li><a href="#documents">Documents (dropdown of 4 sub-pages, drag-reorder)</a></li>
+        <li><a href="#announcements">Fund Announcements</a></li>
         <li><a href="#media">Media Library</a></li>
         <li><a href="#messages">Messages (Contact Inbox)</a></li>
         <li><a href="#newsletter">Newsletter</a></li>
@@ -77,17 +79,18 @@ include __DIR__ . '/partials/layout-start.php';
 <!-- 3. Homepage Content -->
 <h2 id="homepage">3. Homepage Content</h2>
 <img src="/docs/guide-screenshots/homepage-content.png" class="screenshot" alt="Homepage Content">
-<p>Go to <strong>Content &rarr; Homepage Content</strong> to edit all text and numbers that appear on the homepage.</p>
+<p>Go to <strong>Content &rarr; Homepage Content</strong> to edit all text and numbers that appear on the homepage. Every editable copy field is shown as a paired <strong>EN / DE</strong> set so both language versions can be managed in one screen.</p>
 <p>This page lets you manage:</p>
 <ul>
-    <li><strong>About Section</strong> — the company description paragraph, the quote, and the image paths</li>
-    <li><strong>Statistics &amp; Counters</strong> — the numbers shown in "25+ years", "200+ securities", etc. Change these once and they update everywhere on the site (homepage + about page + cinematic section)</li>
-    <li><strong>Funds Section</strong> — the description text that appears above the fund cards</li>
-    <li><strong>Investment Style Section</strong> — the description, bullet points, feature items, and the quote</li>
-    <li><strong>Cinematic Section</strong> — the animated 3D showcase section with NAV data display</li>
-    <li><strong>Investment Principles</strong> — the 5 principle cards shown on the Investment Style page (icon, title, description)</li>
+    <li><strong>About Section</strong> — the company description paragraph (EN + DE), eyebrow label (EN + DE), quote (EN + DE), and image paths</li>
+    <li><strong>Statistics &amp; Counters</strong> — the numbers shown in "25+ years", "200+ securities", "15+ markets", "80+ years collective experience". Change these once and they update everywhere on the site (homepage + about page + cinematic section)</li>
+    <li><strong>Funds Section</strong> — description text (EN + DE) and footer note (EN + DE)</li>
+    <li><strong>Investment Style Section</strong> — description, bullet points 1&ndash;2, feature items 1&ndash;3, and the quote, each with EN + DE pair</li>
+    <li><strong>Cinematic Section</strong> — eyebrow / title / description (EN + DE), showcase fund name, NAV display, YTD %, 10Y annualised, and the three floating chips (Currency, 10Y Annualised, Regulatory)</li>
+    <li><strong>Investment Principles</strong> — the 5 principle cards (icon class, title EN + DE, description EN + DE) shown on the Investment Style page</li>
 </ul>
-<div class="tip"><strong>Tip:</strong> Every field has a sensible default. If you leave a field empty, the site uses the built-in English default. Fill in the "DE" fields to show German translations when the user switches language.</div>
+<div class="tip"><strong>Tip:</strong> Every field has a sensible default. If you leave a DE field empty, the site falls back to the EN value automatically. For bulk translation, use the <a href="#translations">Translation Center</a> &mdash; it lists every German field across the site in one screen.</div>
+<div class="tip"><strong>Removing benchmark text:</strong> The "10Y chip suffix" field is where the &ldquo;vs benchmark&rdquo; text lives. Clear it and the suffix disappears from the homepage chip.</div>
 
 <!-- 4. Hero Slider -->
 <h2 id="hero">4. Hero Slider</h2>
@@ -96,14 +99,15 @@ include __DIR__ . '/partials/layout-start.php';
 <p>You can add multiple slides that auto-rotate every 6 seconds. Each slide supports:</p>
 <ul>
     <li><strong>Image</strong> (JPG, PNG, WEBP) or <strong>Video</strong> (MP4) backgrounds</li>
-    <li><strong>Title &amp; Subtitle</strong> — overlay text shown on the slide</li>
+    <li><strong>Title &amp; Subtitle (EN)</strong> — overlay text shown on the EN site</li>
+    <li><strong>Title (DE) &amp; Subtitle (DE)</strong> — German overlay text. Leave blank to reuse the EN value. Editable from the slide form and from the <a href="#translations">Translation Center</a></li>
     <li><strong>CTA Button</strong> — optional call-to-action button (text + URL)</li>
     <li><strong>Overlay opacity</strong> — controls how dark the overlay is (0 = no overlay, 1 = fully dark)</li>
     <li><strong>Display order</strong> — controls the slide sequence</li>
     <li><strong>Active toggle</strong> — disable a slide without deleting it</li>
 </ul>
 <p>Click <strong>Upload</strong> to upload a new image or video directly from your computer. The file is stored in the media library automatically.</p>
-<div class="warn"><strong>Recommended sizes:</strong> Images should be at least 1920×1080px for crisp display on large screens. Videos should be MP4 format, under 15MB, and ideally 10–15 seconds long.</div>
+<div class="warn"><strong>Recommended sizes:</strong> Images should be at least 1920&times;1080px for crisp display on large screens. Videos should be MP4 format, under 15MB, and ideally 10&ndash;15 seconds long.</div>
 
 <!-- 5. Pages -->
 <h2 id="pages">5. Pages</h2>
@@ -178,8 +182,29 @@ include __DIR__ . '/partials/layout-start.php';
     <li><strong>Display order:</strong> Controls the sequence on the page</li>
 </ul>
 
-<!-- 9. Funds -->
-<h2 id="funds">9. Funds &amp; Share Classes</h2>
+<!-- 9. Translation Center -->
+<h2 id="translations">9. Translation Center</h2>
+<p>Go to <strong>Content &rarr; Translation Center</strong> for a single dashboard listing every German content field across the entire site.</p>
+<p>Each row shows the English source on the left and the German editor on the right. Edits save automatically when you click out of the field (no Save button to remember). The whole site is covered in seven sections:</p>
+<ul>
+    <li><strong>Funds</strong> &mdash; <code>name_de</code>, <code>description_de</code>, <code>objective_de</code> for each fund</li>
+    <li><strong>Team Members</strong> &mdash; <code>title_de</code> and <code>bio_de</code> for every active team member</li>
+    <li><strong>Homepage Copy</strong> &mdash; every editable hp_* setting (About / Funds / Style / Cinematic) and the 5 Investment Principles</li>
+    <li><strong>Pages (DE versions)</strong> &mdash; title, meta description and HTML body for every page that has a German row</li>
+    <li><strong>Mori Views / Insights</strong> &mdash; title, excerpt and body for every published EN article paired with a DE counterpart</li>
+    <li><strong>Hero Slider</strong> &mdash; per-slide title and subtitle in German</li>
+    <li><strong>Fund Announcements</strong> &mdash; title and body for announcements that have a DE row</li>
+</ul>
+<p><strong>How the two columns are presented:</strong></p>
+<ul>
+    <li>For <strong>plain text fields</strong> (titles, eyebrows, excerpts, meta descriptions) the EN source is shown as escaped text and the DE side is a simple input or textarea.</li>
+    <li>For <strong>HTML body fields</strong> (page bodies, insight bodies, announcement bodies) the EN source is shown as a <em>rendered preview</em> &mdash; headings, paragraphs, lists, tables exactly as they appear on the public site &mdash; and the DE side is a full <strong>TinyMCE WYSIWYG editor</strong> with bold/italic, headings (H2&ndash;H4), lists, link, image, table, and a raw-HTML <em>code</em> button for power users.</li>
+</ul>
+<div class="tip"><strong>Tip:</strong> The German content shipped with the site has already been hand-translated. Use the Translation Center to polish wording or fill in newly added content; you won&rsquo;t need to translate from scratch.</div>
+<p>A sticky table-of-contents row across the top lets you jump straight to any section (Funds, Team, Homepage Copy, etc.).</p>
+
+<!-- 10. Funds -->
+<h2 id="funds">10. Funds &amp; Share Classes</h2>
 <img src="/docs/guide-screenshots/funds.png" class="screenshot" alt="Funds">
 <p>Go to <strong>Funds &rarr; Funds &amp; Share Classes</strong>.</p>
 <p>This page manages the two funds (Mori Eastern European Fund, Mori Ottoman Fund) and their share classes.</p>
@@ -191,29 +216,93 @@ include __DIR__ . '/partials/layout-start.php';
 <div class="tip"><strong>Note:</strong> Fund names appear automatically in the website header, footer, and fund cards — no need to update them in multiple places.</div>
 
 <!-- 10. Performance -->
-<h2 id="performance">10. Performance (NAV)</h2>
+<h2 id="performance">11. Performance (NAV) &mdash; CSV import &amp; benchmark toggle</h2>
 <img src="/docs/guide-screenshots/performance.png" class="screenshot" alt="Performance">
-<p>Go to <strong>Funds &rarr; Performance (NAV)</strong> to add daily NAV entries for each share class.</p>
+<p>Go to <strong>Funds &rarr; Performance (NAV)</strong> to manage NAV history for each share class. The page has four cards: <em>Selector</em>, <em>Chart display</em>, <em>Bulk import (CSV)</em>, and the entries table at the bottom.</p>
+
+<h3>Manual NAV entry</h3>
 <ul>
-    <li>Select a <strong>fund</strong> and <strong>share class</strong></li>
-    <li>Enter the <strong>date</strong> and <strong>NAV value</strong></li>
-    <li>Click <strong>Add entry</strong></li>
+    <li>Select a <strong>fund</strong> and <strong>share class</strong> at the top</li>
+    <li>Enter the <strong>date</strong> and <strong>NAV value</strong>, then click <strong>Add entry</strong></li>
 </ul>
+
+<h3>Bulk CSV import</h3>
+<p>Click <strong>Download template</strong> at the top of the <em>Bulk import (CSV)</em> card to grab a ready-to-fill <code>mori-nav-template.csv</code> with the right columns and example rows. The required columns are:</p>
+<ul>
+    <li><code>date</code> &mdash; in <code>YYYY-MM-DD</code> format</li>
+    <li><code>nav</code> &mdash; numeric value</li>
+    <li><code>benchmark</code> &mdash; optional, leave blank if not tracked</li>
+</ul>
+<p>When you upload, pick one of three modes that controls how existing data is handled:</p>
+<ul>
+    <li><strong>Update existing + add new</strong> (default, recommended) &mdash; if a date in the CSV already exists, its NAV is overwritten with the new value; new dates are inserted; nothing is deleted. Safe for monthly amendments.</li>
+    <li><strong>Add new only</strong> &mdash; existing dates are kept untouched, only brand-new dates are inserted.</li>
+    <li><strong>Replace all</strong> &mdash; wipes every NAV entry for that share class first, then imports the CSV. Use this when you want a complete clean slate (e.g. to clear placeholder demo numbers on first upload).</li>
+</ul>
+<div class="warn"><strong>Replace mode is destructive:</strong> all existing entries for the selected share class are deleted before the import runs. The deletion is audit-logged so you can see what was removed, but there is no &ldquo;undo&rdquo;.</div>
+
+<h3>Hiding the benchmark line</h3>
+<p>The <em>Chart display</em> card has a single checkbox: <strong>Show benchmark on the NAV chart</strong>. Untick it and the benchmark line disappears from every share-class chart on the public site. Your benchmark numbers stay in the database, so you can switch the display back on at any time. The cinematic chip on the homepage (&ldquo;vs benchmark&rdquo; text) is cleared separately from <a href="#homepage">Homepage Content &rarr; Cinematic Section &rarr; 10Y chip suffix</a>.</p>
+
 <p>The Performance page on the website displays an interactive ApexChart generated from this data, plus cumulative returns (YTD, 1Y, 3Y, 5Y, 10Y).</p>
 
 <!-- 11. Documents -->
-<h2 id="documents">11. Documents (FundHub)</h2>
+<h2 id="documents">12. Documents (dropdown, drag-reorder)</h2>
 <img src="/docs/guide-screenshots/documents.png" class="screenshot" alt="Documents">
-<p>Go to <strong>Funds &rarr; Documents</strong> to manage the FundHub document repository.</p>
+<p>Go to <strong>Funds &rarr; Documents</strong> to manage every PDF on the site. The public side serves these through a dropdown with four sub-pages:</p>
 <ul>
-    <li><strong>Upload PDFs:</strong> Click "Add document" &rarr; select file, fund, share class(es), document type, title</li>
-    <li><strong>Document types:</strong> Prospectus, KIID, PRIIPs KID, Annual/Semi-Annual Accounts, Factsheet, Marketing, Other</li>
-    <li><strong>Locale:</strong> EN or DE — determines which language version appears</li>
-    <li><strong>Matrix view:</strong> The FundHub page shows documents in a share-class × type grid</li>
+    <li><strong>Share Class Documents</strong> &mdash; the FundHub matrix (Prospectus, KIID, PRIIPs, Annual / Semi-Annual Accounts, Factsheet) keyed per share class</li>
+    <li><strong>Company Policies</strong> &mdash; the annual policy set (Best Execution, ESG, Conflicts of Interest, etc.)</li>
+    <li><strong>Other Documents</strong> &mdash; year-grouped list (2024 / 2025 / 2026) of audited financials, interim financials, UK Tax Reporting, etc.</li>
+    <li><strong>Updates During Suspension</strong> &mdash; quarterly fund updates and shareholder notices from the suspension period onwards</li>
 </ul>
 
-<!-- 12. Media -->
-<h2 id="media">12. Media Library</h2>
+<h3>Filtering the admin list</h3>
+<p>The top of the page has three filters: <strong>Section</strong>, <strong>Fund</strong>, <strong>Type</strong>. Picking a Section narrows the table to one of the four public lists above and unlocks drag-to-reorder (see below).</p>
+
+<h3>Drag-to-reorder</h3>
+<p>Once a Section is selected, each row gets a grip handle on the left. Drag any row up or down and the new order is saved automatically &mdash; the public site reflects the change instantly. The initial ordering is seeded from the current view (newest first), so nothing reshuffles when you first open the screen.</p>
+<ul>
+    <li>Reordering is <strong>per-section</strong>: moving a Company Policy doesn&rsquo;t affect Other Documents or vice versa.</li>
+    <li><strong>Other Documents</strong> keeps its year groupings; inside each year, your manual order takes priority.</li>
+    <li>Every reorder is recorded in the Audit Log.</li>
+</ul>
+
+<h3>Uploading a new document</h3>
+<p>Click <strong>Upload</strong> in the top-right. The form is laid out so the choices are explicit:</p>
+<ul>
+    <li><strong>Category</strong> &mdash; determines which public list the document appears on (Share Class / Company Policy / Other Document / Updates During Suspension).</li>
+    <li><strong>Scope</strong> &mdash; a three-mode radio selector that controls who sees the document in the FundHub matrix:
+        <ul>
+            <li><em>Per share class</em> &mdash; for KIIDs and PRIIPs KIDs. Tick one or more share classes; each one sees its own file.</li>
+            <li><em>Per fund</em> &mdash; for Factsheets (one file per fund, served to every share class of that fund).</li>
+            <li><em>Umbrella</em> &mdash; for Prospectus, Audited Accounts and Semi-Annual Accounts (applies to every share class).</li>
+        </ul>
+    </li>
+    <li><strong>Document type</strong> &mdash; Prospectus, KIID, PRIIPs KID, Annual / Semi-Annual Report, Factsheet, Marketing, Other</li>
+    <li><strong>Language</strong> &mdash; defaults to <em>Both</em> (a single file shown on EN and DE sites). Pick <em>English only</em> or <em>Deutsch only</em> when you have separate language versions of the same document.</li>
+    <li><strong>Display year</strong> &mdash; sets the year bucket on the Other Documents page (defaults to document date&rsquo;s year)</li>
+    <li><strong>Description</strong> &mdash; shown to users on the Company Policies and Other Documents listings</li>
+</ul>
+<div class="tip"><strong>Tip on KIIDs:</strong> Choose <em>Per share class</em> scope, tick the relevant share class(es), set Document type to <em>KIID</em>, and pick <em>English</em> or <em>Deutsch</em>. The matrix then surfaces that file in the right cell on the right language site.</div>
+
+<!-- 12. Fund Announcements -->
+<h2 id="announcements">13. Fund Announcements</h2>
+<p>Go to <strong>Funds &rarr; Fund Announcements</strong> to publish short narrative notices on the public <code>/announcements.php</code> page. The link sits between <em>Documents</em> and <em>Contact</em> in the site navigation.</p>
+<p>Each announcement supports:</p>
+<ul>
+    <li><strong>Title</strong> and <strong>slug</strong> (the slug auto-generates from the title and feeds the URL)</li>
+    <li><strong>Publish date</strong> &mdash; controls chronological order on the public page</li>
+    <li><strong>Status</strong> &mdash; Draft or Published</li>
+    <li><strong>Language</strong> &mdash; Both / English only / Deutsch only</li>
+    <li><strong>Related fund</strong> (optional) &mdash; tags the announcement to one of the two funds</li>
+    <li><strong>Attached document</strong> (optional) &mdash; pick a PDF from the Documents library to link below the body</li>
+    <li><strong>Body</strong> &mdash; a rich-text TinyMCE editor for the narrative content</li>
+</ul>
+<p>Published announcements appear chronologically (newest first) on the public page. Use the language filter on the upload form to maintain separate EN and DE versions; or use the <a href="#translations">Translation Center</a> to fine-tune translations later.</p>
+
+<!-- 13. Media -->
+<h2 id="media">14. Media Library</h2>
 <img src="/docs/guide-screenshots/media.png" class="screenshot" alt="Media Library">
 <p>Go to <strong>Content &rarr; Media Library</strong> to manage all uploaded files.</p>
 <ul>
@@ -224,7 +313,7 @@ include __DIR__ . '/partials/layout-start.php';
 <p>Uploaded files are stored in <code>/uploads/media/YEAR/</code>.</p>
 
 <!-- 13. Messages -->
-<h2 id="messages">13. Messages (Contact Inbox)</h2>
+<h2 id="messages">15. Messages (Contact Inbox)</h2>
 <img src="/docs/guide-screenshots/messages.png" class="screenshot" alt="Messages">
 <p>Go to <strong>Engagement &rarr; Messages</strong> to see messages submitted via the contact form.</p>
 <ul>
@@ -234,7 +323,7 @@ include __DIR__ . '/partials/layout-start.php';
 </ul>
 
 <!-- 14. Newsletter -->
-<h2 id="newsletter">14. Newsletter</h2>
+<h2 id="newsletter">16. Newsletter</h2>
 <img src="/docs/guide-screenshots/newsletter.png" class="screenshot" alt="Newsletter">
 <p>Go to <strong>Engagement &rarr; Newsletter</strong> to manage subscribers and send bulk emails.</p>
 <ul>
@@ -254,8 +343,8 @@ include __DIR__ . '/partials/layout-start.php';
     <li>When ready, click <strong>Send to all subscribers</strong> — a progress bar shows the status</li>
 </ol>
 
-<!-- 15. Settings -->
-<h2 id="settings">15. Settings</h2>
+<!-- 17. Settings -->
+<h2 id="settings">17. Settings</h2>
 <img src="/docs/guide-screenshots/settings.png" class="screenshot" alt="Settings">
 <p>Go to <strong>System &rarr; Settings</strong> to manage site-wide configuration.</p>
 <ul>
@@ -268,8 +357,8 @@ include __DIR__ . '/partials/layout-start.php';
     <li><strong>Security:</strong> Session timeout (minutes), upload max size (MB)</li>
 </ul>
 
-<!-- 16. SEO -->
-<h2 id="seo">16. SEO &amp; Custom Code</h2>
+<!-- 18. SEO -->
+<h2 id="seo">18. SEO &amp; Custom Code</h2>
 <img src="/docs/guide-screenshots/seo.png" class="screenshot" alt="SEO">
 <p>Go to <strong>System &rarr; SEO &amp; Code</strong> to manage advanced SEO settings and code injection.</p>
 <ul>
@@ -279,8 +368,8 @@ include __DIR__ . '/partials/layout-start.php';
     <li><strong>Sitemap:</strong> Auto-generated at <code>/sitemap.xml</code> with all published pages and insights</li>
 </ul>
 
-<!-- 17. Users -->
-<h2 id="users">17. Users</h2>
+<!-- 19. Users -->
+<h2 id="users">19. Users</h2>
 <img src="/docs/guide-screenshots/users.png" class="screenshot" alt="Users">
 <p>Go to <strong>System &rarr; Users</strong> to manage admin panel users.</p>
 <ul>
@@ -291,8 +380,8 @@ include __DIR__ . '/partials/layout-start.php';
 </ul>
 <div class="warn"><strong>Important:</strong> Only super_admin users can access Settings, Users, SEO, and Database pages.</div>
 
-<!-- 18. Audit -->
-<h2 id="audit">18. Audit Log</h2>
+<!-- 20. Audit -->
+<h2 id="audit">20. Audit Log</h2>
 <img src="/docs/guide-screenshots/audit.png" class="screenshot" alt="Audit Log">
 <p>Go to <strong>System &rarr; Audit Log</strong> to see a complete history of all actions taken in the admin panel.</p>
 <ul>
@@ -301,8 +390,8 @@ include __DIR__ . '/partials/layout-start.php';
     <li>Shows who did what, when, and on which record</li>
 </ul>
 
-<!-- 19. Database -->
-<h2 id="database">19. Database &amp; Migrations</h2>
+<!-- 21. Database -->
+<h2 id="database">21. Database &amp; Migrations</h2>
 <img src="/docs/guide-screenshots/database.png" class="screenshot" alt="Database">
 <p>Go to <strong>System &rarr; Database</strong> to manage the database schema.</p>
 <ul>
@@ -311,8 +400,8 @@ include __DIR__ . '/partials/layout-start.php';
 </ul>
 <div class="warn"><strong>Note:</strong> This is an advanced feature. Normally, running <code>install.php</code> handles everything automatically.</div>
 
-<!-- 20. Bilingual -->
-<h2 id="bilingual">20. Bilingual Content (EN/DE)</h2>
+<!-- 22. Bilingual -->
+<h2 id="bilingual">22. Bilingual Content (EN/DE)</h2>
 <p>The site supports English and German. Here's how bilingual content works:</p>
 <ul>
     <li><strong>Language switcher:</strong> Visitors click EN/DE in the topbar (desktop) or mobile menu to switch</li>
@@ -322,8 +411,8 @@ include __DIR__ . '/partials/layout-start.php';
     <li><strong>UI labels:</strong> Managed in <code>src/lang/en.php</code> and <code>src/lang/de.php</code> — these are the menu labels, button text, etc.</li>
 </ul>
 
-<!-- 21. Shortcuts -->
-<h2 id="shortcuts">21. Keyboard Shortcuts</h2>
+<!-- 23. Shortcuts -->
+<h2 id="shortcuts">23. Keyboard Shortcuts</h2>
 <table class="a-table" style="max-width:400px;">
     <thead><tr><th>Shortcut</th><th>Action</th></tr></thead>
     <tbody>
