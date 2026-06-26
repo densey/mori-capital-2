@@ -125,7 +125,7 @@ return [
 
     // Announcements
     'ann.eyebrow'                => 'Mitteilungen',
-    'ann.intro'                  => 'Anlegerinformationen und kurze Updates von Mori Capital Management Ltd.',
+    'ann.intro'                  => 'Anlegerinformationen und kurze Updates.',
     'ann.empty'                  => 'Derzeit keine Mitteilungen vorhanden.',
 
     // Contact

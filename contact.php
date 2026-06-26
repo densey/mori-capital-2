@@ -37,10 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'user_agent' => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 500),
                 ]);
 
-                // Send notification email to admin
+                // Send notification email to admin (Reply-To set to the sender so
+                // hitting "Reply" in the inbox goes straight back to the customer).
+                $notifyTo = setting('contact_email', 'info@mori-capital.com');
+                $mailOk = false;
+                $mailErr = '';
                 try {
-                    \Mori\Mail::sendTemplate(
-                        setting('contact_email', 'info@mori-capital.com'),
+                    $mailOk = \Mori\Mail::sendTemplate(
+                        $notifyTo,
                         'New contact message: ' . mb_substr($subject ?: $name, 0, 80),
                         'New message from ' . $name,
                         '<p><strong>From:</strong> ' . htmlspecialchars($name) . ' &lt;' . htmlspecialchars($email) . '&gt;</p>'
@@ -48,11 +52,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         . '<hr style="border:none;border-top:1px solid #E1E7EE;margin:16px 0;">'
                         . '<p>' . nl2br(htmlspecialchars($message)) . '</p>'
                         . '<hr style="border:none;border-top:1px solid #E1E7EE;margin:16px 0;">'
-                        . '<p style="font-size:12px;color:#7A8B99;">Reply directly to this email to respond to ' . htmlspecialchars($email) . '</p>'
+                        . '<p style="font-size:12px;color:#7A8B99;">Reply directly to this email to respond to ' . htmlspecialchars($email) . '</p>',
+                        $email
                     );
-                } catch (\Throwable) {
-                    // Email failed silently — message is saved in DB regardless
+                } catch (\Throwable $mailEx) {
+                    $mailErr = $mailEx->getMessage();
                 }
+
+                // Log the outcome so admins can see at a glance whether the
+                // notification email actually went out.
+                \Mori\AuditLog::log(
+                    null,
+                    $mailOk ? 'contact.notify.sent' : 'contact.notify.failed',
+                    'contact_messages',
+                    null,
+                    json_encode([
+                        'to'      => $notifyTo,
+                        'from'    => $email,
+                        'subject' => $subject,
+                        'error'   => $mailErr ?: null,
+                    ], JSON_UNESCAPED_UNICODE)
+                );
 
                 flash('contact_ok', t('contact.form.thanks'));
             } catch (\Throwable $e) {

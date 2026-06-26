@@ -125,7 +125,7 @@ return [
 
     // Announcements
     'ann.eyebrow'                => 'Announcements',
-    'ann.intro'                  => 'Investor notices and brief updates from Mori Capital Management Ltd.',
+    'ann.intro'                  => 'Investor notices and brief updates.',
     'ann.empty'                  => 'No announcements at this time.',
 
     // Contact

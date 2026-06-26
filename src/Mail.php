@@ -15,7 +15,7 @@ namespace Mori;
 
 final class Mail
 {
-    public static function send(string $to, string $subject, string $body, bool $isHtml = true): bool
+    public static function send(string $to, string $subject, string $body, bool $isHtml = true, ?string $replyTo = null): bool
     {
         $host = Config::get('SMTP_HOST', '');
         $port = (int) Config::get('SMTP_PORT', '587');
@@ -24,11 +24,12 @@ final class Mail
         $from = Config::get('SMTP_FROM', 'info@mori-capital.com');
         $fromName = Config::get('SMTP_FROM_NAME', 'Mori Capital Management');
         $secure = strtolower((string) Config::get('SMTP_SECURE', 'tls'));
+        $replyAddr = ($replyTo && filter_var($replyTo, FILTER_VALIDATE_EMAIL)) ? $replyTo : $from;
 
         // If SMTP is not configured, try PHP mail() as fallback
         if ($host === '') {
             $headers  = "From: {$fromName} <{$from}>\r\n";
-            $headers .= "Reply-To: {$from}\r\n";
+            $headers .= "Reply-To: {$replyAddr}\r\n";
             $headers .= "MIME-Version: 1.0\r\n";
             $headers .= $isHtml
                 ? "Content-Type: text/html; charset=UTF-8\r\n"
@@ -99,6 +100,7 @@ final class Mail
 
             $message  = "Date: {$date}\r\n";
             $message .= "From: {$fromName} <{$from}>\r\n";
+            $message .= "Reply-To: {$replyAddr}\r\n";
             $message .= "To: {$to}\r\n";
             $message .= "Subject: {$subject}\r\n";
             $message .= "Message-ID: {$msgId}\r\n";
@@ -123,7 +125,7 @@ final class Mail
     }
 
     /** Send a templated HTML email with Mori branding. */
-    public static function sendTemplate(string $to, string $subject, string $heading, string $bodyHtml): bool
+    public static function sendTemplate(string $to, string $subject, string $heading, string $bodyHtml, ?string $replyTo = null): bool
     {
         $siteName = setting('site_title', 'Mori Capital Management');
         $siteUrl  = Config::get('SITE_URL', 'https://mori-capital.com');
@@ -142,7 +144,7 @@ final class Mail
               . htmlspecialchars($siteName) . ' &middot; <a href="' . htmlspecialchars($siteUrl) . '" style="color:#1ABC9C;">' . htmlspecialchars($siteUrl) . '</a>'
               . '</div></div></div></body></html>';
 
-        return self::send($to, $subject, $html);
+        return self::send($to, $subject, $html, true, $replyTo);
     }
 
     /** Quick test — sends a test email to the given address. */
