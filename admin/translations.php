@@ -283,6 +283,9 @@ include __DIR__ . '/partials/layout-start.php';
 .tc-field__de textarea { resize: vertical; min-height: 88px; line-height: 1.55; }
 .tc-field__de textarea.big { min-height: 240px; font-family: 'Courier New', monospace; font-size: 12px; }
 .tc-field__de .save-status { font-size: 11px; color: var(--a-muted); margin-top: 4px; height: 14px; transition: color .15s; }
+/* TinyMCE container styling for HTML body editors */
+.tc-field__de .tox-tinymce { border: 1px solid var(--a-border) !important; border-radius: 5px !important; }
+.tc-field__de .tox .tox-edit-area__iframe { background: #fff !important; }
 .tc-field__de .save-status.saved { color: var(--a-success, #27AE60); font-weight: 600; }
 .tc-field__de .save-status.err { color: var(--a-danger, #E74C3C); font-weight: 600; }
 .tc-empty { color: var(--a-muted); font-style: italic; padding: 8px 0; font-size: 12.5px; }
@@ -327,10 +330,11 @@ include __DIR__ . '/partials/layout-start.php';
             </div>
             <div class="tc-field__col tc-field__de">
                 <label><?= e($f['label']) ?></label>
+                <?php $fieldUid = 'tc_' . $type . '_' . $row['id'] . '_' . $f['field']; ?>
                 <?php if (($f['type'] ?? 'text') === 'text'): ?>
                     <input type="text" value="<?= e((string)$f['de']) ?>">
                 <?php elseif (($f['type'] ?? '') === 'textarea_big'): ?>
-                    <textarea class="big"><?= e((string)$f['de']) ?></textarea>
+                    <textarea class="big tc-html-editor" id="<?= e($fieldUid) ?>"><?= e((string)$f['de']) ?></textarea>
                 <?php else: ?>
                     <textarea><?= e((string)$f['de']) ?></textarea>
                 <?php endif; ?>
@@ -343,47 +347,89 @@ include __DIR__ . '/partials/layout-start.php';
 </div>
 <?php endforeach; ?>
 
+<!-- TinyMCE for rich HTML body editors -->
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7.0.0/tinymce.min.js" referrerpolicy="origin"></script>
+
 <script>
 (function () {
     var csrf = <?= json_encode($csrfToken) ?>;
+
+    // Shared save function used by both plain inputs and TinyMCE editors
+    function save(wrap, value, status) {
+        status.textContent = 'Saving…';
+        status.className = 'save-status';
+        var fd = new FormData();
+        fd.append('_csrf', csrf);
+        fd.append('type',  wrap.dataset.type);
+        fd.append('id',    wrap.dataset.id);
+        fd.append('field', wrap.dataset.field);
+        fd.append('value', value);
+        return fetch(window.location.pathname, {
+            method: 'POST',
+            body: fd,
+            headers: { 'X-CSRF-Token': csrf }
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+            if (j.ok) {
+                status.textContent = '✓ Saved';
+                status.className = 'save-status saved';
+                setTimeout(function () { status.textContent = 'Auto-saves on blur.'; status.className = 'save-status'; }, 2500);
+                return true;
+            }
+            status.textContent = 'Save failed: ' + (j.error || 'unknown');
+            status.className = 'save-status err';
+            return false;
+        })
+        .catch(function () {
+            status.textContent = 'Network error — try again.';
+            status.className = 'save-status err';
+            return false;
+        });
+    }
+
+    // 1) Plain inputs and small textareas → blur-to-save
     document.querySelectorAll('.tc-field').forEach(function (wrap) {
-        var input = wrap.querySelector('input, textarea');
+        var input = wrap.querySelector('input, textarea:not(.tc-html-editor)');
         var status = wrap.querySelector('.save-status');
         if (!input) return;
         var initial = input.value;
         input.addEventListener('blur', function () {
             if (input.value === initial) return;
-            status.textContent = 'Saving…';
-            status.className = 'save-status';
-            var fd = new FormData();
-            fd.append('_csrf', csrf);
-            fd.append('type', wrap.dataset.type);
-            fd.append('id', wrap.dataset.id);
-            fd.append('field', wrap.dataset.field);
-            fd.append('value', input.value);
-            fetch(window.location.pathname, {
-                method: 'POST',
-                body: fd,
-                headers: { 'X-CSRF-Token': csrf }
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (j) {
-                if (j.ok) {
-                    initial = input.value;
-                    status.textContent = '✓ Saved';
-                    status.className = 'save-status saved';
-                    setTimeout(function () { status.textContent = 'Auto-saves on blur.'; status.className = 'save-status'; }, 2500);
-                } else {
-                    status.textContent = 'Save failed: ' + (j.error || 'unknown');
-                    status.className = 'save-status err';
-                }
-            })
-            .catch(function () {
-                status.textContent = 'Network error — try again.';
-                status.className = 'save-status err';
-            });
+            save(wrap, input.value, status).then(function (ok) { if (ok) initial = input.value; });
         });
     });
+
+    // 2) TinyMCE for HTML body editors
+    if (typeof tinymce !== 'undefined') {
+        tinymce.init({
+            selector: 'textarea.tc-html-editor',
+            license_key: 'gpl',
+            height: 360,
+            menubar: false,
+            branding: false,
+            promotion: false,
+            plugins: 'lists link image table code autoresize',
+            toolbar: 'undo redo | blocks | bold italic underline | bullist numlist | link image | table | removeformat | code',
+            content_style: 'body { font-family: Inter, system-ui, sans-serif; font-size: 14px; line-height: 1.6; color: #1B3A5C; }',
+            block_formats: 'Paragraph=p; Heading 2=h2; Heading 3=h3; Heading 4=h4',
+            relative_urls: false,
+            convert_urls: false,
+            autoresize_min_height: 240,
+            autoresize_max_height: 600,
+            setup: function (ed) {
+                var initial = '';
+                ed.on('init', function () { initial = ed.getContent(); });
+                ed.on('blur', function () {
+                    var current = ed.getContent();
+                    if (current === initial) return;
+                    var wrap   = ed.targetElm.closest('.tc-field');
+                    var status = wrap.querySelector('.save-status');
+                    save(wrap, current, status).then(function (ok) { if (ok) initial = current; });
+                });
+            }
+        });
+    }
 })();
 </script>
 
