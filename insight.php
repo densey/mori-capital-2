@@ -22,18 +22,18 @@ try {
 
 if (!$ins) {
     http_response_code(404);
-    $page = ['title' => 'Insight not found'];
+    $page = ['title' => t('page.insight.not_found')];
     include __DIR__ . '/src/partials/head.php';
     include __DIR__ . '/src/partials/topbar.php';
     include __DIR__ . '/src/partials/header.php';
-    echo '<div class="container" style="padding:120px 0;text-align:center;"><h1>Insight not found</h1><p><a href="' . asset('insights.php') . '">Back to all Mori Views</a></p></div>';
+    echo '<div class="container" style="padding:120px 0;text-align:center;"><h1>' . e(t('page.insight.not_found')) . '</h1><p><a href="' . asset('insights.php') . '">' . e(t('btn.back_to_views')) . '</a></p></div>';
     include __DIR__ . '/src/partials/footer.php';
     include __DIR__ . '/src/partials/scripts.php';
     exit;
 }
 
 $page = [
-    'title'       => $ins['title'] . ' — Mori Views',
+    'title'       => $ins['title'] . ' — ' . t('insight.title_suffix'),
     'description' => $ins['excerpt'] ?? '',
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
@@ -52,8 +52,14 @@ include __DIR__ . '/src/partials/page-header.php';
     <div class="container">
         <div class="row">
             <div class="col-lg-8 mx-auto">
+                <?php
+                    $cat = (string)($ins['category'] ?? '');
+                    $catKey = 'insights.cat.' . ($cat === 'shareholder_notice' ? 'shareholder' : $cat);
+                    $catLabel = t($catKey);
+                    if ($catLabel === $catKey) { $catLabel = ucwords(str_replace('_', ' ', $cat)); }
+                ?>
                 <div style="margin-bottom:30px;font-size:12px;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent-color,#1ABC9C);font-weight:700;">
-                    <?= e(ucwords(str_replace('_',' ', $ins['category']))) ?> · <span style="color:var(--mori-muted,#7A8B99);font-weight:500;letter-spacing:0.05em;text-transform:none;"><?= e(format_date($ins['publish_date'])) ?></span>
+                    <?= e($catLabel) ?> · <span style="color:var(--mori-muted,#7A8B99);font-weight:500;letter-spacing:0.05em;text-transform:none;"><?= e(format_date($ins['publish_date'])) ?></span>
                 </div>
                 <h1 style="font-size:clamp(28px,3.4vw,40px);line-height:1.18;margin-bottom:24px;letter-spacing:-0.01em;"><?= e($ins['title']) ?></h1>
 
@@ -68,9 +74,9 @@ include __DIR__ . '/src/partials/page-header.php';
                 </div>
 
                 <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--mori-border,#E1E7EE);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
-                    <a href="<?= asset('insights.php') ?>" style="color:var(--accent-color,#1ABC9C);font-weight:600;font-size:14px;text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> Back to all Mori Views</a>
+                    <a href="<?= asset('insights.php') ?>" style="color:var(--accent-color,#1ABC9C);font-weight:600;font-size:14px;text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> <?= e(t('btn.back_to_views')) ?></a>
                     <div style="font-size:12px;color:var(--mori-muted,#7A8B99);">
-                        Share: <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode((string)\Mori\url($_SERVER['REQUEST_URI'])) ?>" target="_blank" rel="noopener" style="color:var(--accent-color,#1ABC9C);"><i class="fa-brands fa-linkedin-in"></i></a>
+                        <?= e(t('insight.share_label')) ?>: <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode((string)\Mori\url($_SERVER['REQUEST_URI'])) ?>" target="_blank" rel="noopener" style="color:var(--accent-color,#1ABC9C);" aria-label="<?= e(t('social.linkedin')) ?>"><i class="fa-brands fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>

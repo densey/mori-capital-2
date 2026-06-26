@@ -197,7 +197,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-6 col-lg-6">
                     <div class="service-item wow fadeInUp" <?= $idx>1?'data-wow-delay="0.2s"':'' ?>>
                         <div class="service-item-image">
-                            <a href="<?= asset('fund-' . $f['slug'] . '.php') ?>" data-cursor-text="View">
+                            <a href="<?= asset('fund-' . $f['slug'] . '.php') ?>" data-cursor-text="<?= e(t('cursor.view')) ?>">
                                 <figure class="image-anime">
                                     <img src="<?= asset(e($f['cover_image_path'] ?? 'assets/images/service/h6-service-' . $idx . '.webp')) ?>" alt="<?= e(I18n::fieldFor($f, 'name')) ?>">
                                 </figure>
@@ -474,7 +474,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-6">
                     <div class="section-content-btn">
                         <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
-                            <p>Our funds are managed by an independent team with over 80 years of collective experience across Emerging European and Turkish capital markets, supported by a dedicated operations, compliance and risk function in Malta.</p>
+                            <p><?= e(t('home.team_intro')) ?></p>
                         </div>
                         <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
                             <a class="btn-default" href="<?= asset('team.php') ?>"><?= e(t('btn.meet_team')) ?></a>
@@ -491,7 +491,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-4 col-md-6">
                     <div class="team-item wow fadeInUp" <?= $tx>1?'data-wow-delay="0.'.($tx<10?$tx-1:0).'s"':'' ?>>
                         <div class="team-item-image">
-                            <a href="<?= asset('team.php#' . e($member['slug'])) ?>" data-cursor-text="View">
+                            <a href="<?= asset('team.php#' . e($member['slug'])) ?>" data-cursor-text="<?= e(t('cursor.view')) ?>">
                                 <figure>
                                     <img src="<?= e($photoSrc) ?>" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<?= urlencode($member['name']) ?>&background=1B3A5C&color=fff&size=600&bold=true&font-size=0.36'" alt="<?= e($member['name']) ?>">
                                 </figure>
@@ -505,9 +505,9 @@ include __DIR__ . '/src/partials/header.php';
                                 <p><?= e(I18n::fieldFor($member, 'title')) ?></p>
                                 <ul>
                                     <?php if (!empty($member['linkedin_url'])): ?>
-                                    <li><a href="<?= e(safe_url($member['linkedin_url'] ?? null)) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                    <li><a href="<?= e(safe_url($member['linkedin_url'] ?? null)) ?>" aria-label="<?= e(t('social.linkedin')) ?>"><i class="fa-brands fa-linkedin-in"></i></a></li>
                                     <?php endif; ?>
-                                    <li><a href="mailto:<?= e($member['email'] ?: setting('contact_email')) ?>" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
+                                    <li><a href="mailto:<?= e($member['email'] ?: setting('contact_email')) ?>" aria-label="<?= e(t('social.email')) ?>"><i class="fa-regular fa-envelope"></i></a></li>
                                 </ul>
                             </div>
                         </div>

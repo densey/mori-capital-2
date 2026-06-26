@@ -97,8 +97,8 @@ $year = date('Y');
                     <div class="footer-social-links">
                         <h3><?= e(t('footer.follow')) ?></h3>
                         <ul>
-                            <li><a href="<?= e($linkedin) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
-                            <li><a href="mailto:<?= e($email) ?>" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
+                            <li><a href="<?= e($linkedin) ?>" aria-label="<?= e(t('social.linkedin')) ?>"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                            <li><a href="mailto:<?= e($email) ?>" aria-label="<?= e(t('social.email')) ?>"><i class="fa-regular fa-envelope"></i></a></li>
                         </ul>
                     </div>
                 </div>

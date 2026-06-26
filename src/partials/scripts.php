@@ -30,7 +30,7 @@ use function Mori\t;
 </div>
 
 <!-- ===== Cookie Consent Banner ===== -->
-<div class="mori-cookie" id="moriCookie" role="region" aria-label="Cookie consent">
+<div class="mori-cookie" id="moriCookie" role="region" aria-label="<?= e(t('cookie.consent_aria')) ?>">
     <div class="mori-cookie__icon"><i class="fa-solid fa-cookie-bite"></i></div>
     <div class="mori-cookie__text"><?= e(t('cookie.text')) ?></div>
     <div class="mori-cookie__actions">

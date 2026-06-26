@@ -381,49 +381,49 @@ var editor = grapesjs.init({
 // ── Add blocks ──
 var bm = editor.BlockManager;
 
-bm.add('section', { label: 'Section', category: 'Layout', media: '<i class="fa fa-rectangle-list" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('section', { label: 'Section', category: 'Layout', media: '<i class="fa-solid fa-rectangle-list" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<section class="container" style="padding:40px 15px;"><h2>Section Title</h2><p>Section content goes here.</p></section>' });
 
-bm.add('text', { label: 'Text', category: 'Basic', media: '<i class="fa fa-paragraph" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('text', { label: 'Text', category: 'Basic', media: '<i class="fa-solid fa-paragraph" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<p>Insert your text here. Click to edit.</p>' });
 
-bm.add('heading', { label: 'Heading', category: 'Basic', media: '<i class="fa fa-heading" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('heading', { label: 'Heading', category: 'Basic', media: '<i class="fa-solid fa-heading" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<h2>Heading</h2>' });
 
-bm.add('image', { label: 'Image', category: 'Basic', media: '<i class="fa fa-image" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('image', { label: 'Image', category: 'Basic', media: '<i class="fa-solid fa-image" style="font-size:28px;color:#1ABC9C"></i>',
     content: { type: 'image' }, activate: true });
 
-bm.add('link-button', { label: 'Button', category: 'Basic', media: '<i class="fa fa-square" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('link-button', { label: 'Button', category: 'Basic', media: '<i class="fa-solid fa-square" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<a class="btn-default" href="#">Button Text</a>' });
 
-bm.add('2-columns', { label: '2 Columns', category: 'Layout', media: '<i class="fa fa-columns" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('2-columns', { label: '2 Columns', category: 'Layout', media: '<i class="fa-solid fa-table-columns" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<div class="row"><div class="col"><p>Column 1</p></div><div class="col"><p>Column 2</p></div></div>' });
 
-bm.add('3-columns', { label: '3 Columns', category: 'Layout', media: '<i class="fa fa-th" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('3-columns', { label: '3 Columns', category: 'Layout', media: '<i class="fa-solid fa-table-cells" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<div class="row"><div class="col"><p>Column 1</p></div><div class="col"><p>Column 2</p></div><div class="col"><p>Column 3</p></div></div>' });
 
-bm.add('divider', { label: 'Divider', category: 'Basic', media: '<i class="fa fa-minus" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('divider', { label: 'Divider', category: 'Basic', media: '<i class="fa-solid fa-minus" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<hr>' });
 
-bm.add('spacer', { label: 'Spacer', category: 'Basic', media: '<i class="fa fa-arrows-up-down" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('spacer', { label: 'Spacer', category: 'Basic', media: '<i class="fa-solid fa-arrows-up-down" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<div style="height:40px;"></div>' });
 
-bm.add('quote', { label: 'Quote', category: 'Basic', media: '<i class="fa fa-quote-left" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('quote', { label: 'Quote', category: 'Basic', media: '<i class="fa-solid fa-quote-left" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<blockquote><p>A meaningful quote goes here.</p></blockquote>' });
 
-bm.add('list', { label: 'List', category: 'Basic', media: '<i class="fa fa-list" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('list', { label: 'List', category: 'Basic', media: '<i class="fa-solid fa-list" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<ul><li>Item one</li><li>Item two</li><li>Item three</li></ul>' });
 
-bm.add('video', { label: 'Video', category: 'Media', media: '<i class="fa fa-video" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('video', { label: 'Video', category: 'Media', media: '<i class="fa-solid fa-video" style="font-size:28px;color:#1ABC9C"></i>',
     content: { type: 'video', src: 'https://www.youtube.com/embed/dQw4w9WgXcQ', style: { width: '100%', height: '350px' } } });
 
-bm.add('hero-section', { label: 'Hero', category: 'Sections', media: '<i class="fa fa-panorama" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('hero-section', { label: 'Hero', category: 'Sections', media: '<i class="fa-solid fa-panorama" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<section class="bg-navy" style="padding:80px 30px;text-align:center;"><div class="container"><h1 style="color:#fff;font-size:42px;margin-bottom:16px;">Welcome to Mori Capital</h1><p style="color:rgba(255,255,255,.75);font-size:18px;max-width:650px;margin:0 auto 28px;">Specialist investor in Emerging European, Middle Eastern and African equity markets since 1998.</p><a class="btn-default" href="#">Learn More</a></div></section>' });
 
-bm.add('cta-section', { label: 'CTA', category: 'Sections', media: '<i class="fa fa-bullhorn" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('cta-section', { label: 'CTA', category: 'Sections', media: '<i class="fa-solid fa-bullhorn" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<section class="bg-light" style="padding:50px 30px;text-align:center;"><div class="container"><h2>Get in Touch</h2><p style="max-width:600px;margin:0 auto 20px;">Contact us to learn more about our investment approach.</p><a class="btn-default" href="/contact.php">Contact Us</a></div></section>' });
 
-bm.add('feature-grid', { label: 'Features', category: 'Sections', media: '<i class="fa fa-grip" style="font-size:28px;color:#1ABC9C"></i>',
+bm.add('feature-grid', { label: 'Features', category: 'Sections', media: '<i class="fa-solid fa-grip-vertical" style="font-size:28px;color:#1ABC9C"></i>',
     content: '<section style="padding:50px 30px;"><div class="container"><div class="row" style="gap:30px;"><div class="col" style="text-align:center;"><h3 style="font-size:20px;">Feature 1</h3><p>Brief description of this feature.</p></div><div class="col" style="text-align:center;"><h3 style="font-size:20px;">Feature 2</h3><p>Brief description of this feature.</p></div><div class="col" style="text-align:center;"><h3 style="font-size:20px;">Feature 3</h3><p>Brief description of this feature.</p></div></div></div></section>' });
 
 // ── Left bar: panel switching ──

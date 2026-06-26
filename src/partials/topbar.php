@@ -37,12 +37,12 @@ $cur    = I18n::locale();
 
                     <div class="topbar-social-links">
                         <ul>
-                            <li><a href="<?= e($linkedin) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
-                            <li><a href="mailto:<?= e($email) ?>" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
+                            <li><a href="<?= e($linkedin) ?>" aria-label="<?= e(t('social.linkedin')) ?>"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                            <li><a href="mailto:<?= e($email) ?>" aria-label="<?= e(t('social.email')) ?>"><i class="fa-regular fa-envelope"></i></a></li>
                         </ul>
                     </div>
 
-                    <div class="lang-switcher" role="group" aria-label="Language switcher">
+                    <div class="lang-switcher" role="group" aria-label="<?= e(t('lang.switcher_aria')) ?>">
                         <a href="<?= e($enUrl) ?>" class="<?= $cur==='en'?'active':'' ?>" <?= $cur==='en'?'aria-current="page"':'' ?>>EN</a>
                         <a href="<?= e($deUrl) ?>" class="<?= $cur==='de'?'active':'' ?>" <?= $cur==='de'?'aria-current="page"':'' ?>>DE</a>
                     </div>

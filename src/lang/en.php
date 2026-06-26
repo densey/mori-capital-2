@@ -270,9 +270,50 @@ return [
     'home.views.eyebrow'         => 'Mori Views',
     'home.views.intro'           => 'Quarterly outlooks, fund factsheets and shareholder communications from our portfolio managers.',
 
+    // Hover cursor
+    'cursor.view'                => 'View',
+
+    // Social aria labels
+    'social.linkedin'            => 'LinkedIn',
+    'social.email'               => 'Email',
+    'social.email_aria'          => 'Email',
+    'social.linkedin_aria'       => 'LinkedIn',
+
+    // Header / topbar / cookie
+    'header.logo_aria'           => 'Mori Capital Management',
+    'header.menu_aria'           => 'Menu',
+    'lang.switcher_aria'         => 'Language switcher',
+    'cookie.consent_aria'        => 'Cookie consent',
+
+    // Home — team-section intro
+    'home.team_intro'            => 'Our funds are managed by an independent team with over 80 years of collective experience across Emerging European and Turkish capital markets, supported by a dedicated operations, compliance and risk function in Malta.',
+
+    // Fund performance
+    'performance.nav_evolution'  => 'NAV evolution',
+    'performance.range_max'      => 'Max',
+    'performance.no_data'        => 'No NAV data available yet for this share class.',
+    'performance.add_entries'    => 'Add monthly NAV entries from :link.',
+    'performance.admin_panel'    => 'the admin panel',
+
+    // Insight detail
+    'page.insight.not_found'     => 'Insight not found',
+    'btn.back_to_views'          => 'Back to all Mori Views',
+    'insight.title_suffix'       => 'Mori Views',
+    'insight.share_label'        => 'Share',
+
+    // 404 page
+    'page.404.title'             => '404 — Page Not Found',
+    'page.404.desc'              => 'The page you are looking for could not be found.',
+    'page.404.heading'           => 'Page Not Found',
+    'page.404.subheading'        => 'Oops! Page not found',
+    'page.404.body'              => "The page you're looking for may have been moved, deleted, or never existed. If you believe this is an error, please :contact.",
+    'page.404.contact_link'      => 'contact us',
+    'btn.back_to_home'           => 'Back to Home',
+
     // About page
     'page.about.title'           => 'About Mori Capital Management',
     'page.about.desc'            => 'Independent EEMEA specialist asset manager — Mori Capital Management Ltd.',
+    'about.mfsa_authority'       => 'Malta Financial Services Authority',
     'about.alt_research'         => 'Mori Capital — EEMEA research-led approach',
     'about.body_fallback'        => '<p>Founded in 1998 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets.</p>',
     'about.regulatory_eyebrow'   => 'Regulatory information',

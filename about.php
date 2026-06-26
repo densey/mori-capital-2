@@ -89,7 +89,7 @@ include __DIR__ . '/src/partials/page-header.php';
             <div class="col-xl-6">
                 <div class="section-title">
                     <span class="section-sub-title wow fadeInUp"><?= e(t('about.regulatory_eyebrow')) ?></span>
-                    <h2 style="font-size:clamp(24px,2.8vw,32px);"><?= e(setting('mfsa_authority', 'Malta Financial Services Authority')) ?></h2>
+                    <h2 style="font-size:clamp(24px,2.8vw,32px);"><?= e(\Mori\setting_i18n('mfsa_authority', t('about.mfsa_authority'))) ?></h2>
                 </div>
                 <p style="font-size:15px;line-height:1.7;color:var(--mori-text-soft,#5A6B7B);"><?= str_replace(':license', '<strong>' . e(setting('mfsa_license', 'C66999')) . '</strong>', t('about.regulatory_body')) ?></p>
                 <div style="display:inline-flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--mori-border,#E1E7EE);padding:14px 18px;border-radius:8px;font-size:13px;color:var(--primary-color,#1B3A5C);font-weight:600;margin-top:10px;">
@@ -152,9 +152,9 @@ include __DIR__ . '/src/partials/page-header.php';
                             <p><?= e(I18n::fieldFor($member, 'title')) ?></p>
                             <ul>
                                 <?php if (!empty($member['linkedin_url'])): ?>
-                                <li><a href="<?= e(safe_url($member['linkedin_url'] ?? null)) ?>" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a></li>
+                                <li><a href="<?= e(safe_url($member['linkedin_url'] ?? null)) ?>" aria-label="<?= e(t('social.linkedin')) ?>"><i class="fa-brands fa-linkedin-in"></i></a></li>
                                 <?php endif; ?>
-                                <li><a href="mailto:<?= e($member['email'] ?: setting('contact_email')) ?>" aria-label="Email"><i class="fa-regular fa-envelope"></i></a></li>
+                                <li><a href="mailto:<?= e($member['email'] ?: setting('contact_email')) ?>" aria-label="<?= e(t('social.email')) ?>"><i class="fa-regular fa-envelope"></i></a></li>
                             </ul>
                         </div>
                     </div>

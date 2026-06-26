@@ -43,7 +43,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 <label style="display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e(t('nav.funds')) ?></label>
                 <select name="fund" onchange="this.form.submit()" style="width:100%;padding:10px 12px;border:1px solid var(--mori-border,#E1E7EE);border-radius:6px;font-family:inherit;font-size:14px;">
                     <?php foreach ($funds as $f): ?>
-                        <option value="<?= e($f['id']) ?>" <?= $selectedFundId==$f['id']?'selected':'' ?>><?= e($f['name_en']) ?></option>
+                        <option value="<?= e($f['id']) ?>" <?= $selectedFundId==$f['id']?'selected':'' ?>><?= e(\Mori\I18n::fieldFor($f, 'name')) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -63,12 +63,12 @@ include __DIR__ . '/src/partials/page-header.php';
         <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:14px;padding:30px;">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
                 <div>
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:4px;">NAV evolution</div>
+                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:4px;"><?= e(t('performance.nav_evolution')) ?></div>
                     <?php
                         $selectedFund = null;
                         foreach ($funds as $f) { if ($f['id'] == $selectedFundId) { $selectedFund = $f; break; } }
                     ?>
-                    <h2 style="font-size:20px;margin:0;"><?= e($selectedFund['name_en'] ?? '—') ?></h2>
+                    <h2 style="font-size:20px;margin:0;"><?= e($selectedFund ? \Mori\I18n::fieldFor($selectedFund, 'name') : '—') ?></h2>
                 </div>
                 <div style="display:flex;gap:4px;background:var(--mori-bg-soft,#F5F7FA);padding:4px;border-radius:999px;font-size:12px;font-weight:600;">
                     <button type="button" class="rng" data-range="1m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">1M</button>
@@ -77,12 +77,19 @@ include __DIR__ . '/src/partials/page-header.php';
                     <button type="button" class="rng active" data-range="1y" style="padding:6px 12px;border:none;background:var(--accent-color,#1ABC9C);border-radius:999px;cursor:pointer;color:#fff;">1Y</button>
                     <button type="button" class="rng" data-range="3y" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">3Y</button>
                     <button type="button" class="rng" data-range="5y" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">5Y</button>
-                    <button type="button" class="rng" data-range="max" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">Max</button>
+                    <button type="button" class="rng" data-range="max" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_max')) ?></button>
                 </div>
             </div>
             <div id="perfChart" style="width:100%;height:clamp(260px,50vw,420px);"></div>
             <?php if (empty($navData)): ?>
-            <p style="text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;padding:80px 0;">No NAV data available yet for this share class.<?php if (\Mori\Auth::check()): ?><br>Add monthly NAV entries from <a href="<?= asset('admin/performance.php') ?>" style="color:var(--accent-color,#1ABC9C);">the admin panel</a>.<?php endif; ?></p>
+            <p style="text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;padding:80px 0;">
+                <?= e(t('performance.no_data')) ?>
+                <?php if (\Mori\Auth::check()):
+                    $adminLink = '<a href="' . e(asset('admin/performance.php')) . '" style="color:var(--accent-color,#1ABC9C);">' . e(t('performance.admin_panel')) . '</a>';
+                ?>
+                    <br><?= str_replace(':link', $adminLink, e(t('performance.add_entries'))) ?>
+                <?php endif; ?>
+            </p>
             <?php endif; ?>
         </div>
 

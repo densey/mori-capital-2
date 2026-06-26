@@ -13,9 +13,9 @@ use function Mori\t;
                     $logoLight = \Mori\setting('logo_light_path') ?: 'assets/images/mori-capital-logo.fw.png';
                     $logoDark  = \Mori\setting('logo_dark_path')  ?: 'assets/images/mori-capital-logo-dark.fw.png';
                 ?>
-                <a class="navbar-brand" href="<?= asset('/') ?>" aria-label="Mori Capital Management">
-                    <img class="logo-light" src="/<?= e(ltrim($logoLight, '/')) ?>" alt="Mori Capital Management">
-                    <img class="logo-dark"  src="/<?= e(ltrim($logoDark, '/')) ?>" alt="Mori Capital Management">
+                <a class="navbar-brand" href="<?= asset('/') ?>" aria-label="<?= e(t('header.logo_aria')) ?>">
+                    <img class="logo-light" src="/<?= e(ltrim($logoLight, '/')) ?>" alt="<?= e(t('header.logo_aria')) ?>">
+                    <img class="logo-dark"  src="/<?= e(ltrim($logoDark, '/')) ?>" alt="<?= e(t('header.logo_aria')) ?>">
                 </a>
 
                 <div class="collapse navbar-collapse main-menu">
@@ -71,7 +71,7 @@ use function Mori\t;
                     </div>
                 </div>
                 <!-- Mobile hamburger (visible <992px) -->
-                <button class="mori-hamburger" id="moriMenuToggle" aria-label="Menu">
+                <button class="mori-hamburger" id="moriMenuToggle" aria-label="<?= e(t('header.menu_aria')) ?>">
                     <span></span><span></span><span></span>
                 </button>
             </div>
