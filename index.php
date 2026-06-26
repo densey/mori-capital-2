@@ -51,8 +51,13 @@ include __DIR__ . '/src/partials/header.php';
     $heroSlide = $heroSlides[0] ?? null;
     $heroBg   = $heroSlide ? $heroSlide['media_path'] : 'assets/images/hero/hero-istanbul.jpg';
     $heroIsVid = $heroSlide && ($heroSlide['media_type'] ?? 'image') === 'video';
-    $heroTitle = $heroSlide['title'] ?? t('hero.title');
-    $heroSub   = $heroSlide['subtitle'] ?? t('hero.lead');
+    // Locale-aware: prefer title_de / subtitle_de when DE site is active
+    $heroTitle = $heroSlide
+        ? (I18n::locale() === 'de' && !empty($heroSlide['title_de']) ? $heroSlide['title_de'] : ($heroSlide['title'] ?? t('hero.title')))
+        : t('hero.title');
+    $heroSub   = $heroSlide
+        ? (I18n::locale() === 'de' && !empty($heroSlide['subtitle_de']) ? $heroSlide['subtitle_de'] : ($heroSlide['subtitle'] ?? t('hero.lead')))
+        : t('hero.lead');
     $heroCta   = $heroSlide['cta_text'] ?? t('hero.cta_funds');
     $heroCtaUrl = $heroSlide['cta_url'] ?? '#funds';
     ?>
