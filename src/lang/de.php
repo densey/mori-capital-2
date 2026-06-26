@@ -153,4 +153,110 @@ return [
 
     // Legal page
     'legal.last_updated'         => 'Zuletzt aktualisiert',
+
+    // Footer extras
+    'footer.phone_label'         => 'Telefon',
+    'footer.email_label'         => 'E-Mail',
+    'footer.legal_disclaimer'    => 'Rechtliche Hinweise',
+    'footer.privacy_policy'      => 'Datenschutzrichtlinie',
+    'footer.cookie_policy'       => 'Cookie-Richtlinie',
+
+    // Mobile tabbar
+    'tabbar.home'                => 'Start',
+    'tabbar.funds'               => 'Fonds',
+    'tabbar.docs'                => 'Dok.',
+    'tabbar.insights'            => 'Views',
+    'tabbar.contact'             => 'Kontakt',
+    'tabbar.nav_aria'            => 'Mobile Navigation',
+
+    // Page titles / meta descriptions (per-page)
+    'page.team.title'            => 'Team — Mori Capital',
+    'page.team.desc'             => 'Portfoliomanager und Operations-Team der Mori Capital Management.',
+    'page.fund_performance.desc' => 'Interaktives Performance-Diagramm und NAV-Historie für Mori-Fonds und Anteilsklassen.',
+    'page.eastern_european.title'=> 'Mori Eastern European Fund — Mori Capital',
+    'page.eastern_european.desc' => 'Long-only Aktienfonds, der seit 1998 in Mittel- und Osteuropa investiert.',
+    'page.ottoman.title'         => 'Mori Ottoman Fund — Mori Capital',
+    'page.ottoman.desc'          => 'Auf Türkiye und MENA fokussierter Aktienfonds. Preisgekrönte langfristige Erfolgsbilanz. Auflage im Januar 2006.',
+    'page.insights.desc'         => 'Quartalsausblicke, Factsheets und Mitteilungen an Anteilseigner.',
+    'page.contact.title'         => 'Kontakt — Mori Capital',
+    'page.contact.desc'          => 'Erreichen Sie unser Büro in Malta. Mori Capital Management Ltd., Regent House, Sliema.',
+    'page.investment_style.title'=> 'Anlagestil — Der Mori-Stil',
+    'page.investment_style.desc' => 'Disziplinierte Recherche, aktive Beteiligung — unsere Anlagephilosophie.',
+
+    // Fund detail (partial)
+    'fund.investment_objective'  => 'Anlageziel',
+    'fund.key_facts'             => 'Eckdaten',
+    'fund.overview_heading'      => 'Fonds-Überblick auf einen Blick',
+    'fund.launch_date'           => 'Auflagedatum',
+    'fund.base_currency'         => 'Basiswährung',
+    'fund.share_classes_count'   => 'Anteilsklassen',
+    'fund.benchmark'             => 'Benchmark',
+    'fund.share_classes_eyebrow' => 'Anteilsklassen',
+    'fund.share_classes_title'   => 'Verfügbare Anteilsklassen',
+    'fund.col_class'             => 'Klasse',
+    'fund.col_isin'              => 'ISIN',
+    'fund.col_currency'          => 'Währung',
+    'fund.col_inception'         => 'Auflagedatum',
+    'fund.col_status'            => 'Status',
+    'fund.status.active'         => 'Aktiv',
+    'fund.status.closed'         => 'Geschlossen',
+    'fund.status.inactive'       => 'Inaktiv',
+    'fund.documents_eyebrow'     => 'Dokumente',
+    'fund.documents_title'       => 'Fondsdokumentation',
+    'fund.all_documents'         => 'Alle Fondsdokumente',
+    'fund.not_found'             => 'Fonds nicht gefunden.',
+
+    // Investment style page
+    'style.philosophy_lead'      => 'Unsere Anlagephilosophie baut auf Bottom-up-Aktienauswahl mit Makro-Overlay, hauseigener Researcharbeit und aktivem Dialog mit dem Management der Unternehmen.',
+    'style.image_alt'            => 'Mori Capital — Anlagestil',
+    'style.principles_eyebrow'   => 'Unsere Prinzipien',
+    'style.principles_heading'   => 'Fünf Säulen für jede Anlageentscheidung',
+
+    // Investment style fallback principles (when DB empty)
+    'style.fallback.p1_title'    => 'Bottom-up-Aktienauswahl mit Makro-Overlay',
+    'style.fallback.p1_desc'     => 'Wir beginnen mit fundamentaler Unternehmensanalyse und prüfen anschließend unsere Überzeugung gegen die makroökonomische Lage des jeweiligen EEMEA-Marktes.',
+    'style.fallback.p2_title'    => 'Wir gehen die Extrameile',
+    'style.fallback.p2_desc'     => 'Aktive Abdeckung von 200+ Wertpapieren in der Region — wir besuchen Managementteams, Fabriken und Wettbewerber vor Ort.',
+    'style.fallback.p3_title'    => 'Hauseigene Researcharbeit',
+    'style.fallback.p3_desc'     => 'Keine ausgelagerten Modelle. Jede Position wird durch unsere eigene Bewertung, Risikoanalyse und Szenario-Tests gestützt.',
+    'style.fallback.p4_title'    => 'Diszipliniertes Risikomanagement',
+    'style.fallback.p4_desc'     => 'Positionsgrößen, Liquiditätsüberwachung und Korrelations-Overlays — konsequent auf Portfolioebene umgesetzt.',
+    'style.fallback.p5_title'    => 'Aktiver Dialog mit Stakeholdern',
+    'style.fallback.p5_desc'     => 'Direkter, fortlaufender Austausch mit Unternehmensleitungen, Aufsichtsbehörden, Sell-Side-Analysten und anderen Anteilseignern.',
+    'style.fund_card_ee'         => 'Eastern European Fund',
+    'style.fund_card_otto'       => 'Ottoman Fund',
+
+    // Contact page
+    'contact.intro_paragraph'    => 'Anleger, Vermittler und Journalisten erreichen uns über das Formular, telefonisch oder per E-Mail. Bürozeiten sind werktags 09:00–18:00 MEZ.',
+    'contact.address_label'      => 'Anschrift',
+    'contact.phone_label'        => 'Telefon',
+    'contact.email_label'        => 'E-Mail',
+    'contact.regulator'          => 'Reguliert von MFSA · Firmenreferenz',
+    'contact.form.required_error'=> 'Bitte füllen Sie alle Pflichtfelder mit gültigen Daten aus.',
+    'contact.form.privacy_text'  => 'Mit dem Absenden dieses Formulars bestätigen Sie, dass Sie die :privacy gelesen haben.',
+    'contact.form.privacy_link'  => 'Datenschutzrichtlinie',
+    'contact.honeypot_label'     => 'Website',
+    'contact.map_title'          => 'Mori Capital — Sliema, Malta',
+
+    // Insights page
+    'insights.cat.all'           => 'Alle',
+    'insights.cat.outlook'       => 'Ausblick',
+    'insights.cat.factsheet'     => 'Factsheet',
+    'insights.cat.shareholder'   => 'Anlegermitteilung',
+    'insights.cat.article'       => 'Artikel',
+    'insights.cat.press'         => 'Presse',
+    'insights.empty'             => 'Noch keine Mori Views veröffentlicht.',
+    'insights.admin_hint'        => 'Hinzufügen über das :link.',
+    'insights.admin_link'        => 'Admin-Panel',
+
+    // Homepage extras
+    'home.alt_ottoman_coverage'  => 'Türkiye und MENA-Märkte — Mori Capital-Abdeckung',
+    'home.about_logo_alt'        => 'Mori Capital Management',
+
+    // Footer logo / image alts
+    'footer.logo_alt'            => 'Mori Capital Management',
+
+    // Misc
+    'aria.breadcrumb'            => 'Brotkrumen',
+    'preloader.alt'              => 'Mori Capital',
 ];

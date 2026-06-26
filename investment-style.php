@@ -16,8 +16,8 @@ try {
 } catch (\Throwable) { $pageData = null; }
 
 $page = [
-    'title'       => ($pageData['meta_title'] ?? 'Investment Style — The Mori Style'),
-    'description' => ($pageData['meta_description'] ?? 'Disciplined research, active engagement — our investment philosophy.'),
+    'title'       => ($pageData['meta_title'] ?? null) ?: t('page.investment_style.title'),
+    'description' => ($pageData['meta_description'] ?? null) ?: t('page.investment_style.desc'),
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
         ['label' => t('nav.investment_style')],
@@ -39,7 +39,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     <div class="section-title">
                         <span class="section-sub-title wow fadeInUp"><?= e(t('style.eyebrow')) ?></span>
                         <h2 class="text-anime-style-3" data-cursor="-opaque"><?= e(t('section.style.title')) ?></h2>
-                        <p class="wow fadeInUp" data-wow-delay="0.2s">Our investment philosophy is built on bottom-up stock picking with a macro overlay, in-house proprietary research, and active dialogue with company management.</p>
+                        <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e(t('style.philosophy_lead')) ?></p>
                     </div>
                     <div class="wow fadeInUp" data-wow-delay="0.3s">
                         <?= $pageData['body'] ?? '' ?>
@@ -50,7 +50,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 <div class="why-choose-us-image-box wow fadeInUp" data-wow-delay="0.2s">
                     <div class="why-choose-us-image">
                         <figure class="image-anime">
-                            <img src="<?= asset('assets/images/hero/hero-corporate-2.jpg') ?>" alt="Mori Capital — investment style">
+                            <img src="<?= asset('assets/images/hero/hero-corporate-2.jpg') ?>" alt="<?= e(t('style.image_alt')) ?>">
                         </figure>
                     </div>
                 </div>
@@ -65,8 +65,8 @@ include __DIR__ . '/src/partials/page-header.php';
         <div class="row section-row align-items-end">
             <div class="col-xl-6">
                 <div class="section-title">
-                    <span class="section-sub-title wow fadeInUp">Our principles</span>
-                    <h2>Five pillars guiding every investment decision</h2>
+                    <span class="section-sub-title wow fadeInUp"><?= e(t('style.principles_eyebrow')) ?></span>
+                    <h2><?= e(t('style.principles_heading')) ?></h2>
                 </div>
             </div>
         </div>
@@ -82,11 +82,11 @@ include __DIR__ . '/src/partials/page-header.php';
             }
             if (empty($principles)) {
                 $principles = [
-                    ['fa-magnifying-glass-chart', 'Bottom-up stock picking with macro overlay', 'We start with fundamental company analysis, then test our conviction against the macro backdrop of each EEMEA market.'],
-                    ['fa-route', 'Walking the extra mile', 'Active coverage of 200+ securities across the region — visiting management teams, factories and competitors on the ground.'],
-                    ['fa-flask', 'In-house proprietary research', 'No outsourced models. Every position is supported by our own valuation work, risk analysis and scenario testing.'],
-                    ['fa-shield-halved', 'Disciplined risk management', 'Position sizing, liquidity monitoring and correlation overlays — rigorously applied at portfolio level.'],
-                    ['fa-handshake', 'Active dialogue with stakeholders', 'Direct, ongoing engagement with company management, regulators, sell-side analysts and other shareholders.'],
+                    ['fa-magnifying-glass-chart', t('style.fallback.p1_title'), t('style.fallback.p1_desc')],
+                    ['fa-route',                  t('style.fallback.p2_title'), t('style.fallback.p2_desc')],
+                    ['fa-flask',                  t('style.fallback.p3_title'), t('style.fallback.p3_desc')],
+                    ['fa-shield-halved',          t('style.fallback.p4_title'), t('style.fallback.p4_desc')],
+                    ['fa-handshake',              t('style.fallback.p5_title'), t('style.fallback.p5_desc')],
                 ];
             }
             foreach ($principles as $i => $p): ?>
@@ -109,8 +109,8 @@ include __DIR__ . '/src/partials/page-header.php';
             <h2 style="color:#fff;font-size:clamp(22px,2.6vw,30px);margin-bottom:14px;"><?= e(t('hero.cta_funds')) ?></h2>
             <p style="color:rgba(255,255,255,.8);max-width:620px;margin:0 auto 24px;font-size:15px;line-height:1.6;"><?= e(t('style.cta_text')) ?></p>
             <div style="display:inline-flex;gap:10px;flex-wrap:wrap;">
-                <a href="<?= asset('fund-eastern-european.php') ?>" class="btn-default">Eastern European Fund</a>
-                <a href="<?= asset('fund-ottoman.php') ?>" class="btn-default">Ottoman Fund</a>
+                <a href="<?= asset('fund-eastern-european.php') ?>" class="btn-default"><?= e(t('style.fund_card_ee')) ?></a>
+                <a href="<?= asset('fund-ottoman.php') ?>" class="btn-default"><?= e(t('style.fund_card_otto')) ?></a>
             </div>
         </div>
     </div>

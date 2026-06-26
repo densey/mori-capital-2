@@ -1,0 +1,805 @@
+{
+  "/": [
+    {
+      "kind": "metaDesc",
+      "text": "Mori Capital Management Ltd. - independent EEMEA specialist asset manager. Home of the Mori Eastern European Fund and Mori Ottoman Fund."
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Mori Capital Management Ltd. - independent EEMEA specialist asset manager. Home of the Mori Eastern European Fund and Mori Ottoman Fund."
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "More about Mori",
+      "href": "/about.php"
+    },
+    {
+      "kind": "link",
+      "text": "Explore the Mori Style",
+      "href": "/investment-style.php"
+    },
+    {
+      "kind": "link",
+      "text": "All Mori Views",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "alt",
+      "text": "Türkiye and MENA markets — Mori Capital coverage"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/about.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/investment-style.php": [
+    {
+      "kind": "heading:H2",
+      "text": "Five pillars guiding every investment decision"
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/team.php": [
+    {
+      "kind": "title",
+      "text": "Team — Mori Capital"
+    },
+    {
+      "kind": "metaDesc",
+      "text": "Portfolio managers and operations team at Mori Capital Management."
+    },
+    {
+      "kind": "metaOgTitle",
+      "text": "Team — Mori Capital"
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Portfolio managers and operations team at Mori Capital Management."
+    },
+    {
+      "kind": "heading:H1",
+      "text": "Team — Mori Capital"
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/insights.php": [
+    {
+      "kind": "metaDesc",
+      "text": "Quarterly outlooks, fund factsheets and shareholder communications."
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Quarterly outlooks, fund factsheets and shareholder communications."
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "All",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/contact.php": [
+    {
+      "kind": "metaDesc",
+      "text": "Reach our Malta office. Mori Capital Management Ltd., Regent House, Sliema."
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Reach our Malta office. Mori Capital Management Ltd., Regent House, Sliema."
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/fund-eastern-european.php": [
+    {
+      "kind": "metaDesc",
+      "text": "Long-only equity fund investing across Central and Eastern Europe since 1998."
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Long-only equity fund investing across Central and Eastern Europe since 1998."
+    },
+    {
+      "kind": "heading:H2",
+      "text": "Fund overview at a glance"
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "All fund documents",
+      "href": "/documents.php?fund=mori-eastern-european-fund"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Eastern European Fund - Shareholder Notice - 1 March 2022 (Deutsch) 26 Jun 2026 · 49.4 KB",
+      "href": "/api/download.php?id=966"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Eastern European Fund Update Marsch 2023 25 Jun 2026 · 279.8 KB",
+      "href": "/api/download.php?id=962"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Eastern European Fund Update Juni 2023 25 Jun 2026 · 386.5 KB",
+      "href": "/api/download.php?id=959"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Eastern European Fund Update September 2023 25 Jun 2026 · 419.4 KB",
+      "href": "/api/download.php?id=955"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/fund-ottoman.php": [
+    {
+      "kind": "metaDesc",
+      "text": "Türkiye and MENA focused equity fund. Award-winning long-term track record. Launched January 2006."
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Türkiye and MENA focused equity fund. Award-winning long-term track record. Launched January 2006."
+    },
+    {
+      "kind": "heading:H2",
+      "text": "Fund overview at a glance"
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "All fund documents",
+      "href": "/documents.php?fund=mori-ottoman-fund"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Ottoman Fund - Shareholder Notice - 1 March 2022 (Deutsch) 26 Jun 2026 · 49.3 KB",
+      "href": "/api/download.php?id=965"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Shareholder Notice - Mori Umbrella Fund 14 September 2022 (Deutsch) 26 Jun 2026 · 167.8 KB",
+      "href": "/api/download.php?id=964"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Ottoman Juni 2024 26 Jun 2026 · 708.3 KB",
+      "href": "/api/download.php?id=963"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Ottoman Fund Update Marsch 2023 25 Jun 2026 · 286.2 KB",
+      "href": "/api/download.php?id=961"
+    },
+    {
+      "kind": "link",
+      "text": "OTHER Mori Ottoman Fund Update Juni 2023 25 Jun 2026 · 392.7 KB",
+      "href": "/api/download.php?id=960"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/fund-performance.php?fund=eastern-european": [
+    {
+      "kind": "title",
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "metaDesc",
+      "text": "Interactive performance chart and NAV history for Mori funds and share classes."
+    },
+    {
+      "kind": "metaOgTitle",
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Interactive performance chart and NAV history for Mori funds and share classes."
+    },
+    {
+      "kind": "heading:H1",
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/fund-performance.php?fund=ottoman": [
+    {
+      "kind": "title",
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "metaDesc",
+      "text": "Interactive performance chart and NAV history for Mori funds and share classes."
+    },
+    {
+      "kind": "metaOgTitle",
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "metaOgDesc",
+      "text": "Interactive performance chart and NAV history for Mori funds and share classes."
+    },
+    {
+      "kind": "heading:H1",
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/documents.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/company-policies.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/other-documents.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/updates-during-suspension.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/announcements.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/legal.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/privacy.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ],
+  "/cookies.php": [
+    {
+      "kind": "link",
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "text": "Home",
+      "href": "/"
+    },
+    {
+      "kind": "link",
+      "text": "Insights",
+      "href": "/insights.php"
+    },
+    {
+      "kind": "aria",
+      "text": "Home"
+    },
+    {
+      "kind": "aria",
+      "text": "Documents"
+    },
+    {
+      "kind": "aria",
+      "text": "Insights"
+    }
+  ]
+}

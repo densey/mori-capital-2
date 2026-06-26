@@ -17,7 +17,7 @@ $bg = $page['header_bg'] ?? asset('images/page-header-bg.jpg');
                 <div class="page-header-box" style="text-align:center;color:#fff;">
                     <h1 style="color:#fff;font-size:clamp(28px,3.4vw,44px);margin-bottom:14px;letter-spacing:-0.01em;"><?= e($page['title'] ?? '') ?></h1>
                     <?php if (!empty($crumb)): ?>
-                    <nav aria-label="Breadcrumb">
+                    <nav aria-label="<?= e(t('aria.breadcrumb')) ?>">
                         <ol style="list-style:none;padding:0;margin:0;display:inline-flex;flex-wrap:wrap;justify-content:center;gap:6px;font-size:clamp(11px,2vw,13px);color:rgba(255,255,255,.78);">
                             <?php foreach ($crumb as $i => $c): ?>
                                 <?php if ($i > 0): ?><li style="opacity:.6;">/</li><?php endif; ?>

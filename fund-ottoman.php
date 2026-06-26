@@ -18,8 +18,8 @@ try {
 } catch (\Throwable) {}
 
 $page = [
-    'title'       => 'Mori Ottoman Fund — Mori Capital',
-    'description' => 'Türkiye and MENA focused equity fund. Award-winning long-term track record. Launched January 2006.',
+    'title'       => t('page.ottoman.title'),
+    'description' => t('page.ottoman.desc'),
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
         ['label' => t('nav.funds'), 'url' => asset('/#funds')],

@@ -26,11 +26,11 @@ $year = date('Y');
                                 <p><?= nl2br(e($address)) ?></p>
                             </div>
                             <div class="footer-contact-item">
-                                <p>Phone</p>
+                                <p><?= e(t('footer.phone_label')) ?></p>
                                 <h3><a href="tel:<?= e(preg_replace('/\s+/', '', $phone)) ?>"><?= e($phone) ?></a></h3>
                             </div>
                             <div class="footer-contact-item">
-                                <p>Email</p>
+                                <p><?= e(t('footer.email_label')) ?></p>
                                 <h3><a href="mailto:<?= e($email) ?>"><?= e($email) ?></a></h3>
                             </div>
                         </div>
@@ -86,7 +86,7 @@ $year = date('Y');
                 <div class="footer-cta-box">
                     <?php $fLogo = \Mori\setting('logo_light_path') ?: 'assets/images/mori-capital-logo.fw.png'; ?>
                     <div class="footer-logo">
-                        <img src="/<?= \Mori\e(ltrim($fLogo, '/')) ?>" alt="Mori Capital Management">
+                        <img src="/<?= \Mori\e(ltrim($fLogo, '/')) ?>" alt="<?= e(t('footer.logo_alt')) ?>">
                     </div>
 
                     <a href="<?= asset('legal.php') ?>" class="footer-regulator">
@@ -117,9 +117,9 @@ $year = date('Y');
                     </div>
                     <div class="footer-privacy-policy">
                         <ul>
-                            <li><a href="<?= asset('legal.php') ?>">Legal &amp; Disclaimer</a></li>
-                            <li><a href="<?= asset('privacy.php') ?>">Privacy Policy</a></li>
-                            <li><a href="<?= asset('cookies.php') ?>">Cookie Policy</a></li>
+                            <li><a href="<?= asset('legal.php') ?>"><?= e(t('footer.legal_disclaimer')) ?></a></li>
+                            <li><a href="<?= asset('privacy.php') ?>"><?= e(t('footer.privacy_policy')) ?></a></li>
+                            <li><a href="<?= asset('cookies.php') ?>"><?= e(t('footer.cookie_policy')) ?></a></li>
                         </ul>
                     </div>
                 </div>
@@ -129,22 +129,22 @@ $year = date('Y');
 </footer>
 
 <!-- Mobile bottom tab bar -->
-<nav class="mori-tabbar" aria-label="Mobile navigation">
+<nav class="mori-tabbar" aria-label="<?= e(t('tabbar.nav_aria')) ?>">
     <div class="mori-tabbar__inner">
-        <a href="<?= asset('/') ?>" class="mori-tabbar__item<?= (\Mori\current_path()==='/' || \Mori\current_path()==='/index.php')?' active':'' ?>" aria-label="Home">
-            <i class="fa-solid fa-house"></i><span>Home</span>
+        <a href="<?= asset('/') ?>" class="mori-tabbar__item<?= (\Mori\current_path()==='/' || \Mori\current_path()==='/index.php')?' active':'' ?>" aria-label="<?= e(t('tabbar.home')) ?>">
+            <i class="fa-solid fa-house"></i><span><?= e(t('tabbar.home')) ?></span>
         </a>
-        <a href="<?= asset('fund-eastern-european.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'fund')?' active':'' ?>" aria-label="Funds">
-            <i class="fa-solid fa-chart-pie"></i><span>Funds</span>
+        <a href="<?= asset('fund-eastern-european.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'fund')?' active':'' ?>" aria-label="<?= e(t('tabbar.funds')) ?>">
+            <i class="fa-solid fa-chart-pie"></i><span><?= e(t('tabbar.funds')) ?></span>
         </a>
-        <a href="<?= asset('documents.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'documents')?' active':'' ?>" aria-label="Documents">
-            <i class="fa-solid fa-folder-open"></i><span>Docs</span>
+        <a href="<?= asset('documents.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'documents')?' active':'' ?>" aria-label="<?= e(t('nav.documents')) ?>">
+            <i class="fa-solid fa-folder-open"></i><span><?= e(t('tabbar.docs')) ?></span>
         </a>
-        <a href="<?= asset('insights.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'insight')?' active':'' ?>" aria-label="Insights">
-            <i class="fa-solid fa-newspaper"></i><span>Insights</span>
+        <a href="<?= asset('insights.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'insight')?' active':'' ?>" aria-label="<?= e(t('nav.insights')) ?>">
+            <i class="fa-solid fa-newspaper"></i><span><?= e(t('tabbar.insights')) ?></span>
         </a>
-        <a href="<?= asset('contact.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'contact')?' active':'' ?>" aria-label="Contact">
-            <i class="fa-solid fa-envelope"></i><span>Contact</span>
+        <a href="<?= asset('contact.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'contact')?' active':'' ?>" aria-label="<?= e(t('nav.contact')) ?>">
+            <i class="fa-solid fa-envelope"></i><span><?= e(t('tabbar.contact')) ?></span>
         </a>
     </div>
 </nav>

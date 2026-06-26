@@ -13,8 +13,8 @@ use function Mori\asset;
 use function Mori\setting;
 
 $page = $page ?? [];
-$title = $page['title']       ?? (setting('seo_default_title') ?? 'Mori Capital Management');
-$desc  = $page['description'] ?? (setting('seo_default_desc') ?? '');
+$title = $page['title']       ?? (\Mori\setting_i18n('seo_default_title') ?? 'Mori Capital Management');
+$desc  = $page['description'] ?? (\Mori\setting_i18n('seo_default_desc') ?? '');
 $kw    = $page['keywords']    ?? 'Mori Capital, EEMEA, Emerging Europe, Ottoman Fund, asset management, Malta, MFSA';
 $bodyClass = $page['body_class'] ?? '';
 $ga = setting('google_analytics_id', '');
@@ -118,6 +118,6 @@ $customHead = setting('custom_head_code', '');
 	<div class="preloader">
 		<div class="loading-container">
 			<div class="loading"></div>
-			<div id="loading-icon"><img src="<?= asset('assets/images/android-icon-192x192.png') ?>" alt="Mori Capital" style="border-radius:50%;width:64px;height:64px;object-fit:cover;box-shadow:0 6px 18px rgba(8,18,33,.18);"></div>
+			<div id="loading-icon"><img src="<?= asset('assets/images/android-icon-192x192.png') ?>" alt="<?= e(\Mori\t('preloader.alt')) ?>" style="border-radius:50%;width:64px;height:64px;object-fit:cover;box-shadow:0 6px 18px rgba(8,18,33,.18);"></div>
 		</div>
 	</div>

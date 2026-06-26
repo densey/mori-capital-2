@@ -1,0 +1,554 @@
+{
+  "/": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 2,
+      "text": "More about Mori",
+      "href": "/about.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Explore the Mori Style",
+      "href": "/investment-style.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/about.php": [
+    {
+      "kind": "heading",
+      "tag": "H1",
+      "en_markers": 1,
+      "text": "Über Mori Capital Management"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/investment-style.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/team.php": [
+    {
+      "kind": "sentence",
+      "en_markers": 5,
+      "de_markers": 0,
+      "text": "Risikomanager Jean-Paul Gauci Jean-Paul holds a Bachelor of Commerce from the University of Malta, a Masters in Investment and Finance (University of Strathclyde) and a Masters in Risk, Crisis and Resilience Management (University of Portsmouth)."
+    },
+    {
+      "kind": "sentence_likely",
+      "en_markers": 2,
+      "de_markers": 0,
+      "text": "In 2015 joined RiskCap International Limited; promoted to Head of Risk Services in 2023."
+    },
+    {
+      "kind": "sentence",
+      "en_markers": 4,
+      "de_markers": 0,
+      "text": "Part-time lecturer at the University of Malta within the Banking and Finance Department at FEMA."
+    },
+    {
+      "kind": "heading",
+      "tag": "H1",
+      "en_markers": 1,
+      "text": "Team — Mori Capital"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/insights.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/contact.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/fund-eastern-european.php": [
+    {
+      "kind": "heading",
+      "tag": "H2",
+      "en_markers": 1,
+      "text": "Fund overview at a glance"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "All fund documents",
+      "href": "/documents.php?fund=mori-eastern-european-fund"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/fund-ottoman.php": [
+    {
+      "kind": "heading",
+      "tag": "H2",
+      "en_markers": 1,
+      "text": "Fund overview at a glance"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "All fund documents",
+      "href": "/documents.php?fund=mori-ottoman-fund"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/fund-performance.php?fund=eastern-european": [
+    {
+      "kind": "heading",
+      "tag": "H1",
+      "en_markers": 1,
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/fund-performance.php?fund=ottoman": [
+    {
+      "kind": "heading",
+      "tag": "H1",
+      "en_markers": 1,
+      "text": "Fonds-Performance — Mori Capital"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/documents.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/company-policies.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/other-documents.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/updates-during-suspension.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/announcements.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/legal.php": [
+    {
+      "kind": "heading",
+      "tag": "H1",
+      "en_markers": 1,
+      "text": "Rechtliche Hinweise — Mori Capital Management"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/privacy.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ],
+  "/cookies.php": [
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Team",
+      "href": "/team.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Performance",
+      "href": "/fund-performance.php"
+    },
+    {
+      "kind": "link",
+      "en_markers": 1,
+      "text": "Insights",
+      "href": "/insights.php"
+    }
+  ]
+}

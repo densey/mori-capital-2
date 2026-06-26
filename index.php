@@ -36,8 +36,8 @@ try {
 }
 
 $page = [
-    'title'       => setting('seo_default_title', t('page.home.title')),
-    'description' => setting('seo_default_desc', t('page.home.desc')),
+    'title'       => \Mori\setting_i18n('seo_default_title', t('page.home.title')),
+    'description' => \Mori\setting_i18n('seo_default_desc', t('page.home.desc')),
     'body_class'  => 'home',
 ];
 
@@ -109,7 +109,7 @@ include __DIR__ . '/src/partials/header.php';
                         <div class="about-us-image-box-2">
                             <div class="about-us-image">
                                 <figure class="image-anime">
-                                    <img src="<?= asset('assets/images/service/h6-service-2.webp') ?>" alt="Türkiye and MENA markets — Mori Capital coverage">
+                                    <img src="<?= asset('assets/images/service/h6-service-2.webp') ?>" alt="<?= e(t('home.alt_ottoman_coverage')) ?>">
                                 </figure>
                             </div>
                             <div class="contact-us-circle">

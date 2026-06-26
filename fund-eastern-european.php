@@ -18,8 +18,8 @@ try {
 } catch (\Throwable) {}
 
 $page = [
-    'title'       => 'Mori Eastern European Fund — Mori Capital',
-    'description' => 'Long-only equity fund investing across Central and Eastern Europe since 1998.',
+    'title'       => t('page.eastern_european.title'),
+    'description' => t('page.eastern_european.desc'),
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
         ['label' => t('nav.funds'), 'url' => asset('/#funds')],

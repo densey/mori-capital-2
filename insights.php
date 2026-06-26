@@ -19,17 +19,17 @@ try {
 } catch (\Throwable) { $insights = []; }
 
 $categories = [
-    ''                    => 'All',
-    'outlook'             => 'Outlook',
-    'factsheet'           => 'Factsheet',
-    'shareholder_notice'  => 'Shareholder Notice',
-    'article'             => 'Article',
-    'press'               => 'Press',
+    ''                    => t('insights.cat.all'),
+    'outlook'             => t('insights.cat.outlook'),
+    'factsheet'           => t('insights.cat.factsheet'),
+    'shareholder_notice'  => t('insights.cat.shareholder'),
+    'article'             => t('insights.cat.article'),
+    'press'               => t('insights.cat.press'),
 ];
 
 $page = [
     'title'       => 'Mori Views — ' . t('page.insights.subtitle'),
-    'description' => 'Quarterly outlooks, fund factsheets and shareholder communications.',
+    'description' => t('page.insights.desc'),
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
         ['label' => t('nav.insights')],
@@ -55,16 +55,28 @@ include __DIR__ . '/src/partials/page-header.php';
 
         <?php if (empty($insights)): ?>
             <div style="background:#fff;border:1px dashed var(--mori-border,#E1E7EE);border-radius:10px;padding:48px;text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;">
-                No insights published yet.<?php if (\Mori\Auth::check()): ?> Add from the <a href="<?= asset('admin/insights.php') ?>" style="color:var(--accent-color,#1ABC9C);">admin panel</a>.<?php endif; ?>
+                <?= e(t('insights.empty')) ?><?php if (\Mori\Auth::check()): ?>
+                    <?php
+                    $hint = t('insights.admin_hint');
+                    [$before, $after] = array_pad(explode(':link', $hint, 2), 2, '');
+                    ?>
+                    <?= e($before) ?><a href="<?= asset('admin/insights.php') ?>" style="color:var(--accent-color,#1ABC9C);"><?= e(t('insights.admin_link')) ?></a><?= e($after) ?>
+                <?php endif; ?>
             </div>
         <?php else: ?>
         <div class="mori-insights" style="background:transparent;padding:0;">
             <div class="row">
                 <?php foreach ($insights as $i => $ins): ?>
+                <?php
+                    $cat = (string)($ins['category'] ?? '');
+                    $catKey = 'insights.cat.' . ($cat === 'shareholder_notice' ? 'shareholder' : $cat);
+                    $catLabel = t($catKey);
+                    if ($catLabel === $catKey) { $catLabel = ucwords(str_replace('_', ' ', $cat)); }
+                ?>
                 <div class="col-xl-4 col-md-6" style="margin-bottom:24px;">
                     <a href="<?= asset('insight.php?slug=' . e($ins['slug'])) ?>" class="insight-card wow fadeInUp" <?= $i%3>0?'data-wow-delay="0.'.($i%3).'s"':'' ?>>
                         <div class="insight-meta">
-                            <span><?= e(ucwords(str_replace('_',' ', $ins['category']))) ?></span>
+                            <span><?= e($catLabel) ?></span>
                             <span class="date"><?= e(format_date($ins['publish_date'])) ?></span>
                         </div>
                         <h3><?= e($ins['title']) ?></h3>

@@ -14,8 +14,8 @@ try {
 catch (\Throwable) { $team = []; }
 
 $page = [
-    'title'       => t('nav.team') . ' — Mori Capital',
-    'description' => 'Portfolio managers and operations team at Mori Capital Management.',
+    'title'       => t('page.team.title'),
+    'description' => t('page.team.desc'),
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
         ['label' => t('nav.team')],
