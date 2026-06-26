@@ -102,7 +102,7 @@ include __DIR__ . '/src/partials/header.php';
                         <div class="about-us-image-box-1">
                             <div class="about-us-image">
                                 <figure class="image-anime">
-                                    <img src="<?= asset('assets/images/service/h6-service-1.webp') ?>" alt="Eastern European markets — Mori Capital coverage">
+                                    <img src="<?= asset('assets/images/service/h6-service-1.webp') ?>" alt="<?= e(t('home.alt_ee_coverage')) ?>">
                                 </figure>
                             </div>
                         </div>
@@ -157,7 +157,7 @@ include __DIR__ . '/src/partials/header.php';
                             </div>
                             <div class="about-us-body-image wow fadeInUp" data-wow-delay="0.2s">
                                 <figure class="image-anime">
-                                    <img src="<?= asset('assets/images/about/about-hd.jpg') ?>" alt="Mori Capital — EEMEA research-led approach">
+                                    <img src="<?= asset('assets/images/about/about-hd.jpg') ?>" alt="<?= e(t('home.alt_about_research')) ?>">
                                 </figure>
                             </div>
                         </div>
@@ -284,7 +284,7 @@ include __DIR__ . '/src/partials/header.php';
                     <div class="why-choose-us-image-box wow fadeInUp" data-wow-delay="0.2s">
                         <div class="why-choose-us-image">
                             <figure class="image-anime">
-                                <img src="<?= asset('assets/images/hero/hero-corporate-2.jpg') ?>" alt="Mori Capital research-led investment style">
+                                <img src="<?= asset('assets/images/hero/hero-corporate-2.jpg') ?>" alt="<?= e(t('home.alt_research_style')) ?>">
                             </figure>
                         </div>
                         <?php $pm = $team[0] ?? null; if ($pm):

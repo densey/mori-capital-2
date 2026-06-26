@@ -251,6 +251,9 @@ return [
 
     // Homepage extras
     'home.alt_ottoman_coverage'  => 'Türkiye and MENA markets — Mori Capital coverage',
+    'home.alt_ee_coverage'       => 'Eastern European markets — Mori Capital coverage',
+    'home.alt_about_research'    => 'Mori Capital — EEMEA research-led approach',
+    'home.alt_research_style'    => 'Mori Capital research-led investment style',
     'home.about_logo_alt'        => 'Mori Capital Management',
 
     // Footer logo / image alts

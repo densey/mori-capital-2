@@ -22,10 +22,10 @@ try {
 
 $page = [
     'title' => t('page.fund_performance.title') . ' — Mori Capital',
-    'description' => 'Interactive performance chart and NAV history for Mori funds and share classes.',
+    'description' => t('page.fund_performance.desc'),
     'breadcrumb' => [
         ['label' => t('nav.home'), 'url' => asset('/')],
-        ['label' => 'Performance'],
+        ['label' => t('nav.performance')],
     ],
 ];
 
