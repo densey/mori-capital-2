@@ -18,6 +18,8 @@ $db->query("CREATE TABLE IF NOT EXISTS hero_slides (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NULL,
     subtitle VARCHAR(500) NULL,
+    title_de VARCHAR(255) NULL,
+    subtitle_de VARCHAR(500) NULL,
     media_type ENUM('image','video') NOT NULL DEFAULT 'image',
     media_path VARCHAR(500) NOT NULL,
     overlay_opacity DECIMAL(3,2) NOT NULL DEFAULT 0.70,
@@ -28,6 +30,18 @@ $db->query("CREATE TABLE IF NOT EXISTS hero_slides (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
+// Older installs created the table before the bilingual columns existed.
+// Add them idempotently so this admin page works whether or not the
+// 2026-06-german-full-content migration has been run.
+$hasTitleDe = $db->fetchOne(
+    "SELECT COUNT(*) AS c FROM information_schema.columns
+      WHERE table_schema = DATABASE() AND table_name = 'hero_slides' AND column_name = 'title_de'"
+);
+if ((int)($hasTitleDe['c'] ?? 0) === 0) {
+    try { $db->query("ALTER TABLE hero_slides ADD COLUMN title_de VARCHAR(255) NULL AFTER subtitle"); } catch (\Throwable $e) {}
+    try { $db->query("ALTER TABLE hero_slides ADD COLUMN subtitle_de VARCHAR(500) NULL AFTER title_de"); } catch (\Throwable $e) {}
+}
 
 // Handle POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -48,6 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = [
             'title'           => trim($_POST['title'] ?? ''),
             'subtitle'        => trim($_POST['subtitle'] ?? ''),
+            'title_de'        => trim($_POST['title_de'] ?? ''),
+            'subtitle_de'     => trim($_POST['subtitle_de'] ?? ''),
             'media_type'      => in_array($_POST['media_type'] ?? '', ['image','video']) ? $_POST['media_type'] : 'image',
             'media_path'      => trim($_POST['media_path'] ?? ''),
             'overlay_opacity' => max(0, min(1, (float)($_POST['overlay_opacity'] ?? 0.7))),
@@ -121,12 +137,23 @@ include __DIR__ . '/partials/layout-start.php';
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
                 <div>
-                    <label>Title (overlay text)</label>
+                    <label>Title — EN (overlay text)</label>
                     <input type="text" name="title" value="<?= e($editSlide['title'] ?? '') ?>" placeholder="Navigating EEMEA markets...">
                 </div>
                 <div>
-                    <label>Subtitle</label>
+                    <label>Title — DE <span style="font-weight:400;color:var(--a-muted);">(leave blank to reuse EN)</span></label>
+                    <input type="text" name="title_de" value="<?= e($editSlide['title_de'] ?? '') ?>" placeholder="EEMEA-Märkte navigieren...">
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;">
+                <div>
+                    <label>Subtitle — EN</label>
                     <input type="text" name="subtitle" value="<?= e($editSlide['subtitle'] ?? '') ?>" placeholder="Independent and unconstrained...">
+                </div>
+                <div>
+                    <label>Subtitle — DE <span style="font-weight:400;color:var(--a-muted);">(leave blank to reuse EN)</span></label>
+                    <input type="text" name="subtitle_de" value="<?= e($editSlide['subtitle_de'] ?? '') ?>" placeholder="Unabhängig und unbeschränkt...">
                 </div>
             </div>
 
@@ -217,6 +244,8 @@ include __DIR__ . '/partials/layout-start.php';
                 </td>
                 <td>
                     <strong><?= e($s['title'] ?: '(no title)') ?></strong>
+                    <?php $hasDe = !empty($s['title_de']) || !empty($s['subtitle_de']); ?>
+                    <span class="a-badge <?= $hasDe ? 'success' : 'muted' ?>" style="font-size:10px;margin-left:6px;vertical-align:middle;" title="<?= $hasDe ? 'German translation set' : 'No German translation — DE site reuses the English text' ?>"><?= $hasDe ? 'EN · DE' : 'EN only' ?></span>
                     <?php if ($s['subtitle']): ?><br><small style="color:var(--a-muted);"><?= e(mb_strimwidth($s['subtitle'], 0, 60, '…')) ?></small><?php endif; ?>
                 </td>
                 <td><span class="a-badge muted"><?= e($s['media_type']) ?></span></td>
