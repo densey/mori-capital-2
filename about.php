@@ -38,14 +38,10 @@ include __DIR__ . '/src/partials/page-header.php';
     <div class="container">
         <div class="row align-items-center">
             <div class="col-xl-6">
-                <div class="about-us-image-box wow fadeInUp">
-                    <div class="about-us-image-box-1">
-                        <div class="about-us-image">
-                            <figure class="image-anime">
-                                <img src="<?= asset('assets/images/about/about-hd.jpg') ?>" alt="<?= e(t('about.alt_research')) ?>">
-                            </figure>
-                        </div>
-                    </div>
+                <div class="about-solo-image wow fadeInUp">
+                    <figure class="image-anime">
+                        <img src="<?= asset('assets/images/about/about-hd.jpg') ?>" alt="<?= e(t('about.alt_research')) ?>">
+                    </figure>
                 </div>
             </div>
             <div class="col-xl-6">
