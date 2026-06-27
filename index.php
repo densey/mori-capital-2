@@ -43,50 +43,130 @@ include __DIR__ . '/src/partials/header.php';
 
     <!-- Hero -->
     <?php
-    $heroSlide = $heroSlides[0] ?? null;
-    $heroBg   = $heroSlide ? $heroSlide['media_path'] : 'assets/images/hero/hero-istanbul.jpg';
-    $heroIsVid = $heroSlide && ($heroSlide['media_type'] ?? 'image') === 'video';
-    // Locale-aware: prefer title_de / subtitle_de when DE site is active
-    $heroTitle = $heroSlide
-        ? (I18n::locale() === 'de' && !empty($heroSlide['title_de']) ? $heroSlide['title_de'] : ($heroSlide['title'] ?? t('hero.title')))
-        : t('hero.title');
-    $heroSub   = $heroSlide
-        ? (I18n::locale() === 'de' && !empty($heroSlide['subtitle_de']) ? $heroSlide['subtitle_de'] : ($heroSlide['subtitle'] ?? t('hero.lead')))
-        : t('hero.lead');
-    $heroCta   = $heroSlide['cta_text'] ?? t('hero.cta_funds');
-    $heroCtaUrl = $heroSlide['cta_url'] ?? '#funds';
+    // Render every active slide as a crossfading layer. The visual structure
+    // (overlay gradient, two-column text layout, animations) is identical to
+    // the original single-slide hero — we just stack the slides and fade
+    // between them. A single slide (or none) behaves exactly as before.
+    $heroList = !empty($heroSlides) ? $heroSlides : [null];
+    $heroIsMulti = count($heroList) > 1;
+    // Locale-aware field picker: prefer the _de value on the DE site, else EN,
+    // else the translation-file fallback.
+    $heroField = function ($slide, string $key, string $deKey, string $fallback): string {
+        if (!$slide) return $fallback;
+        if (I18n::locale() === 'de' && !empty($slide[$deKey])) return (string) $slide[$deKey];
+        $v = (string) ($slide[$key] ?? '');
+        return $v !== '' ? $v : $fallback;
+    };
     ?>
-    <div class="hero dark-section" style="background:#0E1F36 url('<?= $heroIsVid ? '' : asset(e($heroBg)) ?>') center/cover no-repeat;">
-        <?php if ($heroIsVid): ?>
-        <div class="hero-bg-video">
-            <video autoplay muted playsinline loop poster="<?= asset('assets/images/hero/hero-istanbul.jpg') ?>">
-                <source src="<?= asset(e($heroBg)) ?>" type="video/mp4">
-            </video>
+    <div class="hero dark-section hero-slider<?= $heroIsMulti ? ' is-multi' : '' ?>" data-hero-autoplay="6000" style="background:#0E1F36;">
+        <!-- Background layers (crossfade) -->
+        <div class="hero-bg-stack">
+            <?php foreach ($heroList as $hi => $hs):
+                $hBg  = $hs ? $hs['media_path'] : 'assets/images/hero/hero-istanbul.jpg';
+                $hVid = $hs && ($hs['media_type'] ?? 'image') === 'video';
+            ?>
+            <div class="hero-bg<?= $hi === 0 ? ' is-active' : '' ?>"<?= $hVid ? '' : ' style="background-image:url(\'' . e(asset($hBg)) . '\');"' ?>>
+                <?php if ($hVid): ?>
+                <video autoplay muted playsinline loop poster="<?= asset('assets/images/hero/hero-istanbul.jpg') ?>">
+                    <source src="<?= asset(e($hBg)) ?>" type="video/mp4">
+                </video>
+                <?php endif; ?>
+            </div>
+            <?php endforeach; ?>
         </div>
-        <?php endif; ?>
+
         <div class="hero-bg-overlay" style="position:absolute;inset:0;background:linear-gradient(125deg, rgba(8,18,33,.70) 0%, rgba(18,40,66,.50) 50%, rgba(27,58,92,.35) 100%);pointer-events:none;z-index:1;"></div>
 
         <div class="container">
-            <div class="row section-row align-items-center">
-                <div class="col-xl-7">
-                    <div class="section-title">
-                        <span class="section-sub-title wow fadeInUp"><?= e(t('hero.eyebrow')) ?></span>
-                        <h1 class="text-anime-style-3" data-cursor="-opaque"><?= e($heroTitle) ?></h1>
+            <div class="hero-text-stack">
+                <?php foreach ($heroList as $hi => $hs):
+                    $hTitle  = $heroField($hs, 'title', 'title_de', t('hero.title'));
+                    $hSub    = $heroField($hs, 'subtitle', 'subtitle_de', t('hero.lead'));
+                    $hCta    = ($hs['cta_text'] ?? '') !== '' ? $hs['cta_text'] : t('hero.cta_funds');
+                    $hCtaUrl = ($hs['cta_url'] ?? '') !== '' ? $hs['cta_url'] : '#funds';
+                    $first   = $hi === 0;
+                    // Only the first slide carries the GSAP / WOW intro animation
+                    // classes — later slides must stay visible so the crossfade
+                    // doesn't reveal a hidden (un-animated) layer.
+                    $anim = $first ? ' wow fadeInUp' : '';
+                ?>
+                <div class="hero-text<?= $first ? ' is-active' : '' ?>">
+                    <div class="row section-row align-items-center">
+                        <div class="col-xl-7">
+                            <div class="section-title">
+                                <span class="section-sub-title<?= $anim ?>"><?= e(t('hero.eyebrow')) ?></span>
+                                <h1<?= $first ? ' class="text-anime-style-3"' : '' ?> data-cursor="-opaque"><?= e($hTitle) ?></h1>
+                            </div>
+                        </div>
+                        <div class="col-xl-5">
+                            <div class="section-content-btn">
+                                <div class="section-title-content<?= $anim ?>" data-wow-delay="0.2s">
+                                    <p><?= e($hSub) ?></p>
+                                </div>
+                                <div class="section-btn<?= $anim ?>" data-wow-delay="0.4s">
+                                    <a class="btn-default btn-highlighted" href="<?= e($hCtaUrl) ?>"><?= e($hCta) ?></a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xl-5">
-                    <div class="section-content-btn">
-                        <div class="section-title-content wow fadeInUp" data-wow-delay="0.2s">
-                            <p><?= e($heroSub) ?></p>
-                        </div>
-                        <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default btn-highlighted" href="<?= e($heroCtaUrl) ?>"><?= e($heroCta) ?></a>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
             </div>
         </div>
+
+        <?php if ($heroIsMulti): ?>
+        <div class="hero-dots" role="tablist" aria-label="Hero slides">
+            <?php foreach ($heroList as $hi => $hs): ?>
+            <button type="button" class="hero-dot<?= $hi === 0 ? ' is-active' : '' ?>" data-hero-go="<?= $hi ?>" aria-label="Slide <?= $hi + 1 ?>"<?= $hi === 0 ? ' aria-current="true"' : '' ?>></button>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
     </div>
+
+    <?php if ($heroIsMulti): ?>
+    <script>
+    (function () {
+        var hero = document.querySelector('.hero-slider.is-multi');
+        if (!hero) return;
+        var bgs   = hero.querySelectorAll('.hero-bg');
+        var texts = hero.querySelectorAll('.hero-text');
+        var dots  = hero.querySelectorAll('.hero-dot');
+        var n = texts.length;
+        if (n < 2) return;
+        var cur = 0;
+        var delay = parseInt(hero.getAttribute('data-hero-autoplay'), 10) || 6000;
+        var timer = null;
+
+        function activate(set, i, on) {
+            if (set[i]) {
+                set[i].classList.toggle('is-active', on);
+                if (set === dots) { if (on) set[i].setAttribute('aria-current', 'true'); else set[i].removeAttribute('aria-current'); }
+            }
+        }
+        function go(i) {
+            i = (i + n) % n;
+            if (i === cur) return;
+            activate(bgs, cur, false); activate(texts, cur, false); activate(dots, cur, false);
+            activate(bgs, i, true);   activate(texts, i, true);   activate(dots, i, true);
+            cur = i;
+        }
+        function start() { stop(); timer = setInterval(function () { go(cur + 1); }, delay); }
+        function stop()  { if (timer) { clearInterval(timer); timer = null; } }
+
+        dots.forEach(function (d) {
+            d.addEventListener('click', function () {
+                go(parseInt(d.getAttribute('data-hero-go'), 10) || 0);
+                start();
+            });
+        });
+        hero.addEventListener('mouseenter', stop);
+        hero.addEventListener('mouseleave', start);
+        document.addEventListener('visibilitychange', function () { document.hidden ? stop() : start(); });
+
+        start();
+    })();
+    </script>
+    <?php endif; ?>
 
     <!-- About Mori -->
     <div class="about-us">
