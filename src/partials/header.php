@@ -21,9 +21,6 @@ use function Mori\t;
                 <div class="collapse navbar-collapse main-menu">
                     <div class="nav-menu-wrapper">
                         <ul class="navbar-nav mr-auto" id="menu">
-                            <li class="nav-item <?= is_active_nav('/index.php')?'active':'' ?>">
-                                <a class="nav-link" href="<?= asset('/') ?>"><?= e(t('nav.home')) ?></a>
-                            </li>
                             <li class="nav-item <?= is_active_nav('/about.php')?'active':'' ?>">
                                 <a class="nav-link" href="<?= asset('about.php') ?>"><?= e(t('nav.about')) ?></a>
                             </li>
