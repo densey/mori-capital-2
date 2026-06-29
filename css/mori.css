@@ -344,9 +344,18 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     /* Header: solid teal, no absolute offset */
     header.main-header { position: relative !important; top: 0 !important; z-index: 9999 !important; }
     header.main-header .header-sticky { background: var(--accent-color) !important; position: relative !important; }
-    .main-header .navbar { padding: 10px 0 8px !important; }
+    .main-header .navbar { padding: 7px 0 6px !important; }
     .main-header .navbar .container { display: flex !important; align-items: center; justify-content: space-between; }
-    .main-header .navbar-brand img { height: 56px; }
+    /* Compact logo on phones. Use a high-specificity selector so the sticky
+       state (which is more specific on desktop) can't override it and blow
+       the header up on scroll. */
+    header.main-header .navbar-brand img,
+    header.main-header .header-sticky.active .navbar-brand img,
+    header.main-header .header-sticky.sticky .navbar-brand img,
+    header.main-header .header-sticky.fixed-header .navbar-brand img {
+        height: 46px !important;
+        transition: height .2s ease;
+    }
 
     /* Light logo always on teal */
     header.main-header .navbar-brand .logo-light { display: inline-block !important; }
@@ -369,6 +378,9 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
         box-shadow: 0 2px 12px rgba(0,0,0,.15) !important;
         z-index: 9999 !important;
     }
+    /* Keep the sticky bar just as compact as the static one (the desktop
+       rule sets a taller padding that would otherwise win here). */
+    header.main-header .header-sticky.active .navbar { padding: 7px 0 6px !important; }
     header.main-header .header-sticky.active .navbar-brand .logo-light { display: inline-block !important; }
     header.main-header .header-sticky.active .navbar-brand .logo-dark  { display: none !important; }
 }
