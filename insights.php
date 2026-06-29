@@ -8,6 +8,11 @@ use function Mori\asset;
 use function Mori\format_date;
 use function Mori\t;
 
+// "Mori Views" has been replaced by the Media section. Permanently redirect
+// any old links / bookmarks to /media.php.
+header('Location: ' . asset('media.php'), true, 301);
+exit;
+
 try {
     $db = Database::instance();
     $where = ['status = "published"', 'locale = :loc'];

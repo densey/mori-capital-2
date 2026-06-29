@@ -24,7 +24,8 @@ $static = [
     '/fund-performance'       => ['daily',   '0.8'],
     '/documents'              => ['weekly',  '0.8'],
     '/team'                   => ['monthly', '0.6'],
-    '/insights'               => ['weekly',  '0.7'],
+    '/media'                  => ['weekly',  '0.7'],
+    '/announcements'          => ['weekly',  '0.6'],
     '/contact'                => ['monthly', '0.5'],
     '/legal'                  => ['yearly',  '0.3'],
     '/privacy'                => ['yearly',  '0.3'],
@@ -38,18 +39,8 @@ foreach ($static as $path => [$freq, $prio]) {
     }
 }
 
-// DB-driven published insights
-try {
-    $db = Database::instance();
-    foreach ($db->fetchAll('SELECT slug, locale, GREATEST(updated_at, publish_date) AS lm FROM insights WHERE status="published"') as $ins) {
-        $urls[] = [
-            'loc'        => url('/' . $ins['locale'] . '/insight?slug=' . urlencode($ins['slug'])),
-            'lastmod'    => date('Y-m-d', strtotime((string)$ins['lm'])),
-            'changefreq' => 'monthly',
-            'priority'   => '0.6',
-        ];
-    }
-} catch (\Throwable) {}
+// (Mori Views / insights was replaced by the Media section — Media items are
+// mostly external links and local PDFs, so they don't get their own URLs.)
 
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";

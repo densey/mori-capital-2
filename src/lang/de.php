@@ -263,6 +263,23 @@ return [
     'aria.breadcrumb'            => 'Brotkrumen',
     'preloader.alt'              => 'Mori Capital',
 
+    // Media page
+    'nav.media'                  => 'Medien',
+    'page.media.title'           => 'Medien — Mori Capital',
+    'page.media.desc'            => 'Pressemitteilungen, Medienberichte und Videoauftritte von Mori Capital Management.',
+    'media.eyebrow'              => 'Medien',
+    'media.heading'              => 'Presse, Medienberichte & Videos',
+    'media.intro'                => 'Pressemitteilungen, Medienberichterstattung Dritter sowie Video- und Podcast-Auftritte über Mori Capital Management und seine Fonds.',
+    'media.empty'                => 'Noch keine Medieneinträge veröffentlicht.',
+    'media.type.press_release'   => 'Pressemitteilung',
+    'media.type.article'         => 'Medienbericht',
+    'media.type.video'           => 'Video',
+    'media.type.podcast'         => 'Podcast',
+    'media.action.view'          => 'PDF ansehen',
+    'media.action.read'          => 'Lesen',
+    'media.action.watch'         => 'Ansehen',
+    'media.action.listen'        => 'Anhören',
+
     // Homepage CTAs / section copy
     'home.cta.more_about_mori'   => 'Mehr über Mori',
     'home.cta.explore_style'     => 'Mori-Stil entdecken',

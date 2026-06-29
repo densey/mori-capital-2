@@ -28,7 +28,7 @@ try {
 
     $name = $_FILES['file']['name'];
     $ext  = strtolower(pathinfo($name, PATHINFO_EXTENSION));
-    $allowed = ['jpg','jpeg','png','gif','webp','mp4','webm'];
+    $allowed = ['jpg','jpeg','png','gif','webp','mp4','webm','pdf'];
     if (!in_array($ext, $allowed, true)) {
         throw new \Exception('Allowed: ' . implode(', ', $allowed));
     }

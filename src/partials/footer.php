@@ -43,7 +43,7 @@ $year = date('Y');
                             <li><a href="<?= asset('about.php') ?>"><?= e(t('nav.about')) ?></a></li>
                             <li><a href="<?= asset('investment-style.php') ?>"><?= e(t('nav.investment_style')) ?></a></li>
                             <li><a href="<?= asset('team.php') ?>"><?= e(t('nav.team')) ?></a></li>
-                            <li><a href="<?= asset('insights.php') ?>"><?= e(t('nav.insights')) ?></a></li>
+                            <li><a href="<?= asset('media.php') ?>"><?= e(t('nav.media')) ?></a></li>
                             <li><a href="<?= asset('contact.php') ?>"><?= e(t('nav.contact')) ?></a></li>
                         </ul>
                     </div>
@@ -140,8 +140,8 @@ $year = date('Y');
         <a href="<?= asset('documents.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'documents')?' active':'' ?>" aria-label="<?= e(t('nav.documents')) ?>">
             <i class="fa-solid fa-folder-open"></i><span><?= e(t('tabbar.docs')) ?></span>
         </a>
-        <a href="<?= asset('insights.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'insight')?' active':'' ?>" aria-label="<?= e(t('nav.insights')) ?>">
-            <i class="fa-solid fa-newspaper"></i><span><?= e(t('tabbar.insights')) ?></span>
+        <a href="<?= asset('media.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'media')?' active':'' ?>" aria-label="<?= e(t('nav.media')) ?>">
+            <i class="fa-solid fa-photo-film"></i><span><?= e(t('nav.media')) ?></span>
         </a>
         <a href="<?= asset('contact.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'contact')?' active':'' ?>" aria-label="<?= e(t('nav.contact')) ?>">
             <i class="fa-solid fa-envelope"></i><span><?= e(t('tabbar.contact')) ?></span>

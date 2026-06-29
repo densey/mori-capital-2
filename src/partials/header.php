@@ -58,6 +58,9 @@ use function Mori\t;
                             <li class="nav-item <?= is_active_nav('/announcements.php')?'active':'' ?>">
                                 <a class="nav-link" href="<?= asset('announcements.php') ?>"><?= e(t('nav.announcements')) ?></a>
                             </li>
+                            <li class="nav-item <?= is_active_nav('/media.php')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('media.php') ?>"><?= e(t('nav.media')) ?></a>
+                            </li>
                             <li class="nav-item <?= is_active_nav('/contact.php')?'active':'' ?>">
                                 <a class="nav-link" href="<?= asset('contact.php') ?>"><?= e(t('nav.contact')) ?></a>
                             </li>

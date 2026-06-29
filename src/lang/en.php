@@ -263,6 +263,23 @@ return [
     'aria.breadcrumb'            => 'Breadcrumb',
     'preloader.alt'              => 'Mori Capital',
 
+    // Media page
+    'nav.media'                  => 'Media',
+    'page.media.title'           => 'Media — Mori Capital',
+    'page.media.desc'            => 'Press releases, media coverage and video appearances from Mori Capital Management.',
+    'media.eyebrow'              => 'Media',
+    'media.heading'              => 'Press, media coverage & videos',
+    'media.intro'                => 'Press releases, third-party media coverage and video & podcast appearances featuring Mori Capital Management and its funds.',
+    'media.empty'                => 'No media items published yet.',
+    'media.type.press_release'   => 'Press Release',
+    'media.type.article'         => 'Media Coverage',
+    'media.type.video'           => 'Video',
+    'media.type.podcast'         => 'Podcast',
+    'media.action.view'          => 'View PDF',
+    'media.action.read'          => 'Read',
+    'media.action.watch'         => 'Watch',
+    'media.action.listen'        => 'Listen',
+
     // Homepage CTAs / section copy
     'home.cta.more_about_mori'   => 'More about Mori',
     'home.cta.explore_style'     => 'Explore the Mori Style',
