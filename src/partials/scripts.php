@@ -66,7 +66,18 @@ use function Mori\t;
     if (!btn.length || !nav.length) return;
 
     var overlay = $('<div class="mori-mobile-nav"></div>');
+
+    // Close (X) button, top-right
+    var closeBtn = $('<button type="button" class="mori-mobile-close" aria-label="<?= e(t('header.menu_aria')) ?>">&times;</button>');
+    overlay.append(closeBtn);
+
     nav.clone(true).appendTo(overlay);
+
+    // "Home" lives only on mobile (it was removed from the desktop bar since
+    // the logo already links home). Prepend it to the cloned menu.
+    overlay.find('.slicknav_nav, ul').first().prepend(
+        '<li><a href="<?= e(asset('/')) ?>"><?= e(t('nav.home')) ?></a></li>'
+    );
 
     // Add language switcher to mobile nav
     var path = location.pathname;
@@ -91,6 +102,7 @@ use function Mori\t;
         $('body').css('overflow', open ? 'hidden' : '');
     }
     btn.on('click', toggle);
+    closeBtn.on('click', function(e) { e.preventDefault(); e.stopPropagation(); if (open) toggle(); });
     overlay.on('click', 'a:not(.mori-nav-lang a)', function() { if (open) toggle(); });
     overlay.on('click', function(e) { if (e.target === this) toggle(); });
 })(jQuery);

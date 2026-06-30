@@ -295,6 +295,21 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
 .mori-mobile-nav .mori-nav-lang a.active {
     background: var(--accent-color); color: #fff; border-color: var(--accent-color);
 }
+/* Close (X) button — top-right of the mobile menu overlay */
+.mori-mobile-close {
+    position: fixed; top: 15px; right: 16px;
+    width: 44px; height: 44px; padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.10);
+    border: 1px solid rgba(255,255,255,.24);
+    border-radius: 50%;
+    color: #fff; font-size: 26px; line-height: 1; font-weight: 300;
+    cursor: pointer; z-index: 10002;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+.mori-mobile-close:hover,
+.mori-mobile-close:active { background: var(--accent-color); border-color: var(--accent-color); transform: rotate(90deg); }
 
 /* ── Mobile bottom tab bar ── */
 .mori-tabbar {
@@ -341,9 +356,14 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     /* Topbar hidden */
     .topbar { display: none !important; }
 
-    /* Header: solid teal, no absolute offset */
+    /* Header: dark-grey → Mori-teal gradient. The left (logo) side stays dark
+       so the light logo reads clearly; it warms into the brand teal on the
+       right behind the menu button. */
     header.main-header { position: relative !important; top: 0 !important; z-index: 9999 !important; }
-    header.main-header .header-sticky { background: var(--accent-color) !important; position: relative !important; }
+    header.main-header .header-sticky {
+        background: linear-gradient(90deg, #25303B 0%, #25303B 30%, #1ABC9C 112%) !important;
+        position: relative !important;
+    }
     .main-header .navbar { padding: 7px 0 6px !important; }
     .main-header .navbar .container { display: flex !important; align-items: center; justify-content: space-between; }
     /* Compact logo on phones. Use a high-specificity selector so the sticky
@@ -374,8 +394,8 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     /* Sticky scroll */
     header.main-header .header-sticky.active {
         position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important;
-        background: var(--accent-color) !important;
-        box-shadow: 0 2px 12px rgba(0,0,0,.15) !important;
+        background: linear-gradient(90deg, #25303B 0%, #25303B 30%, #1ABC9C 112%) !important;
+        box-shadow: 0 2px 12px rgba(0,0,0,.18) !important;
         z-index: 9999 !important;
     }
     /* Keep the sticky bar just as compact as the static one (the desktop
