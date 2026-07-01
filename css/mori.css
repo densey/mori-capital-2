@@ -110,6 +110,12 @@ body {
 }
 .hero .section-row { row-gap: 18px; }
 
+/* Team bio may contain HTML paragraphs (WYSIWYG). Keep paragraph spacing
+   tidy — no stray gap at the top or bottom of the block. */
+.team-bio-text p { margin: 0 0 12px; }
+.team-bio-text p:last-child { margin-bottom: 0; }
+.team-bio-text ul, .team-bio-text ol { margin: 0 0 12px; padding-left: 20px; }
+
 /* ----- Team item — fit longer titles on one line with social icons ------ */
 .team-item-content h2 {
     font-size: 20px !important;

@@ -33,7 +33,11 @@ include __DIR__ . '/src/partials/page-header.php';
         <?php foreach ($team as $i => $member):
             $photoSrc = $member['photo_path'] ?? '';
             if (!preg_match('/^https?:\/\//', $photoSrc) && $photoSrc !== '') $photoSrc = asset($photoSrc);
-            $bio = I18n::fieldFor($member, 'bio');
+            $bio = (string) (I18n::fieldFor($member, 'bio') ?? '');
+            // Bios are entered via the WYSIWYG editor, so they may contain HTML
+            // (<p>, <br>, …). Render that as-is; fall back to nl2br for older
+            // plain-text rows so their line breaks still show.
+            $bioOut = ($bio !== strip_tags($bio)) ? $bio : nl2br(e($bio));
             $flip = $i % 2 === 1;
         ?>
         <div id="<?= e($member['slug']) ?>" class="row align-items-center wow fadeInUp" style="margin-bottom:60px;flex-direction:<?= $flip?'row-reverse':'row' ?>;">
@@ -46,7 +50,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 <div style="font-size:12px;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent-color,#1ABC9C);font-weight:700;margin-bottom:8px;"><?= e(I18n::fieldFor($member, 'title')) ?></div>
                 <h2 style="font-size:clamp(22px,2.4vw,30px);margin-bottom:14px;"><?= e($member['name']) ?></h2>
                 <div style="height:2px;width:60px;background:var(--mori-border,#E1E7EE);margin-bottom:18px;"></div>
-                <div style="font-size:14.5px;line-height:1.75;color:var(--mori-text-soft,#5A6B7B);"><?= nl2br(e($bio ?? '')) ?></div>
+                <div class="team-bio-text" style="font-size:14.5px;line-height:1.75;color:var(--mori-text-soft,#5A6B7B);"><?= $bioOut ?></div>
                 <?php if (!empty($member['linkedin_url']) || !empty($member['email'])): ?>
                 <div style="margin-top:20px;display:flex;gap:10px;">
                     <?php if (!empty($member['linkedin_url'])): ?>
