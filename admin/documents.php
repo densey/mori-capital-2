@@ -16,6 +16,36 @@ use function Mori\setting;
 Auth::requireLogin();
 $db = Database::instance();
 
+// Is the show_on_fund_page migration applied? Used to gate the flag column in
+// inserts/updates and to show the toggle in the list.
+$hasFundPageCol = false;
+try {
+    $hasFundPageCol = (int) $db->fetchColumn(
+        "SELECT COUNT(*) FROM information_schema.COLUMNS
+          WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = 'documents'
+            AND COLUMN_NAME = 'show_on_fund_page'"
+    ) > 0;
+} catch (\Throwable) {}
+
+// AJAX: toggle "show on fund detail page" flag
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle_fund_page') {
+    header('Content-Type: application/json');
+    try {
+        Csrf::requireValid();
+        $id  = (int) ($_POST['id'] ?? 0);
+        $val = !empty($_POST['val']) ? 1 : 0;
+        if ($id <= 0) throw new \Exception('Missing document id.');
+        if (!$hasFundPageCol) throw new \Exception('Run install.php to apply the pending migration first.');
+        $db->update('documents', ['show_on_fund_page' => $val], ['id' => $id]);
+        AuditLog::log(Auth::userId(), 'document_fund_page_toggled', 'documents', $id, $val ? 'shown' : 'hidden');
+        echo json_encode(['ok' => true, 'val' => $val]);
+    } catch (\Throwable $e) {
+        echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
+
 // AJAX: reorder documents (drag-and-drop)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'reorder') {
     header('Content-Type: application/json');
@@ -100,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         $allowedCats = ['share_class','company_policy','other','suspension_update'];
         if (!in_array($category, $allowedCats, true)) $category = 'share_class';
 
-        $id = $db->insert('documents', [
+        $docData = [
             'fund_id'       => $fundId,
             'document_type' => $type,
             'category'      => $category,
@@ -115,7 +145,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
             'locale'        => in_array($_POST['locale'] ?? 'any', ['en','de','any'], true) ? $_POST['locale'] : 'any',
             'version_notes' => trim($_POST['version_notes'] ?? '') ?: null,
             'uploaded_by'   => Auth::userId(),
-        ]);
+        ];
+        if ($hasFundPageCol) {
+            $docData['show_on_fund_page'] = isset($_POST['show_on_fund_page']) ? 1 : 0;
+        }
+        $id = $db->insert('documents', $docData);
 
         // Many-to-many share classes
         if (!empty($_POST['share_classes']) && is_array($_POST['share_classes'])) {
@@ -305,6 +339,14 @@ include __DIR__ . '/partials/layout-start.php';
             <label>Version notes (optional, internal)</label>
             <textarea name="version_notes" rows="2" placeholder="e.g. v2 — corrects holdings table on p.3"></textarea>
 
+            <?php if ($hasFundPageCol): ?>
+            <label style="display:flex;align-items:center;gap:9px;cursor:pointer;margin-top:14px;font-weight:600;">
+                <input type="checkbox" name="show_on_fund_page" value="1">
+                <span>Show this document in the &ldquo;Fund documentation&rdquo; box on the fund detail page</span>
+            </label>
+            <p style="font-size:12px;color:var(--a-muted);margin:4px 0 0 26px;">Only documents linked to a fund appear there, and only on the matching language site. Leave unticked to keep it in the Document Hub / listings only.</p>
+            <?php endif; ?>
+
             <script>
             function updScope() {
                 var mode = document.querySelector('input[name="scope_mode"]:checked').value;
@@ -400,11 +442,20 @@ include __DIR__ . '/partials/layout-start.php';
                     <?php endif; ?>
                     <td><strong><?= e($d['title']) ?></strong><br><small><?= e($d['file_name']) ?></small></td>
                     <td><?= e($d['fund_name'] ?? '—') ?></td>
-                    <td><span class="a-badge teal"><?= e(strtoupper(str_replace('_',' ',$d['document_type']))) ?></span></td>
+                    <td>
+                        <span class="a-badge teal"><?= e(strtoupper(str_replace('_',' ',$d['document_type']))) ?></span>
+                        <span class="a-badge muted" style="font-size:10px;" title="Language"><?= e(strtoupper((string)($d['locale'] ?? 'any'))) ?></span>
+                    </td>
                     <td><small><?= e(format_date($d['document_date'])) ?></small></td>
                     <td><small><?= e(format_bytes((int)$d['file_size'])) ?></small></td>
                     <td><?= e($d['download_count']) ?></td>
-                    <td style="text-align:right;">
+                    <td style="text-align:right;white-space:nowrap;">
+                        <?php if ($hasFundPageCol && !empty($d['fund_id'])): $on = (int)($d['show_on_fund_page'] ?? 0); ?>
+                        <button type="button" class="a-btn ghost sm fund-page-toggle" data-id="<?= e($d['id']) ?>" data-on="<?= $on ?>"
+                                title="<?= $on ? 'Shown on the fund detail page — click to hide' : 'Hidden from the fund detail page — click to show' ?>">
+                            <i class="fa-<?= $on ? 'solid' : 'regular' ?> fa-star" style="color:<?= $on ? '#1ABC9C' : 'var(--a-muted)' ?>;"></i>
+                        </button>
+                        <?php endif; ?>
                         <a class="a-btn ghost sm" href="<?= asset('api/download.php?id=' . (int)$d['id']) ?>" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-download"></i></a>
                         <form method="post" style="display:inline;" onsubmit="return confirm('Delete this document?');">
                             <?= Csrf::field() ?>
@@ -465,6 +516,38 @@ include __DIR__ . '/partials/layout-start.php';
 .reorder-ghost { opacity: .4; background: #E8F8F4 !important; }
 #docTable tr[data-id]:hover .drag-handle { color: var(--a-teal) !important; }
 </style>
+<?php endif; ?>
+
+<?php if ($hasFundPageCol): ?>
+<!-- Toggle "show on fund detail page" (★) -->
+<script>
+(function () {
+    var csrf = <?= json_encode(Csrf::token()) ?>;
+    document.querySelectorAll('.fund-page-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            var next = btn.getAttribute('data-on') === '1' ? 0 : 1;
+            var fd = new FormData();
+            fd.append('action', 'toggle_fund_page');
+            fd.append('_csrf', csrf);
+            fd.append('id', btn.getAttribute('data-id'));
+            fd.append('val', next);
+            btn.disabled = true;
+            fetch(window.location.pathname, { method: 'POST', body: fd, headers: { 'X-CSRF-Token': csrf } })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    btn.disabled = false;
+                    if (!j || !j.ok) { alert('Could not update: ' + (j && j.error || 'unknown error')); return; }
+                    btn.setAttribute('data-on', String(j.val));
+                    var icon = btn.querySelector('i');
+                    icon.className = 'fa-' + (j.val ? 'solid' : 'regular') + ' fa-star';
+                    icon.style.color = j.val ? '#1ABC9C' : 'var(--a-muted)';
+                    btn.title = j.val ? 'Shown on the fund detail page — click to hide' : 'Hidden from the fund detail page — click to show';
+                })
+                .catch(function () { btn.disabled = false; alert('Network error — try again.'); });
+        });
+    });
+})();
+</script>
 <?php endif; ?>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>

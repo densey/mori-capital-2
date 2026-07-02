@@ -14,7 +14,7 @@ try {
     $db = Database::instance();
     $fund = $db->fetchOne('SELECT * FROM funds WHERE slug = :s LIMIT 1', ['s' => $slug]);
     $shareClasses = $fund ? $db->fetchAll('SELECT * FROM share_classes WHERE fund_id = :id ORDER BY display_order', ['id' => $fund['id']]) : [];
-    $documents = $fund ? $db->fetchAll('SELECT * FROM documents WHERE fund_id = :id ORDER BY document_date DESC LIMIT 12', ['id' => $fund['id']]) : [];
+    $documents = $fund ? \Mori\fund_page_documents((int)$fund['id']) : [];
 } catch (\Throwable) {}
 
 $page = [

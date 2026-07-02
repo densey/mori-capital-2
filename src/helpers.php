@@ -88,6 +88,45 @@ function setting_i18n(string $key, ?string $default = null): ?string
     return setting($key, $default);
 }
 
+/**
+ * Documents shown in the "Fund documentation" teaser on a fund detail page.
+ * Filtered by the current locale (a doc's locale must match the active site
+ * language, or be 'any') and — once the show_on_fund_page migration is in —
+ * limited to the documents the client has explicitly opted in. Falls back to
+ * a plain locale filter if that column doesn't exist yet.
+ */
+function fund_page_documents(int $fundId, int $limit = 12): array
+{
+    $db  = Database::instance();
+    $loc = I18n::locale();
+
+    static $hasFlag = null;
+    if ($hasFlag === null) {
+        try {
+            $hasFlag = (int) $db->fetchColumn(
+                "SELECT COUNT(*) FROM information_schema.COLUMNS
+                  WHERE TABLE_SCHEMA = DATABASE()
+                    AND TABLE_NAME = 'documents'
+                    AND COLUMN_NAME = 'show_on_fund_page'"
+            ) > 0;
+        } catch (\Throwable) {
+            $hasFlag = false;
+        }
+    }
+
+    $sql = 'SELECT * FROM documents
+             WHERE fund_id = :id
+               AND (locale = :loc OR locale = "any")'
+         . ($hasFlag ? ' AND show_on_fund_page = 1' : '')
+         . ' ORDER BY document_date DESC LIMIT ' . max(1, $limit);
+
+    try {
+        return $db->fetchAll($sql, ['id' => $fundId, 'loc' => $loc]);
+    } catch (\Throwable) {
+        return [];
+    }
+}
+
 function format_bytes(int $bytes, int $precision = 1): string
 {
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
