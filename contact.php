@@ -196,7 +196,7 @@ include __DIR__ . '/src/partials/page-header.php';
 
 <!-- Map (OpenStreetMap embed — Sliema) -->
 <div style="height:380px;background:var(--mori-bg-soft,#F5F7FA);">
-    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=14.502%2C35.910%2C14.512%2C35.918&layer=mapnik&marker=35.9137%2C14.5070" style="border:0;width:100%;height:100%;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="<?= e(t('contact.map_title')) ?>"></iframe>
+    <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=14.4993%2C35.9054%2C14.5133%2C35.9144&layer=mapnik&marker=35.90993%2C14.50632" style="border:0;width:100%;height:100%;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="<?= e(t('contact.map_title')) ?>"></iframe>
 </div>
 
 <?php
