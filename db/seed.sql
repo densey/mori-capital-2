@@ -50,10 +50,12 @@ INSERT INTO funds (slug, name_en, name_de, description_en, description_de, objec
  '2006-01-01', 'EUR', 'MSCI Türkiye',
  'assets/images/service/h6-service-2.webp',
  'active', 20)
+-- Seed only creates the funds on first install; it must NOT overwrite fields
+-- the client edits in the admin panel (name, benchmark, descriptions,
+-- objective, …). Re-running install.php therefore leaves existing rows alone
+-- and only touches the timestamp.
 ON DUPLICATE KEY UPDATE
-    description_en = VALUES(description_en),
-    objective_en   = VALUES(objective_en),
-    updated_at     = CURRENT_TIMESTAMP;
+    updated_at = CURRENT_TIMESTAMP;
 
 -- -----------------------------------------------------------------------------
 -- Share classes — ISINs from Desmond's FundHub spec (Jan 2026)
@@ -70,12 +72,13 @@ UNION ALL SELECT id, 'Otto Class C EUR',  'IE00B8G12179', 'EUR', '2006-01-01', '
 UNION ALL SELECT id, 'Otto Class C GBP',  'IE00B87PYK12', 'GBP', '2006-01-01', 'active', 40 FROM funds WHERE slug='mori-ottoman-fund'
 UNION ALL SELECT id, 'Otto Class AA GBP', 'IE00B87G5S97', 'GBP', '2006-01-01', 'active', 50 FROM funds WHERE slug='mori-ottoman-fund'
 UNION ALL SELECT id, 'Otto Class M USD',  'IE00BJLC3Y24', 'USD', '2006-01-01', 'active', 60 FROM funds WHERE slug='mori-ottoman-fund'
+-- IMPORTANT: only seed share classes on first install. Do NOT overwrite
+-- name / currency / inception_date / display_order on re-run — those are
+-- edited by the client in the admin panel (Funds & Share Classes), and an
+-- overwrite here would silently revert their changes every time install.php
+-- runs. Existing rows are left untouched; only the timestamp is bumped.
 ON DUPLICATE KEY UPDATE
-    name           = VALUES(name),
-    currency       = VALUES(currency),
-    inception_date = VALUES(inception_date),
-    display_order  = VALUES(display_order),
-    updated_at     = CURRENT_TIMESTAMP;
+    updated_at = CURRENT_TIMESTAMP;
 
 -- -----------------------------------------------------------------------------
 -- Team (English bios — DE can be added via admin panel)

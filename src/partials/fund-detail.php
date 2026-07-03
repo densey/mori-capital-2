@@ -45,28 +45,22 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
             <h2 style="font-size:clamp(22px,2.4vw,30px);"><?= e(t('fund.overview_heading')) ?></h2>
         </div>
         <div class="row">
-            <div class="col-md-3 col-sm-6" style="margin-bottom:16px;">
+            <div class="col-md-4 col-sm-6" style="margin-bottom:16px;">
                 <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:22px;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e(t('fund.launch_date')) ?></div>
                     <div style="font-size:18px;color:var(--primary-color,#1B3A5C);font-weight:700;"><?= e(format_date($fund['launch_date'], 'M Y')) ?></div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6" style="margin-bottom:16px;">
+            <div class="col-md-4 col-sm-6" style="margin-bottom:16px;">
                 <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:22px;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e(t('fund.base_currency')) ?></div>
                     <div style="font-size:18px;color:var(--primary-color,#1B3A5C);font-weight:700;"><?= e($fund['base_currency']) ?></div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6" style="margin-bottom:16px;">
+            <div class="col-md-4 col-sm-6" style="margin-bottom:16px;">
                 <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:22px;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e(t('fund.share_classes_count')) ?></div>
                     <div style="font-size:18px;color:var(--primary-color,#1B3A5C);font-weight:700;"><?= count($shareClasses) ?></div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-6" style="margin-bottom:16px;">
-                <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;padding:22px;">
-                    <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e(t('fund.benchmark')) ?></div>
-                    <div style="font-size:14px;color:var(--primary-color,#1B3A5C);font-weight:700;"><?= e($fund['benchmark'] ?? '—') ?></div>
                 </div>
             </div>
         </div>
