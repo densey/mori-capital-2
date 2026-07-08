@@ -132,15 +132,16 @@ include __DIR__ . '/partials/layout-start.php';
                 <div style="font-weight:600;color:var(--a-navy);">SMTP_SECURE</div><div style="font-family:monospace;color:var(--a-text-soft);"><?= e(\Mori\Config::get('SMTP_SECURE','tls')) ?></div>
             </div>
             <p style="font-size:12px;color:var(--a-muted);margin-bottom:14px;">To change these: SSH into the server → <code>nano .env</code> → fill SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM.</p>
-            <form method="post" class="a-form" style="display:flex;gap:10px;align-items:end;margin-top:12px;">
-                <?= Csrf::field() ?>
-                <input type="hidden" name="action" value="smtp_test">
+            <!-- SMTP test posts to its own form (smtpTestForm, defined at the end
+                 of the page) via the HTML5 form= attribute, so it doesn't nest a
+                 <form> inside the main settings form. -->
+            <div style="display:flex;gap:10px;align-items:end;margin-top:12px;">
                 <div style="flex:1;">
                     <label>Send test email to</label>
-                    <input type="email" name="test_email" required placeholder="your@email.com" value="<?= e(\Mori\Auth::user()['email'] ?? '') ?>">
+                    <input type="email" name="test_email" form="smtpTestForm" required placeholder="your@email.com" value="<?= e(\Mori\Auth::user()['email'] ?? '') ?>">
                 </div>
-                <button class="a-btn" type="submit"><i class="fa-solid fa-paper-plane"></i> Send test</button>
-            </form>
+                <button class="a-btn" type="submit" form="smtpTestForm"><i class="fa-solid fa-paper-plane"></i> Send test</button>
+            </div>
         </div>
     </div>
 
@@ -178,10 +179,6 @@ include __DIR__ . '/partials/layout-start.php';
             </p>
         </div>
     </div>
-
-    <form method="post" class="a-form">
-    <?= Csrf::field() ?>
-    <input type="hidden" name="action" value="save">
 
     <div class="a-card" style="margin-bottom:22px;">
         <div class="a-card__head">
@@ -225,6 +222,13 @@ include __DIR__ . '/partials/layout-start.php';
     </div>
 
     <button class="a-btn lg" type="submit"><i class="fa-solid fa-save"></i> Save settings</button>
+</form>
+
+<!-- Standalone form for the SMTP test button (bound via form="smtpTestForm"),
+     kept outside the main settings form so it never nests. -->
+<form method="post" id="smtpTestForm" style="display:none;">
+    <?= Csrf::field() ?>
+    <input type="hidden" name="action" value="smtp_test">
 </form>
 
 <?php include __DIR__ . '/partials/footer.php'; ?>
