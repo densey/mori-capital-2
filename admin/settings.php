@@ -81,6 +81,12 @@ include __DIR__ . '/partials/layout-start.php';
             </div>
             <label>Address (multi-line)</label>
             <textarea name="settings[contact_address]" rows="3"><?= s($settings,'contact_address') ?></textarea>
+
+            <label style="margin-top:14px;">Contact page intro — EN <span style="font-weight:400;color:var(--a-muted);">(the paragraph under &ldquo;We&rsquo;d love to hear from you&rdquo;)</span></label>
+            <textarea name="settings[contact_intro]" rows="2" placeholder="Investors, intermediaries and journalists can reach us via the form, by phone or by email."><?= s($settings,'contact_intro') ?></textarea>
+
+            <label style="margin-top:14px;">Contact page intro — DE <span style="font-weight:400;color:var(--a-muted);">(leave blank to reuse EN)</span></label>
+            <textarea name="settings[contact_intro_de]" rows="2" placeholder="Anleger, Vermittler und Journalisten erreichen uns über das Formular, telefonisch oder per E-Mail."><?= s($settings,'contact_intro_de') ?></textarea>
         </div>
     </div>
 

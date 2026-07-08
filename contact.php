@@ -108,7 +108,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     <span class="section-sub-title wow fadeInUp"><?= e(t('contact.eyebrow')) ?></span>
                     <h2 style="font-size:clamp(24px,2.6vw,32px);"><?= e(t('contact.heading')) ?></h2>
                 </div>
-                <p style="font-size:15px;color:var(--mori-text-soft,#5A6B7B);line-height:1.7;"><?= e(t('contact.intro_paragraph')) ?></p>
+                <p style="font-size:15px;color:var(--mori-text-soft,#5A6B7B);line-height:1.7;"><?= e(\Mori\setting_i18n('contact_intro', t('contact.intro_paragraph'))) ?></p>
 
                 <div style="margin-top:30px;display:flex;flex-direction:column;gap:18px;">
                     <div style="display:flex;align-items:flex-start;gap:14px;">
