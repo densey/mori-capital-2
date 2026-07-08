@@ -209,7 +209,7 @@ include __DIR__ . '/partials/layout-start.php';
         <div class="a-card__head"><h2>Social</h2></div>
         <div class="a-card__body">
             <label>LinkedIn URL</label>
-            <input type="url" name="settings[linkedin_url]" value="<?= s($settings,'linkedin_url') ?>">
+            <input type="text" name="settings[linkedin_url]" value="<?= s($settings,'linkedin_url') ?>" placeholder="https://www.linkedin.com/company/…  (leave blank to hide the icon)">
         </div>
     </div>
 
