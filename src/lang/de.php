@@ -223,8 +223,8 @@ return [
     'style.fallback.p4_desc'     => 'Positionsgrößen, Liquiditätsüberwachung und Korrelations-Overlays — konsequent auf Portfolioebene umgesetzt.',
     'style.fallback.p5_title'    => 'Aktiver Dialog mit Stakeholdern',
     'style.fallback.p5_desc'     => 'Direkter, fortlaufender Austausch mit Unternehmensleitungen, Aufsichtsbehörden, Sell-Side-Analysten und anderen Anteilseignern.',
-    'style.fund_card_ee'         => 'Eastern European Fund',
-    'style.fund_card_otto'       => 'Ottoman Fund',
+    'style.fund_card_ee'         => 'Mori Eastern European Fund',
+    'style.fund_card_otto'       => 'Mori Ottoman Fund',
 
     // Contact page
     'contact.intro_paragraph'    => 'Anleger, Vermittler und Journalisten erreichen uns über das Formular, telefonisch oder per E-Mail. Bürozeiten sind werktags 09:00–18:00 MEZ.',

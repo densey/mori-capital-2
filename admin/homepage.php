@@ -45,6 +45,18 @@ include __DIR__ . '/partials/layout-start.php';
 <form method="post" class="a-form">
     <?= Csrf::field() ?>
 
+    <!-- Hero Section -->
+    <div class="a-card" style="margin-bottom:22px;">
+        <div class="a-card__head"><h2><i class="fa-solid fa-panorama"></i> Hero Section</h2></div>
+        <div class="a-card__body">
+            <p style="font-size:12.5px;color:var(--a-muted);margin:0 0 12px;">Slide images, titles and subtitles are managed under <strong>Hero Slider</strong>. Below is the small footnote shown under the hero headline (e.g. the <code>*</code> reference). Leave blank to hide it.</p>
+            <div class="row">
+                <div><label>Headline footnote (EN)</label><input type="text" name="settings[hp_hero_footnote]" value="<?= hp('hp_hero_footnote', '*Mori Eastern European Fund') ?>"></div>
+                <div><label>Headline footnote (DE)</label><input type="text" name="settings[hp_hero_footnote_de]" value="<?= hp('hp_hero_footnote_de', '') ?>"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- About Section -->
     <div class="a-card" style="margin-bottom:22px;">
         <div class="a-card__head"><h2><i class="fa-solid fa-building-columns"></i> About Section</h2></div>

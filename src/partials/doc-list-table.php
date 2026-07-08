@@ -25,7 +25,6 @@ use function Mori\t;
         <thead>
             <tr style="background:var(--mori-bg-soft,#F5F7FA);">
                 <th style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e($headerLabel) ?></th>
-                <th style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('doc.date')) ?></th>
                 <th style="text-align:right;padding:14px 18px;"></th>
             </tr>
         </thead>
@@ -44,7 +43,6 @@ use function Mori\t;
                         </div>
                     </div>
                 </td>
-                <td style="padding:14px 18px;color:var(--mori-text-soft,#5A6B7B);font-size:13px;white-space:nowrap;"><?= e(format_date($d['document_date'])) ?></td>
                 <td style="padding:14px 18px;text-align:right;white-space:nowrap;">
                     <a href="<?= asset('api/download.php?id=' . (int)$d['id']) ?>" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-color,#1ABC9C);color:#fff;padding:8px 14px;border-radius:5px;font-size:12px;font-weight:600;text-decoration:none;">
                         <i class="fa-solid fa-download"></i> PDF

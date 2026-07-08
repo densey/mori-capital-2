@@ -96,6 +96,11 @@ include __DIR__ . '/src/partials/header.php';
                             <div class="section-title">
                                 <span class="section-sub-title<?= $anim ?>"><?= e(t('hero.eyebrow')) ?></span>
                                 <h1<?= $first ? ' class="text-anime-style-3"' : '' ?> data-cursor="-opaque"><?= e($hTitle) ?></h1>
+                                <?php if ($first): $heroFootnote = \Mori\setting_i18n('hp_hero_footnote', '*Mori Eastern European Fund'); ?>
+                                    <?php if (!empty($heroFootnote)): ?>
+                                    <p class="hero-footnote"><?= e($heroFootnote) ?></p>
+                                    <?php endif; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-xl-5">

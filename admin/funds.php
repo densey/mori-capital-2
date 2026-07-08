@@ -196,8 +196,18 @@ include __DIR__ . '/partials/layout-start.php';
                 <textarea name="objective_en" rows="3"><?= e($fund['objective_en']) ?></textarea>
                 <label>Objective (DE)</label>
                 <textarea name="objective_de" rows="3"><?= e($fund['objective_de'] ?? '') ?></textarea>
+                <label>Cover image <span style="font-weight:400;color:var(--a-muted);">(shown on the homepage fund card)</span></label>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;">
+                    <input type="text" name="cover_image_path" id="cover-<?= e($fund['id']) ?>" value="<?= e($fund['cover_image_path']) ?>" style="flex:1;" placeholder="assets/images/... or upload →">
+                    <button type="button" class="a-btn ghost" onclick="document.getElementById('coverfile-<?= e($fund['id']) ?>').click()"><i class="fa-solid fa-upload"></i> Upload</button>
+                    <input type="file" id="coverfile-<?= e($fund['id']) ?>" accept="image/jpeg,image/png,image/webp" style="display:none;" onchange="uploadFundCover(this, '<?= e($fund['id']) ?>')">
+                </div>
+                <?php if (!empty($fund['cover_image_path'])): ?>
+                <img id="coverprev-<?= e($fund['id']) ?>" src="/<?= e(ltrim($fund['cover_image_path'], '/')) ?>" alt="" style="max-height:90px;border-radius:6px;border:1px solid var(--a-border);margin-bottom:10px;object-fit:cover;">
+                <?php else: ?>
+                <img id="coverprev-<?= e($fund['id']) ?>" src="" alt="" style="display:none;max-height:90px;border-radius:6px;border:1px solid var(--a-border);margin-bottom:10px;object-fit:cover;">
+                <?php endif; ?>
                 <div class="row">
-                    <div><label>Cover image path</label><input type="text" name="cover_image_path" value="<?= e($fund['cover_image_path']) ?>"></div>
                     <div><label>Status</label><select name="status"><option value="active" <?= $fund['status']==='active'?'selected':'' ?>>active</option><option value="inactive" <?= $fund['status']==='inactive'?'selected':'' ?>>inactive</option></select></div>
                     <div><label>Order</label><input type="number" name="display_order" value="<?= e($fund['display_order']) ?>"></div>
                 </div>
@@ -264,6 +274,30 @@ function loadScForm(sc, fundId) {
     form.querySelector('[name=display_order]').value = sc.display_order;
     form.querySelector('[name=status]').value = sc.status;
     modal.classList.add('show');
+}
+
+// Upload a fund cover image → writes the stored path into the field + preview
+var fundCsrf = <?= json_encode(\Mori\Csrf::token()) ?>;
+function uploadFundCover(input, fundId) {
+    if (!input.files[0]) return;
+    var field = document.getElementById('cover-' + fundId);
+    var prev  = document.getElementById('coverprev-' + fundId);
+    var old   = field.value;
+    field.value = 'Uploading…';
+    var fd = new FormData();
+    fd.append('file', input.files[0]);
+    fd.append('_csrf', fundCsrf);
+    fd.append('folder', 'funds');
+    fetch('/admin/api/upload-file.php', { method: 'POST', headers: { 'X-CSRF-Token': fundCsrf }, body: fd })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+            if (j.ok) {
+                field.value = j.path;
+                if (prev) { prev.src = '/' + j.path; prev.style.display = ''; }
+            } else { field.value = old; alert(j.error || 'Upload failed'); }
+        })
+        .catch(function () { field.value = old; alert('Upload error'); });
+    input.value = '';
 }
 </script>
 

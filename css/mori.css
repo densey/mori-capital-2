@@ -109,6 +109,14 @@ body {
     margin-bottom: 18px;
 }
 .hero .section-row { row-gap: 18px; }
+/* Small footnote under the hero headline (e.g. "*Mori Eastern European Fund") */
+.hero-footnote {
+    margin: 10px 0 0;
+    font-size: 13px;
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.6);
+    letter-spacing: 0.01em;
+}
 
 /* Team bio may contain HTML paragraphs (WYSIWYG). Keep paragraph spacing
    tidy — no stray gap at the top or bottom of the block. */
