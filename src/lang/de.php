@@ -227,7 +227,7 @@ return [
     'style.fund_card_otto'       => 'Mori Ottoman Fund',
 
     // Contact page
-    'contact.intro_paragraph'    => 'Anleger, Vermittler und Journalisten erreichen uns über das Formular, telefonisch oder per E-Mail. Bürozeiten sind werktags 09:00–18:00 MEZ.',
+    'contact.intro_paragraph'    => 'Anleger, Vermittler und Journalisten erreichen uns über das Formular, telefonisch oder per E-Mail.',
     'contact.address_label'      => 'Anschrift',
     'contact.phone_label'        => 'Telefon',
     'contact.email_label'        => 'E-Mail',

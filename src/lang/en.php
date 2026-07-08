@@ -227,7 +227,7 @@ return [
     'style.fund_card_otto'       => 'Mori Ottoman Fund',
 
     // Contact page
-    'contact.intro_paragraph'    => 'Investors, intermediaries and journalists can reach us via the form, by phone or by email. Office hours are weekdays 09:00–18:00 CET.',
+    'contact.intro_paragraph'    => 'Investors, intermediaries and journalists can reach us via the form, by phone or by email.',
     'contact.address_label'      => 'Address',
     'contact.phone_label'        => 'Phone',
     'contact.email_label'        => 'Email',
