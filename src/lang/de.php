@@ -262,6 +262,7 @@ return [
     // Misc
     'aria.breadcrumb'            => 'Brotkrumen',
     'preloader.alt'              => 'Mori Capital',
+    'pri.alt'                    => 'Unterzeichner der Principles for Responsible Investment (PRI)',
 
     // Media page
     'nav.media'                  => 'Medien',

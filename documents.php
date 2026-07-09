@@ -176,6 +176,8 @@ include __DIR__ . '/src/partials/page-header.php';
     </div>
 </div>
 
+<?php include __DIR__ . '/src/partials/pri-signatory.php'; ?>
+
 <?php
 include __DIR__ . '/src/partials/footer.php';
 include __DIR__ . '/src/partials/scripts.php';

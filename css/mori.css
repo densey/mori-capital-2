@@ -118,6 +118,26 @@ body {
     letter-spacing: 0.01em;
 }
 
+/* PRI "Signatory of" logo band */
+.pri-signatory {
+    padding: 40px 0;
+    background: #fff;
+    text-align: center;
+    border-top: 1px solid var(--mori-border, #E1E7EE);
+}
+.pri-signatory__img {
+    width: 260px;
+    max-width: 70%;
+    height: auto;
+    opacity: 0.92;
+    transition: opacity 0.2s ease;
+}
+.pri-signatory a:hover .pri-signatory__img { opacity: 1; }
+@media (max-width: 575px) {
+    .pri-signatory { padding: 30px 0; }
+    .pri-signatory__img { width: 200px; }
+}
+
 /* Team bio may contain HTML paragraphs (WYSIWYG). Keep paragraph spacing
    tidy — no stray gap at the top or bottom of the block. */
 .team-bio-text p { margin: 0 0 12px; }

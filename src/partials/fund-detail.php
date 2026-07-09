@@ -146,3 +146,5 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
     </div>
 </div>
 <?php endif; ?>
+
+<?php include __DIR__ . '/pri-signatory.php'; ?>

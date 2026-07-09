@@ -25,7 +25,11 @@ INSERT INTO settings (setting_key, setting_value, setting_group) VALUES
 ('session_timeout_min', '60',                                                       'security'),
 ('password_min_length', '12',                                                       'security'),
 ('upload_max_mb',       '20',                                                       'uploads')
-ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);
+-- Seed defaults on first install only. Do NOT overwrite on re-run — every one
+-- of these (site title, contact details, SEO, LinkedIn URL, …) is editable in
+-- Admin -> Settings, and an overwrite here would silently revert the client's
+-- edits on the next install.php run (as it did for linkedin_url = '#').
+ON DUPLICATE KEY UPDATE setting_value = setting_value;
 
 -- -----------------------------------------------------------------------------
 -- Funds (umbrella: Mori Umbrella Fund plc)

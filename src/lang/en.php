@@ -262,6 +262,7 @@ return [
     // Misc
     'aria.breadcrumb'            => 'Breadcrumb',
     'preloader.alt'              => 'Mori Capital',
+    'pri.alt'                    => 'Signatory of the Principles for Responsible Investment (PRI)',
 
     // Media page
     'nav.media'                  => 'Media',
