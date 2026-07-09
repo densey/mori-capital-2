@@ -49,12 +49,12 @@ return [
     // Investor gate
     'gate.eyebrow'         => 'Important Information',
     'gate.title'           => 'Please confirm before you continue',
-    'gate.intro'           => 'The information on this website is intended for residents of jurisdictions where Mori Capital Management Ltd. is authorised to promote its funds. The funds are not registered under the U.S. Investment Advisers Act of 1940 and are not available to U.S. persons. Past performance is not a reliable indicator of future results; the value of investments can fall as well as rise.',
-    'gate.confirm'         => 'I confirm that I am not a U.S. person and I have read & understood the Legal & Regulatory Disclaimer.',
+    'gate.intro'           => 'The information on this website is intended for residents of jurisdictions where Mori Capital Management Ltd. is authorised to promote its funds. The funds are not registered under the U.S. Investment Advisers Act of 1940 and are not available to U.S. persons. In the United Kingdom, this website is directed only at professional and institutional investors; the funds are not available to retail investors in the United Kingdom. Past performance is not a reliable indicator of future results; the value of investments can fall as well as rise.',
+    'gate.confirm'         => 'I confirm that I am not a U.S. person and that I am not a retail investor in the United Kingdom, and I have read & understood the Legal & Regulatory Disclaimer.',
     'gate.btn_retail'      => 'Retail Investor',
     'gate.btn_pro'         => 'Professional / Institutional',
-    'gate.decline'         => 'I am a U.S. person — leave the site',
-    'gate.decline_msg'     => 'Sorry — the funds described on this site are not available to U.S. persons. Please consult your local financial adviser for products available in your jurisdiction.',
+    'gate.decline'         => 'I am a U.S. person or a UK retail investor — leave the site',
+    'gate.decline_msg'     => 'Sorry — the funds described on this site are not available to U.S. persons or to retail investors in the United Kingdom. Please consult your local financial adviser for products available in your jurisdiction.',
 
     // Cookie banner
     'cookie.text'          => 'We use cookies to provide essential site functionality and to analyse traffic anonymously. See our Cookie Policy for details.',

@@ -49,12 +49,12 @@ return [
     // Investor gate
     'gate.eyebrow'         => 'Wichtige Information',
     'gate.title'           => 'Bitte bestätigen Sie, bevor Sie fortfahren',
-    'gate.intro'           => 'Die Informationen auf dieser Website richten sich an Einwohner von Jurisdiktionen, in denen Mori Capital Management Ltd. zur Bewerbung ihrer Fonds berechtigt ist. Die Fonds sind nicht unter dem U.S. Investment Advisers Act von 1940 registriert und stehen US-Personen nicht zur Verfügung. Die frühere Wertentwicklung ist kein verlässlicher Indikator für künftige Ergebnisse; der Wert der Anlagen kann sowohl fallen als auch steigen.',
-    'gate.confirm'         => 'Ich bestätige, dass ich keine US-Person bin und den rechtlichen und aufsichtsrechtlichen Hinweis gelesen und verstanden habe.',
+    'gate.intro'           => 'Die Informationen auf dieser Website richten sich an Einwohner von Jurisdiktionen, in denen Mori Capital Management Ltd. zur Bewerbung ihrer Fonds berechtigt ist. Die Fonds sind nicht unter dem U.S. Investment Advisers Act von 1940 registriert und stehen US-Personen nicht zur Verfügung. Im Vereinigten Königreich richtet sich diese Website ausschließlich an professionelle und institutionelle Anleger; die Fonds stehen Privatanlegern im Vereinigten Königreich nicht zur Verfügung. Die frühere Wertentwicklung ist kein verlässlicher Indikator für künftige Ergebnisse; der Wert der Anlagen kann sowohl fallen als auch steigen.',
+    'gate.confirm'         => 'Ich bestätige, dass ich keine US-Person und kein Privatanleger im Vereinigten Königreich bin und den rechtlichen und aufsichtsrechtlichen Hinweis gelesen und verstanden habe.',
     'gate.btn_retail'      => 'Privatanleger',
     'gate.btn_pro'         => 'Professionell / Institutionell',
-    'gate.decline'         => 'Ich bin eine US-Person — Seite verlassen',
-    'gate.decline_msg'     => 'Entschuldigung — die auf dieser Seite beschriebenen Fonds stehen US-Personen nicht zur Verfügung. Bitte konsultieren Sie Ihren lokalen Finanzberater für in Ihrer Jurisdiktion verfügbare Produkte.',
+    'gate.decline'         => 'Ich bin eine US-Person oder ein britischer Privatanleger — Seite verlassen',
+    'gate.decline_msg'     => 'Entschuldigung — die auf dieser Seite beschriebenen Fonds stehen US-Personen sowie Privatanlegern im Vereinigten Königreich nicht zur Verfügung. Bitte konsultieren Sie Ihren lokalen Finanzberater für in Ihrer Jurisdiktion verfügbare Produkte.',
 
     // Cookie banner
     'cookie.text'          => 'Wir verwenden Cookies für wesentliche Funktionen und anonyme Traffic-Analyse. Siehe unsere Cookie-Richtlinie für Details.',
