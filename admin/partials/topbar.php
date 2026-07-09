@@ -13,6 +13,7 @@ $pageTitle = $adminPage['title'] ?? 'Admin';
 $pageCrumb = $adminPage['crumb'] ?? '';
 ?>
 <header class="a-topbar">
+    <button type="button" class="a-menu-toggle" id="aMenuToggle" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
     <div class="a-topbar__title">
         <h1><?= e($pageTitle) ?></h1>
         <?php if ($pageCrumb): ?><div class="crumb"><?= e($pageCrumb) ?></div><?php endif; ?>
@@ -27,3 +28,23 @@ $pageCrumb = $adminPage['crumb'] ?? '';
     </div>
     <?php endif; ?>
 </header>
+
+<script>
+// Mobile off-canvas sidebar toggle
+(function () {
+    var toggle = document.getElementById('aMenuToggle');
+    var sidebar = document.querySelector('.a-sidebar');
+    if (!toggle || !sidebar) return;
+    var overlay = document.createElement('div');
+    overlay.className = 'a-nav-overlay';
+    document.body.appendChild(overlay);
+    function open()  { sidebar.classList.add('open');  overlay.classList.add('open');  document.body.classList.add('a-nav-open'); }
+    function close() { sidebar.classList.remove('open'); overlay.classList.remove('open'); document.body.classList.remove('a-nav-open'); }
+    toggle.addEventListener('click', function () { sidebar.classList.contains('open') ? close() : open(); });
+    overlay.addEventListener('click', close);
+    // Close when a nav link is tapped (so navigation feels natural on mobile)
+    sidebar.querySelectorAll('.a-nav a').forEach(function (a) { a.addEventListener('click', close); });
+    // Reset when resizing back to desktop
+    window.addEventListener('resize', function () { if (window.innerWidth > 900) close(); });
+})();
+</script>

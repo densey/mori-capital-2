@@ -1,0 +1,37 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="file:///home/user/mori-capital-2/admin/assets/admin.css">
+<style>body{font-family:Inter,Arial,sans-serif;}</style>
+</head><body>
+<div class="a-shell">
+  <aside class="a-sidebar">
+    <div class="a-sidebar__brand"><img src="file:///home/user/mori-capital-2/assets/images/android-icon-192x192.png" style="border-radius:50%"><div class="meta"><span class="title">Mori CMS</span><span class="tag">Admin Panel</span></div></div>
+    <ul class="a-nav">
+      <li class="a-nav__section">Overview</li>
+      <li><a href="#" class="active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a></li>
+      <li class="a-nav__section">Content</li>
+      <li><a href="#"><i class="fa-solid fa-home"></i> Homepage Content</a></li>
+      <li><a href="#"><i class="fa-solid fa-panorama"></i> Hero Slider</a></li>
+      <li><a href="#"><i class="fa-solid fa-file-lines"></i> Pages</a></li>
+      <li><a href="#"><i class="fa-solid fa-users"></i> Team</a></li>
+      <li class="a-nav__section">Funds</li>
+      <li><a href="#"><i class="fa-solid fa-chart-pie"></i> Funds &amp; Share Classes</a></li>
+      <li><a href="#"><i class="fa-regular fa-folder-open"></i> Documents</a></li>
+      <li class="a-nav__section">System</li>
+      <li><a href="#"><i class="fa-solid fa-gear"></i> Settings</a></li>
+    </ul>
+  </aside>
+  <main class="a-main">
+    <header class="a-topbar">
+      <button type="button" class="a-menu-toggle" id="aMenuToggle" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+      <div class="a-topbar__title"><h1>Dashboard</h1><div class="crumb">Overview of content</div></div>
+      <div class="a-topbar__user"><div class="avatar">HS</div><div class="info"><div class="name">Hakan Sahin</div><div class="role">super admin</div></div></div>
+    </header>
+    <div class="a-content"><p style="padding:20px;color:#5A6B7B;">Welcome back, Hakan. Dashboard content here…</p></div>
+  </main>
+</div>
+<script>
+(function(){var t=document.getElementById('aMenuToggle'),s=document.querySelector('.a-sidebar');if(!t||!s)return;var o=document.createElement('div');o.className='a-nav-overlay';document.body.appendChild(o);function op(){s.classList.add('open');o.classList.add('open');document.body.classList.add('a-nav-open');}function cl(){s.classList.remove('open');o.classList.remove('open');document.body.classList.remove('a-nav-open');}t.addEventListener('click',function(){s.classList.contains('open')?cl():op();});o.addEventListener('click',cl);})();
+</script>
+</body></html>
