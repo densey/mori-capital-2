@@ -166,6 +166,14 @@ include __DIR__ . '/partials/layout-start.php';
     <div class="a-card" style="margin-bottom:22px;">
         <div class="a-card__head"><h2><i class="fa-solid fa-film"></i> Cinematic Section</h2></div>
         <div class="a-card__body">
+            <?php $cineOn = (\Mori\setting('hp_cine_enabled', '1') ?? '1') === '1'; ?>
+            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;background:var(--a-border-soft);padding:12px 14px;border-radius:8px;margin-bottom:16px;">
+                <!-- hidden 0 posts first; the checkbox posts 1 and overrides it when ticked -->
+                <input type="hidden" name="settings[hp_cine_enabled]" value="0">
+                <input type="checkbox" name="settings[hp_cine_enabled]" value="1" <?= $cineOn ? 'checked' : '' ?>>
+                <span>Show this section on the homepage</span>
+            </label>
+            <p style="font-size:12px;color:var(--a-muted);margin:-8px 0 16px;">The chart and figures below are illustrative (not live NAV data). Untick to hide the whole section from the homepage.</p>
             <div class="row">
                 <div><label>Eyebrow (EN)</label><input type="text" name="settings[hp_cine_eyebrow]" value="<?= hp('hp_cine_eyebrow', 'EEMEA in motion') ?>"></div>
                 <div><label>Eyebrow (DE)</label><input type="text" name="settings[hp_cine_eyebrow_de]" value="<?= hp('hp_cine_eyebrow_de', 'EEMEA in Bewegung') ?>"></div>

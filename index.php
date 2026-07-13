@@ -394,7 +394,8 @@ include __DIR__ . '/src/partials/header.php';
         </div>
     </div>
 
-    <!-- Cinematic 3D Showcase -->
+    <?php if (\Mori\setting('hp_cine_enabled', '1') === '1'): ?>
+    <!-- Cinematic 3D Showcase (illustrative — toggle in Admin → Homepage Content) -->
     <div class="mori-cinematic" id="moriCinematic">
         <div class="mori-cinematic__bg" aria-hidden="true">
             <div class="mori-cinematic__grid"></div>
@@ -493,6 +494,7 @@ include __DIR__ . '/src/partials/header.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- Team -->
     <div class="page-team" style="padding:80px 0;">
