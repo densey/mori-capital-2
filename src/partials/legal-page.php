@@ -38,7 +38,7 @@ include __DIR__ . '/page-header.php';
             <div class="col-lg-9 mx-auto">
                 <div class="legal-box" style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:14px;padding:clamp(20px,5vw,50px) clamp(18px,5vw,60px);">
                     <article class="legal-content" style="font-size:15px;line-height:1.75;color:var(--mori-text-soft,#5A6B7B);">
-                        <?= $pageData['body'] ?? '<p>Content not yet published. Add it from the admin panel.</p>' ?>
+                        <?= $pageData['body'] ?? ('<p>' . e(t('legal.not_published')) . '</p>') ?>
                     </article>
                     <div style="margin-top:30px;padding-top:18px;border-top:1px solid var(--mori-border,#E1E7EE);font-size:12px;color:var(--mori-muted,#7A8B99);">
                         <?= e(\Mori\t('legal.last_updated')) ?>: <?= e(\Mori\format_date($pageData['updated_at'] ?? null) ?: '—') ?>

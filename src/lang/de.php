@@ -18,6 +18,8 @@ return [
     'hero.title'           => 'EEMEA-Märkte navigieren mit bewährter Expertise seit 1998.',
     'hero.lead'            => 'Unabhängig und unbeschränkt. Performance- und investorenorientiert. Eine unternehmerische Methodik gestützt durch über 80 Jahre kollektive Erfahrung in den aufstrebenden europäischen, nahöstlichen und afrikanischen Märkten.',
     'hero.cta_funds'       => 'Unsere Fonds entdecken',
+    'hero.slides_label'    => 'Hero-Folien',
+    'hero.slide_n'         => 'Folie :n',
 
     // Buttons
     'btn.read_more'        => 'Mehr lesen',
@@ -164,6 +166,10 @@ return [
 
     // Legal page
     'legal.last_updated'         => 'Zuletzt aktualisiert',
+    'legal.not_published'        => 'Inhalt noch nicht veröffentlicht. Fügen Sie ihn im Admin-Panel hinzu.',
+    'legal.default_title'        => 'Rechtliches & Haftungsausschluss',
+    'privacy.default_title'      => 'Datenschutzerklärung',
+    'cookies.default_title'      => 'Cookie-Richtlinie',
 
     // Footer extras
     'footer.phone_label'         => 'Telefon',
@@ -323,6 +329,18 @@ return [
     'performance.no_data'        => 'Für diese Anteilsklasse sind noch keine NAV-Daten verfügbar.',
     'performance.add_entries'    => 'Fügen Sie monatliche NAV-Einträge über :link hinzu.',
     'performance.admin_panel'    => 'das Admin-Panel',
+    'performance.range_1m'       => '1M',
+    'performance.range_3m'       => '3M',
+    'performance.range_6m'       => '6M',
+    'performance.range_1y'       => '1J',
+    'performance.range_3y'       => '3J',
+    'performance.range_5y'       => '5J',
+    'performance.cumulative_returns' => 'Kumulierte Renditen (Stand :date)',
+    'performance.ret_ytd'        => 'YTD',
+    'performance.ret_1y'         => '1J',
+    'performance.ret_3y'         => '3J',
+    'performance.ret_5y'         => '5J',
+    'performance.ret_10y'        => '10J',
 
     // Insight detail
     'page.insight.not_found'     => 'Mori View nicht gefunden',

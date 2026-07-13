@@ -71,12 +71,12 @@ include __DIR__ . '/src/partials/page-header.php';
                     <h2 style="font-size:20px;margin:0;"><?= e($selectedFund ? \Mori\I18n::fieldFor($selectedFund, 'name') : '—') ?></h2>
                 </div>
                 <div style="display:flex;gap:4px;background:var(--mori-bg-soft,#F5F7FA);padding:4px;border-radius:999px;font-size:12px;font-weight:600;">
-                    <button type="button" class="rng" data-range="1m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">1M</button>
-                    <button type="button" class="rng" data-range="3m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">3M</button>
-                    <button type="button" class="rng" data-range="6m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">6M</button>
-                    <button type="button" class="rng active" data-range="1y" style="padding:6px 12px;border:none;background:var(--accent-color,#1ABC9C);border-radius:999px;cursor:pointer;color:#fff;">1Y</button>
-                    <button type="button" class="rng" data-range="3y" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">3Y</button>
-                    <button type="button" class="rng" data-range="5y" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);">5Y</button>
+                    <button type="button" class="rng" data-range="1m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_1m')) ?></button>
+                    <button type="button" class="rng" data-range="3m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_3m')) ?></button>
+                    <button type="button" class="rng" data-range="6m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_6m')) ?></button>
+                    <button type="button" class="rng active" data-range="1y" style="padding:6px 12px;border:none;background:var(--accent-color,#1ABC9C);border-radius:999px;cursor:pointer;color:#fff;"><?= e(t('performance.range_1y')) ?></button>
+                    <button type="button" class="rng" data-range="3y" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_3y')) ?></button>
+                    <button type="button" class="rng" data-range="5y" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_5y')) ?></button>
                     <button type="button" class="rng" data-range="max" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_max')) ?></button>
                 </div>
             </div>
@@ -107,18 +107,19 @@ include __DIR__ . '/src/partials/page-header.php';
             }
             $today = new \DateTimeImmutable($latest['entry_date']);
             $ranges = [
-                'YTD' => $today->modify('first day of January')->format('Y-m-d'),
-                '1Y'  => $today->modify('-1 year')->format('Y-m-d'),
-                '3Y'  => $today->modify('-3 years')->format('Y-m-d'),
-                '5Y'  => $today->modify('-5 years')->format('Y-m-d'),
-                '10Y' => $today->modify('-10 years')->format('Y-m-d'),
+                ['label' => t('performance.ret_ytd'), 'date' => $today->modify('first day of January')->format('Y-m-d')],
+                ['label' => t('performance.ret_1y'),  'date' => $today->modify('-1 year')->format('Y-m-d')],
+                ['label' => t('performance.ret_3y'),  'date' => $today->modify('-3 years')->format('Y-m-d')],
+                ['label' => t('performance.ret_5y'),  'date' => $today->modify('-5 years')->format('Y-m-d')],
+                ['label' => t('performance.ret_10y'), 'date' => $today->modify('-10 years')->format('Y-m-d')],
             ];
         ?>
         <div style="background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:14px;padding:30px;margin-top:24px;">
-            <h3 style="font-size:18px;margin-bottom:18px;">Cumulative returns (as of <?= e(\Mori\format_date($latest['entry_date'])) ?>)</h3>
+            <h3 style="font-size:18px;margin-bottom:18px;"><?= e(str_replace(':date', \Mori\format_date($latest['entry_date']), t('performance.cumulative_returns'))) ?></h3>
             <div class="perf-returns-grid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;">
-                <?php foreach ($ranges as $label => $cutoffDate):
-                    $startRow = findNavAt($navData, $cutoffDate);
+                <?php foreach ($ranges as $range):
+                    $label = $range['label'];
+                    $startRow = findNavAt($navData, $range['date']);
                     $ret = $startRow ? (($latest['nav'] - $startRow['nav']) / $startRow['nav']) * 100 : null;
                     $color = $ret === null ? 'var(--mori-muted,#7A8B99)' : ($ret >= 0 ? '#16A085' : '#C0392B');
                 ?>

@@ -18,6 +18,8 @@ return [
     'hero.title'           => 'Navigating EEMEA markets with proven expertise since 1998.',
     'hero.lead'            => 'Independent and unconstrained. Performance and investor focused. An entrepreneurial methodology backed by 80+ years of collective experience in Emerging European, Middle Eastern and African markets.',
     'hero.cta_funds'       => 'Explore our Funds',
+    'hero.slides_label'    => 'Hero slides',
+    'hero.slide_n'         => 'Slide :n',
 
     // Buttons
     'btn.read_more'        => 'Read more',
@@ -164,6 +166,10 @@ return [
 
     // Legal page
     'legal.last_updated'         => 'Last updated',
+    'legal.not_published'        => 'Content not yet published. Add it from the admin panel.',
+    'legal.default_title'        => 'Legal & Disclaimer',
+    'privacy.default_title'      => 'Privacy Policy',
+    'cookies.default_title'      => 'Cookie Policy',
 
     // Footer extras
     'footer.phone_label'         => 'Phone',
@@ -323,6 +329,18 @@ return [
     'performance.no_data'        => 'No NAV data available yet for this share class.',
     'performance.add_entries'    => 'Add monthly NAV entries from :link.',
     'performance.admin_panel'    => 'the admin panel',
+    'performance.range_1m'       => '1M',
+    'performance.range_3m'       => '3M',
+    'performance.range_6m'       => '6M',
+    'performance.range_1y'       => '1Y',
+    'performance.range_3y'       => '3Y',
+    'performance.range_5y'       => '5Y',
+    'performance.cumulative_returns' => 'Cumulative returns (as of :date)',
+    'performance.ret_ytd'        => 'YTD',
+    'performance.ret_1y'         => '1Y',
+    'performance.ret_3y'         => '3Y',
+    'performance.ret_5y'         => '5Y',
+    'performance.ret_10y'        => '10Y',
 
     // Insight detail
     'page.insight.not_found'     => 'Insight not found',

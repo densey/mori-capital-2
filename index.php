@@ -120,9 +120,9 @@ include __DIR__ . '/src/partials/header.php';
         </div>
 
         <?php if ($heroIsMulti): ?>
-        <div class="hero-dots" role="tablist" aria-label="Hero slides">
+        <div class="hero-dots" role="tablist" aria-label="<?= e(t('hero.slides_label')) ?>">
             <?php foreach ($heroList as $hi => $hs): ?>
-            <button type="button" class="hero-dot<?= $hi === 0 ? ' is-active' : '' ?>" data-hero-go="<?= $hi ?>" aria-label="Slide <?= $hi + 1 ?>"<?= $hi === 0 ? ' aria-current="true"' : '' ?>></button>
+            <button type="button" class="hero-dot<?= $hi === 0 ? ' is-active' : '' ?>" data-hero-go="<?= $hi ?>" aria-label="<?= e(str_replace(':n', (string)($hi + 1), t('hero.slide_n'))) ?>"<?= $hi === 0 ? ' aria-current="true"' : '' ?>></button>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
