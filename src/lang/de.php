@@ -321,7 +321,7 @@ return [
     'cookie.consent_aria'        => 'Cookie-Zustimmung',
 
     // Home — team-section intro
-    'home.team_intro'            => 'Unsere Fonds werden von einem unabhängigen Team mit über 80 Jahren kollektiver Erfahrung an den Kapitalmärkten Mittel- und Osteuropas sowie der Türkei verwaltet — unterstützt durch ein dediziertes Operations-, Compliance- und Risikoteam in Malta.',
+    'home.team_intro'            => 'Unsere Fonds werden von einem unabhängigen Team mit über 80 Jahren kollektiver Erfahrung an den aufstrebenden europäischen und türkischen Kapitalmärkten verwaltet — unterstützt durch ein dediziertes Operations-, Compliance- und Risikoteam in Malta.',
 
     // Fund performance
     'performance.nav_evolution'  => 'NAV-Entwicklung',
