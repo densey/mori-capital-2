@@ -151,7 +151,7 @@ return [
     'cine.process.s3_t'          => 'Risikomanagement',
     'cine.process.s3_d'          => 'Positionsgrößen, Liquiditäts- und Korrelations-Overlays auf Portfolioebene.',
     'cine.chip.exp_lbl'          => 'EEMEA-Spezialist',
-    'cine.chip.exp_val'          => 'Seit 1998',
+    'cine.chip.exp_val'          => 'Seit 2015',
 
     // Page titles (DE locale-aware)
     'page.home.title'            => 'Mori Capital Management — Spezialist für die EEMEA-Region',
