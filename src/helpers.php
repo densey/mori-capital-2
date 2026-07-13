@@ -141,10 +141,34 @@ function format_date(?string $datetime, string $format = 'd M Y'): string
 {
     if (!$datetime) return '';
     try {
-        return (new \DateTimeImmutable($datetime))->format($format);
+        $out = (new \DateTimeImmutable($datetime))->format($format);
     } catch (\Throwable) {
         return '';
     }
+    // PHP's date() only knows English month names. Localise them for non-EN
+    // locales so dates like "Oct 1998" / "October 2025" read correctly on /de.
+    if (I18n::locale() === 'de') {
+        static $de = [
+            // full names (F)
+            'January' => 'Januar', 'February' => 'Februar', 'March' => 'März',
+            'April' => 'April', 'May' => 'Mai', 'June' => 'Juni', 'July' => 'Juli',
+            'August' => 'August', 'September' => 'September', 'October' => 'Oktober',
+            'November' => 'November', 'December' => 'Dezember',
+            // abbreviations (M)
+            'Jan' => 'Jan.', 'Feb' => 'Feb.', 'Mar' => 'März', 'Apr' => 'Apr.',
+            'Jun' => 'Juni', 'Jul' => 'Juli', 'Aug' => 'Aug.', 'Sep' => 'Sept.',
+            'Oct' => 'Okt.', 'Nov' => 'Nov.', 'Dec' => 'Dez.',
+            // day names (l) + abbreviations (D)
+            'Monday' => 'Montag', 'Tuesday' => 'Dienstag', 'Wednesday' => 'Mittwoch',
+            'Thursday' => 'Donnerstag', 'Friday' => 'Freitag', 'Saturday' => 'Samstag',
+            'Sunday' => 'Sonntag', 'Mon' => 'Mo', 'Tue' => 'Di', 'Wed' => 'Mi',
+            'Thu' => 'Do', 'Fri' => 'Fr', 'Sat' => 'Sa', 'Sun' => 'So',
+        ];
+        // Each maximal alphabetic run is looked up once, so German output is
+        // never re-matched (e.g. "June"->"Juni" without the "Jun" rule reapplying).
+        $out = preg_replace_callback('/[A-Za-z]+/', fn($m) => $de[$m[0]] ?? $m[0], $out);
+    }
+    return $out;
 }
 
 function slugify(string $s): string
