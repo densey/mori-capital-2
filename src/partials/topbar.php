@@ -8,8 +8,10 @@ $phone = setting('contact_phone', '+356 2033 0110');
 $email = setting('contact_email', 'info@mori-capital.com');
 $linkedin = setting('linkedin_url', '#');
 
-// Language-switcher: keep current path, toggle ?lang= param
+// Language-switcher: keep current path (clean, extension-less), toggle ?lang= param
 $path  = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?: '/';
+$path  = preg_replace('/\.php$/', '', $path);
+if ($path === '' || $path === '/index') $path = '/';
 $qs    = $_GET;
 unset($qs['lang']);
 $qsBase = $qs ? '?' . http_build_query($qs) . '&' : '?';
@@ -31,7 +33,7 @@ $cur    = I18n::locale();
                 <div class="topbar-link-box">
                     <div class="topbar-contact-info-list">
                         <ul>
-                            <li><a href="<?= \Mori\asset('contact.php') ?>"><?= e(t('topbar.contact')) ?></a></li>
+                            <li><a href="<?= \Mori\asset('contact') ?>"><?= e(t('topbar.contact')) ?></a></li>
                         </ul>
                     </div>
 

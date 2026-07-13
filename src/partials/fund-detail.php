@@ -122,7 +122,7 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
             </div>
             <div class="col-xl-6">
                 <div class="section-btn">
-                    <a class="btn-default" href="<?= asset('documents.php?fund=' . urlencode($fund['slug'])) ?>"><?= e(t('fund.all_documents')) ?></a>
+                    <a class="btn-default" href="<?= asset('documents?fund=' . urlencode($fund['slug'])) ?>"><?= e(t('fund.all_documents')) ?></a>
                 </div>
             </div>
         </div>

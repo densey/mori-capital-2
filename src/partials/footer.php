@@ -40,11 +40,11 @@ $year = date('Y');
                         <h2><?= e(t('footer.mori_capital')) ?></h2>
                         <ul>
                             <li><a href="<?= asset('/') ?>"><?= e(t('nav.home')) ?></a></li>
-                            <li><a href="<?= asset('about.php') ?>"><?= e(t('nav.about')) ?></a></li>
-                            <li><a href="<?= asset('investment-style.php') ?>"><?= e(t('nav.investment_style')) ?></a></li>
-                            <li><a href="<?= asset('team.php') ?>"><?= e(t('nav.team')) ?></a></li>
-                            <li><a href="<?= asset('media.php') ?>"><?= e(t('nav.media')) ?></a></li>
-                            <li><a href="<?= asset('contact.php') ?>"><?= e(t('nav.contact')) ?></a></li>
+                            <li><a href="<?= asset('about') ?>"><?= e(t('nav.about')) ?></a></li>
+                            <li><a href="<?= asset('investment-style') ?>"><?= e(t('nav.investment_style')) ?></a></li>
+                            <li><a href="<?= asset('team') ?>"><?= e(t('nav.team')) ?></a></li>
+                            <li><a href="<?= asset('media') ?>"><?= e(t('nav.media')) ?></a></li>
+                            <li><a href="<?= asset('contact') ?>"><?= e(t('nav.contact')) ?></a></li>
                         </ul>
                     </div>
 
@@ -57,12 +57,12 @@ $year = date('Y');
                             } catch (\Throwable $e) { $ftFunds = []; }
                             foreach ($ftFunds as $ff):
                                 $ffName = \Mori\I18n::fieldFor($ff, 'name');
-                                $ffUrl = ($ff['slug'] === 'mori-eastern-european-fund') ? 'fund-eastern-european.php' : 'fund-ottoman.php';
+                                $ffUrl = ($ff['slug'] === 'mori-eastern-european-fund') ? 'fund-eastern-european' : 'fund-ottoman';
                             ?>
                             <li><a href="<?= asset($ffUrl) ?>"><?= e($ffName) ?></a></li>
                             <?php endforeach; ?>
-                            <li><a href="<?= asset('fund-performance.php') ?>"><?= e(t('nav.performance')) ?></a></li>
-                            <li><a href="<?= asset('documents.php') ?>"><?= e(t('btn.document_hub')) ?></a></li>
+                            <li><a href="<?= asset('fund-performance') ?>"><?= e(t('nav.performance')) ?></a></li>
+                            <li><a href="<?= asset('documents') ?>"><?= e(t('btn.document_hub')) ?></a></li>
                         </ul>
                     </div>
 
@@ -89,7 +89,7 @@ $year = date('Y');
                         <img src="/<?= \Mori\e(ltrim($fLogo, '/')) ?>" alt="<?= e(t('footer.logo_alt')) ?>">
                     </div>
 
-                    <a href="<?= asset('legal.php') ?>" class="footer-regulator">
+                    <a href="<?= asset('legal') ?>" class="footer-regulator">
                         <i class="fa-solid fa-shield-halved"></i>
                         <?= e(t('footer.regulator')) ?>
                     </a>
@@ -117,9 +117,9 @@ $year = date('Y');
                     </div>
                     <div class="footer-privacy-policy">
                         <ul>
-                            <li><a href="<?= asset('legal.php') ?>"><?= e(t('footer.legal_disclaimer')) ?></a></li>
-                            <li><a href="<?= asset('privacy.php') ?>"><?= e(t('footer.privacy_policy')) ?></a></li>
-                            <li><a href="<?= asset('cookies.php') ?>"><?= e(t('footer.cookie_policy')) ?></a></li>
+                            <li><a href="<?= asset('legal') ?>"><?= e(t('footer.legal_disclaimer')) ?></a></li>
+                            <li><a href="<?= asset('privacy') ?>"><?= e(t('footer.privacy_policy')) ?></a></li>
+                            <li><a href="<?= asset('cookies') ?>"><?= e(t('footer.cookie_policy')) ?></a></li>
                         </ul>
                     </div>
                 </div>
@@ -134,16 +134,16 @@ $year = date('Y');
         <a href="<?= asset('/') ?>" class="mori-tabbar__item<?= (\Mori\current_path()==='/' || \Mori\current_path()==='/index.php')?' active':'' ?>" aria-label="<?= e(t('tabbar.home')) ?>">
             <i class="fa-solid fa-house"></i><span><?= e(t('tabbar.home')) ?></span>
         </a>
-        <a href="<?= asset('fund-eastern-european.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'fund')?' active':'' ?>" aria-label="<?= e(t('tabbar.funds')) ?>">
+        <a href="<?= asset('fund-eastern-european') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'fund')?' active':'' ?>" aria-label="<?= e(t('tabbar.funds')) ?>">
             <i class="fa-solid fa-chart-pie"></i><span><?= e(t('tabbar.funds')) ?></span>
         </a>
-        <a href="<?= asset('documents.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'documents')?' active':'' ?>" aria-label="<?= e(t('nav.documents')) ?>">
+        <a href="<?= asset('documents') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'documents')?' active':'' ?>" aria-label="<?= e(t('nav.documents')) ?>">
             <i class="fa-solid fa-folder-open"></i><span><?= e(t('tabbar.docs')) ?></span>
         </a>
-        <a href="<?= asset('media.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'media')?' active':'' ?>" aria-label="<?= e(t('nav.media')) ?>">
+        <a href="<?= asset('media') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'media')?' active':'' ?>" aria-label="<?= e(t('nav.media')) ?>">
             <i class="fa-solid fa-photo-film"></i><span><?= e(t('nav.media')) ?></span>
         </a>
-        <a href="<?= asset('contact.php') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'contact')?' active':'' ?>" aria-label="<?= e(t('nav.contact')) ?>">
+        <a href="<?= asset('contact') ?>" class="mori-tabbar__item<?= str_contains(\Mori\current_path(),'contact')?' active':'' ?>" aria-label="<?= e(t('nav.contact')) ?>">
             <i class="fa-solid fa-envelope"></i><span><?= e(t('tabbar.contact')) ?></span>
         </a>
     </div>

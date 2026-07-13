@@ -43,13 +43,13 @@ include __DIR__ . '/src/partials/header.php';
             <div style="font-size:clamp(80px,18vw,160px);font-weight:800;color:var(--accent-color,#1ABC9C);line-height:1;margin-bottom:16px;letter-spacing:-4px;opacity:.15;">404</div>
             <h2 style="font-size:clamp(22px,3vw,32px);color:var(--primary-color,#1B3A5C);margin-bottom:16px;"><?= e(t('page.404.subheading')) ?></h2>
             <?php
-                $contactLink = '<a href="' . e(asset('contact.php')) . '" style="color:var(--accent-color,#1ABC9C);font-weight:600;">' . e(t('page.404.contact_link')) . '</a>';
+                $contactLink = '<a href="' . e(asset('contact')) . '" style="color:var(--accent-color,#1ABC9C);font-weight:600;">' . e(t('page.404.contact_link')) . '</a>';
                 $bodyHtml = str_replace(':contact', $contactLink, e(t('page.404.body')));
             ?>
             <p style="font-size:15px;color:var(--text-color,#5A6B7B);line-height:1.7;margin-bottom:30px;"><?= $bodyHtml ?></p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
                 <a href="<?= asset('/') ?>" class="btn-default"><?= e(t('btn.back_to_home')) ?></a>
-                <a href="<?= asset('documents.php') ?>" class="btn-default btn-highlighted" style="margin-right:50px;"><?= e(t('btn.document_hub')) ?></a>
+                <a href="<?= asset('documents') ?>" class="btn-default btn-highlighted" style="margin-right:50px;"><?= e(t('btn.document_hub')) ?></a>
             </div>
         </div>
     </div>

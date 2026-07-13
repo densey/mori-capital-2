@@ -52,7 +52,7 @@ include __DIR__ . '/partials/layout-start.php';
                     <td><span class="a-badge <?= $i['status']==='published'?'success':'warning' ?>"><?= e($i['status']) ?></span></td>
                     <td><?= e($i['view_count']) ?></td>
                     <td style="text-align:right;">
-                        <a class="a-btn ghost sm" href="<?= asset('insight.php?slug=' . e($i['slug'])) ?>" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-eye"></i></a>
+                        <a class="a-btn ghost sm" href="<?= asset('insight?slug=' . e($i['slug'])) ?>" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-eye"></i></a>
                         <a class="a-btn ghost sm" href="<?= asset('admin/insight-edit.php?id=' . $i['id']) ?>"><i class="fa-solid fa-pen"></i></a>
                         <form method="post" style="display:inline;" onsubmit="return confirm('Delete?');">
                             <?= Csrf::field() ?>

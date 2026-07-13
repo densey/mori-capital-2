@@ -79,8 +79,9 @@ use function Mori\t;
         '<li><a href="<?= e(asset('/')) ?>"><?= e(t('nav.home')) ?></a></li>'
     );
 
-    // Add language switcher to mobile nav
-    var path = location.pathname;
+    // Add language switcher to mobile nav (keep clean, extension-less path)
+    var path = location.pathname.replace(/\.php$/, '');
+    if (path === '' || path === '/index') path = '/';
     var qs = new URLSearchParams(location.search);
     qs.delete('lang');
     var base = path + (qs.toString() ? '?' + qs.toString() + '&' : '?');
@@ -188,8 +189,15 @@ use function Mori\t;
         if (href === '' || href.charAt(0) === '#'
             || /^(tel:|mailto:|javascript:|https?:\/\/)/i.test(href)
             || /(^|\/)index\.php(\?|#|$)/.test(href)
-            || href === '/') return;
-        if (/\.php(\?|#|$)/.test(href)) {
+            || href === '/' || href === '/index') return;
+        // Sub-page navigation is now extension-less (/about, /contact …). Intercept
+        // both the clean slugs and any legacy .php link, but leave real files
+        // (.pdf/.css/…) and api/admin/upload paths alone.
+        var isLegacyPhp = /\.php(\?|#|$)/.test(href);
+        var isCleanPage = href.charAt(0) === '/'
+            && !/\.[a-z0-9]{2,4}(\?|#|$)/i.test(href)
+            && !/^\/(api|admin|uploads|assets|css|js|fonts)\//i.test(href);
+        if (isLegacyPhp || isCleanPage) {
             e.preventDefault();
             showToast();
         }

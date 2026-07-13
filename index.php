@@ -193,7 +193,7 @@ include __DIR__ . '/src/partials/header.php';
                                 </figure>
                             </div>
                             <div class="contact-us-circle">
-                                <a href="<?= asset('contact.php') ?>">
+                                <a href="<?= asset('contact') ?>">
                                     <img src="<?= asset('images/contact-us-circle.svg') ?>" alt="">
                                 </a>
                             </div>
@@ -232,7 +232,7 @@ include __DIR__ . '/src/partials/header.php';
                                     </div>
                                 </div>
                                 <div class="about-us-btn wow fadeInUp" data-wow-delay="0.2s">
-                                    <a class="btn-default" href="<?= asset('about.php') ?>"><?= e(t('home.cta.more_about_mori')) ?></a>
+                                    <a class="btn-default" href="<?= asset('about') ?>"><?= e(t('home.cta.more_about_mori')) ?></a>
                                 </div>
                             </div>
                             <div class="about-us-body-image wow fadeInUp" data-wow-delay="0.2s">
@@ -266,7 +266,7 @@ include __DIR__ . '/src/partials/header.php';
                             <p><?= e($fundsDesc) ?></p>
                         </div>
                         <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default" href="<?= asset('documents.php') ?>"><?= e(t('btn.view_fund_docs')) ?></a>
+                            <a class="btn-default" href="<?= asset('documents') ?>"><?= e(t('btn.view_fund_docs')) ?></a>
                         </div>
                     </div>
                 </div>
@@ -277,7 +277,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-6 col-lg-6">
                     <div class="service-item wow fadeInUp" <?= $idx>1?'data-wow-delay="0.2s"':'' ?>>
                         <div class="service-item-image">
-                            <a href="<?= asset('fund-' . $f['slug'] . '.php') ?>" data-cursor-text="<?= e(t('cursor.view')) ?>">
+                            <a href="<?= asset(($f['slug']==='mori-eastern-european-fund'?'fund-eastern-european':'fund-ottoman')) ?>" data-cursor-text="<?= e(t('cursor.view')) ?>">
                                 <figure class="image-anime">
                                     <img src="<?= asset(e($f['cover_image_path'] ?? 'assets/images/service/h6-service-' . $idx . '.webp')) ?>" alt="<?= e(I18n::fieldFor($f, 'name')) ?>">
                                 </figure>
@@ -285,11 +285,11 @@ include __DIR__ . '/src/partials/header.php';
                         </div>
                         <div class="service-item-body">
                             <div class="service-item-content">
-                                <h2><a href="<?= asset(($f['slug']==='mori-eastern-european-fund'?'fund-eastern-european.php':'fund-ottoman.php')) ?>"><?= e(I18n::fieldFor($f, 'name')) ?></a></h2>
+                                <h2><a href="<?= asset(($f['slug']==='mori-eastern-european-fund'?'fund-eastern-european':'fund-ottoman')) ?>"><?= e(I18n::fieldFor($f, 'name')) ?></a></h2>
                                 <p><?= e(I18n::fieldFor($f, 'description')) ?></p>
                             </div>
                             <div class="service-item-btn">
-                                <a href="<?= asset(($f['slug']==='mori-eastern-european-fund'?'fund-eastern-european.php':'fund-ottoman.php')) ?>" class="readmore-btn"><?= e(t('btn.fund_details')) ?></a>
+                                <a href="<?= asset(($f['slug']==='mori-eastern-european-fund'?'fund-eastern-european':'fund-ottoman')) ?>" class="readmore-btn"><?= e(t('btn.fund_details')) ?></a>
                             </div>
                         </div>
                     </div>
@@ -310,7 +310,7 @@ include __DIR__ . '/src/partials/header.php';
                             </div>
                             <?php endforeach; ?>
                         </div>
-                        <p><?= e(setting_i18n('hp_funds_footer_note', 'Managed by portfolio managers with 20+ years of EEMEA experience.')) ?> &mdash; <a href="<?= asset('documents.php') ?>"><?= e(t('btn.view_fund_docs')) ?></a></p>
+                        <p><?= e(setting_i18n('hp_funds_footer_note', 'Managed by portfolio managers with 20+ years of EEMEA experience.')) ?> &mdash; <a href="<?= asset('documents') ?>"><?= e(t('btn.view_fund_docs')) ?></a></p>
                     </div>
                 </div>
             </div>
@@ -355,7 +355,7 @@ include __DIR__ . '/src/partials/header.php';
                         </div>
 
                         <div class="why-choose-btn wow fadeInUp" data-wow-delay="0.8s">
-                            <a href="<?= asset('investment-style.php') ?>" class="btn-default"><?= e(t('home.cta.explore_style')) ?></a>
+                            <a href="<?= asset('investment-style') ?>" class="btn-default"><?= e(t('home.cta.explore_style')) ?></a>
                         </div>
                     </div>
                 </div>
@@ -409,7 +409,7 @@ include __DIR__ . '/src/partials/header.php';
                         <h2 class="text-anime-style-3" data-cursor="-opaque"><?= setting_i18n('hp_cine_title', 'Disciplined investing,<br>powered by data.') ?></h2>
                         <p class="wow fadeInUp" data-wow-delay="0.2s"><?= e(setting_i18n('hp_cine_desc', 'Real-time portfolio analytics, on-the-ground research and active risk management — all converging into a single conviction-led process across Emerging European, Middle Eastern and African markets.')) ?></p>
                         <div class="mori-cinematic__cta wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default btn-highlighted" href="<?= asset('investment-style.php') ?>"><?= e(t('cine.cta')) ?></a>
+                            <a class="btn-default btn-highlighted" href="<?= asset('investment-style') ?>"><?= e(t('cine.cta')) ?></a>
                         </div>
                         <div class="mori-cinematic__stats">
                             <div><span class="num"><?= e(setting('stat_markets', '15')) ?>+</span><span class="lbl"><?= e(t('stat.eemea_markets')) ?></span></div>
@@ -497,7 +497,7 @@ include __DIR__ . '/src/partials/header.php';
                             <p><?= e(t('home.team_intro')) ?></p>
                         </div>
                         <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                            <a class="btn-default" href="<?= asset('team.php') ?>"><?= e(t('btn.meet_team')) ?></a>
+                            <a class="btn-default" href="<?= asset('team') ?>"><?= e(t('btn.meet_team')) ?></a>
                         </div>
                     </div>
                 </div>
@@ -511,7 +511,7 @@ include __DIR__ . '/src/partials/header.php';
                 <div class="col-xl-4 col-md-6">
                     <div class="team-item wow fadeInUp" <?= $tx>1?'data-wow-delay="0.'.($tx<10?$tx-1:0).'s"':'' ?>>
                         <div class="team-item-image">
-                            <a href="<?= asset('team.php#' . e($member['slug'])) ?>" data-cursor-text="<?= e(t('cursor.view')) ?>">
+                            <a href="<?= asset('team#' . e($member['slug'])) ?>" data-cursor-text="<?= e(t('cursor.view')) ?>">
                                 <figure>
                                     <img src="<?= e($photoSrc) ?>" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<?= urlencode($member['name']) ?>&background=1B3A5C&color=fff&size=600&bold=true&font-size=0.36'" alt="<?= e($member['name']) ?>">
                                 </figure>
@@ -519,7 +519,7 @@ include __DIR__ . '/src/partials/header.php';
                         </div>
                         <div class="team-item-body">
                             <div class="team-item-content">
-                                <h2><a href="<?= asset('team.php#' . e($member['slug'])) ?>"><?= e($member['name']) ?></a></h2>
+                                <h2><a href="<?= asset('team#' . e($member['slug'])) ?>"><?= e($member['name']) ?></a></h2>
                             </div>
                             <div class="team-social-list">
                                 <p><?= e(I18n::fieldFor($member, 'title')) ?></p>

@@ -109,8 +109,8 @@ include __DIR__ . '/src/partials/page-header.php';
             <h2 style="color:#fff;font-size:clamp(22px,2.6vw,30px);margin-bottom:14px;"><?= e(t('hero.cta_funds')) ?></h2>
             <p style="color:rgba(255,255,255,.8);max-width:620px;margin:0 auto 24px;font-size:15px;line-height:1.6;"><?= e(t('style.cta_text')) ?></p>
             <div style="display:inline-flex;gap:10px;flex-wrap:wrap;">
-                <a href="<?= asset('fund-eastern-european.php') ?>" class="btn-default"><?= e(t('style.fund_card_ee')) ?></a>
-                <a href="<?= asset('fund-ottoman.php') ?>" class="btn-default"><?= e(t('style.fund_card_otto')) ?></a>
+                <a href="<?= asset('fund-eastern-european') ?>" class="btn-default"><?= e(t('style.fund_card_ee')) ?></a>
+                <a href="<?= asset('fund-ottoman') ?>" class="btn-default"><?= e(t('style.fund_card_otto')) ?></a>
             </div>
         </div>
     </div>

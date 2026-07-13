@@ -125,7 +125,7 @@ include __DIR__ . '/src/partials/page-header.php';
             <div class="col-xl-6">
                 <div class="section-content-btn">
                     <div class="section-btn wow fadeInUp" data-wow-delay="0.4s">
-                        <a class="btn-default" href="<?= asset('team.php') ?>"><?= e(t('btn.meet_team')) ?></a>
+                        <a class="btn-default" href="<?= asset('team') ?>"><?= e(t('btn.meet_team')) ?></a>
                     </div>
                 </div>
             </div>
@@ -138,12 +138,12 @@ include __DIR__ . '/src/partials/page-header.php';
             <div class="col-xl-4 col-md-6">
                 <div class="team-item wow fadeInUp">
                     <div class="team-item-image">
-                        <a href="<?= asset('team.php#' . e($member['slug'])) ?>"><figure>
+                        <a href="<?= asset('team#' . e($member['slug'])) ?>"><figure>
                             <img src="<?= e($photoSrc) ?>" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=<?= urlencode($member['name']) ?>&background=1B3A5C&color=fff&size=600&bold=true&font-size=0.36'" alt="<?= e($member['name']) ?>">
                         </figure></a>
                     </div>
                     <div class="team-item-body">
-                        <div class="team-item-content"><h2><a href="<?= asset('team.php#' . e($member['slug'])) ?>"><?= e($member['name']) ?></a></h2></div>
+                        <div class="team-item-content"><h2><a href="<?= asset('team#' . e($member['slug'])) ?>"><?= e($member['name']) ?></a></h2></div>
                         <div class="team-social-list">
                             <p><?= e(I18n::fieldFor($member, 'title')) ?></p>
                             <ul>

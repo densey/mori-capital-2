@@ -26,7 +26,7 @@ if (!$ins) {
     include __DIR__ . '/src/partials/head.php';
     include __DIR__ . '/src/partials/topbar.php';
     include __DIR__ . '/src/partials/header.php';
-    echo '<div class="container" style="padding:120px 0;text-align:center;"><h1>' . e(t('page.insight.not_found')) . '</h1><p><a href="' . asset('insights.php') . '">' . e(t('btn.back_to_views')) . '</a></p></div>';
+    echo '<div class="container" style="padding:120px 0;text-align:center;"><h1>' . e(t('page.insight.not_found')) . '</h1><p><a href="' . asset('insights') . '">' . e(t('btn.back_to_views')) . '</a></p></div>';
     include __DIR__ . '/src/partials/footer.php';
     include __DIR__ . '/src/partials/scripts.php';
     exit;
@@ -37,7 +37,7 @@ $page = [
     'description' => $ins['excerpt'] ?? '',
     'breadcrumb'  => [
         ['label' => t('nav.home'), 'url' => asset('/')],
-        ['label' => t('nav.insights'), 'url' => asset('insights.php')],
+        ['label' => t('nav.insights'), 'url' => asset('insights')],
         ['label' => $ins['title']],
     ],
 ];
@@ -74,7 +74,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 </div>
 
                 <div style="margin-top:40px;padding-top:24px;border-top:1px solid var(--mori-border,#E1E7EE);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
-                    <a href="<?= asset('insights.php') ?>" style="color:var(--accent-color,#1ABC9C);font-weight:600;font-size:14px;text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> <?= e(t('btn.back_to_views')) ?></a>
+                    <a href="<?= asset('insights') ?>" style="color:var(--accent-color,#1ABC9C);font-weight:600;font-size:14px;text-decoration:none;"><i class="fa-solid fa-arrow-left"></i> <?= e(t('btn.back_to_views')) ?></a>
                     <div style="font-size:12px;color:var(--mori-muted,#7A8B99);">
                         <?= e(t('insight.share_label')) ?>: <a href="https://www.linkedin.com/sharing/share-offsite/?url=<?= urlencode((string)\Mori\url($_SERVER['REQUEST_URI'])) ?>" target="_blank" rel="noopener" style="color:var(--accent-color,#1ABC9C);" aria-label="<?= e(t('social.linkedin')) ?>"><i class="fa-brands fa-linkedin-in"></i></a>
                     </div>

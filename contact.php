@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 flash('contact_error', t('contact.form.error'));
             }
         }
-        header('Location: ' . asset('contact.php#contact-form'));
+        header('Location: ' . asset('contact#contact-form'));
         exit;
     }
 }
@@ -182,7 +182,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     </button>
 
                     <?php
-                        $privacyLink = '<a href="' . e(asset('privacy.php')) . '" style="color:var(--accent-color,#1ABC9C);">' . e(t('contact.form.privacy_link')) . '</a>';
+                        $privacyLink = '<a href="' . e(asset('privacy')) . '" style="color:var(--accent-color,#1ABC9C);">' . e(t('contact.form.privacy_link')) . '</a>';
                         $privacyText = str_replace(':privacy', $privacyLink, e(t('contact.form.privacy_text')));
                     ?>
                     <p style="font-size:11.5px;color:var(--mori-muted,#7A8B99);margin-top:14px;text-align:center;line-height:1.5;">

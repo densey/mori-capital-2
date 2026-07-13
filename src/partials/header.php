@@ -21,11 +21,11 @@ use function Mori\t;
                 <div class="collapse navbar-collapse main-menu">
                     <div class="nav-menu-wrapper">
                         <ul class="navbar-nav mr-auto" id="menu">
-                            <li class="nav-item <?= is_active_nav('/about.php')?'active':'' ?>">
-                                <a class="nav-link" href="<?= asset('about.php') ?>"><?= e(t('nav.about')) ?></a>
+                            <li class="nav-item <?= is_active_nav('/about')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('about') ?>"><?= e(t('nav.about')) ?></a>
                             </li>
-                            <li class="nav-item <?= is_active_nav('/investment-style.php')?'active':'' ?>">
-                                <a class="nav-link" href="<?= asset('investment-style.php') ?>"><?= e(t('nav.investment_style')) ?></a>
+                            <li class="nav-item <?= is_active_nav('/investment-style')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('investment-style') ?>"><?= e(t('nav.investment_style')) ?></a>
                             </li>
                             <li class="nav-item submenu">
                                 <a class="nav-link" href="#funds"><?= e(t('nav.funds')) ?></a>
@@ -36,36 +36,36 @@ use function Mori\t;
                                     } catch (\Throwable $e) { $navFunds = []; }
                                     foreach ($navFunds as $nf):
                                         $fundName = \Mori\I18n::fieldFor($nf, 'name');
-                                        $fundUrl = ($nf['slug'] === 'mori-eastern-european-fund') ? 'fund-eastern-european.php' : 'fund-ottoman.php';
+                                        $fundUrl = ($nf['slug'] === 'mori-eastern-european-fund') ? 'fund-eastern-european' : 'fund-ottoman';
                                     ?>
                                     <li class="nav-item"><a class="nav-link" href="<?= asset($fundUrl) ?>"><?= e($fundName) ?></a></li>
                                     <?php endforeach; ?>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('fund-performance.php') ?>"><?= e(t('nav.performance')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('fund-performance') ?>"><?= e(t('nav.performance')) ?></a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item submenu <?= is_active_nav('/documents.php')||is_active_nav('/company-policies.php')||is_active_nav('/other-documents.php')||is_active_nav('/updates-during-suspension.php')?'active':'' ?>">
-                                <a class="nav-link" href="<?= asset('documents.php') ?>"><?= e(t('nav.documents')) ?></a>
+                            <li class="nav-item submenu <?= is_active_nav('/documents')||is_active_nav('/company-policies')||is_active_nav('/other-documents')||is_active_nav('/updates-during-suspension')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('documents') ?>"><?= e(t('nav.documents')) ?></a>
                                 <ul>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('documents.php') ?>"><?= e(t('doc.share_class_docs')) ?></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('company-policies.php') ?>"><?= e(t('doc.company_policies')) ?></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('other-documents.php') ?>"><?= e(t('doc.other_documents')) ?></a></li>
-                                    <li class="nav-item"><a class="nav-link" href="<?= asset('updates-during-suspension.php') ?>"><?= e(t('doc.suspension_updates')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('documents') ?>"><?= e(t('doc.share_class_docs')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('company-policies') ?>"><?= e(t('doc.company_policies')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('other-documents') ?>"><?= e(t('doc.other_documents')) ?></a></li>
+                                    <li class="nav-item"><a class="nav-link" href="<?= asset('updates-during-suspension') ?>"><?= e(t('doc.suspension_updates')) ?></a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item <?= is_active_nav('/announcements.php')?'active':'' ?>">
-                                <a class="nav-link" href="<?= asset('announcements.php') ?>"><?= e(t('nav.announcements')) ?></a>
+                            <li class="nav-item <?= is_active_nav('/announcements')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('announcements') ?>"><?= e(t('nav.announcements')) ?></a>
                             </li>
-                            <li class="nav-item <?= is_active_nav('/media.php')?'active':'' ?>">
-                                <a class="nav-link" href="<?= asset('media.php') ?>"><?= e(t('nav.media')) ?></a>
+                            <li class="nav-item <?= is_active_nav('/media')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('media') ?>"><?= e(t('nav.media')) ?></a>
                             </li>
-                            <li class="nav-item <?= is_active_nav('/contact.php')?'active':'' ?>">
-                                <a class="nav-link" href="<?= asset('contact.php') ?>"><?= e(t('nav.contact')) ?></a>
+                            <li class="nav-item <?= is_active_nav('/contact')?'active':'' ?>">
+                                <a class="nav-link" href="<?= asset('contact') ?>"><?= e(t('nav.contact')) ?></a>
                             </li>
                         </ul>
                     </div>
 
                     <div class="header-btn">
-                        <a href="<?= asset('documents.php') ?>" class="btn-default btn-highlighted">
+                        <a href="<?= asset('documents') ?>" class="btn-default btn-highlighted">
                             <i class="fa-regular fa-folder-open"></i> <?= e(t('btn.document_hub')) ?>
                         </a>
                     </div>

@@ -158,7 +158,7 @@ include __DIR__ . '/src/partials/page-header.php';
                             </td>
                             <?php endforeach; ?>
                             <td style="padding:13px 12px;text-align:center;">
-                                <a href="<?= asset('fund-performance.php?fund=' . (int)$sc['fund_id'] . '&class=' . (int)$sc['id']) ?>" style="display:inline-flex;align-items:center;gap:4px;color:var(--accent-color,#1ABC9C);font-weight:600;text-decoration:none;font-size:12.5px;">
+                                <a href="<?= asset('fund-performance?fund=' . (int)$sc['fund_id'] . '&class=' . (int)$sc['id']) ?>" style="display:inline-flex;align-items:center;gap:4px;color:var(--accent-color,#1ABC9C);font-weight:600;text-decoration:none;font-size:12.5px;">
                                     <i class="fa-solid fa-chart-line"></i> <?= e(t('doc.view_chart')) ?>
                                 </a>
                             </td>

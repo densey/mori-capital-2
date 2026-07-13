@@ -10,7 +10,7 @@ use function Mori\t;
 
 // "Mori Views" has been replaced by the Media section. Permanently redirect
 // any old links / bookmarks to /media.php.
-header('Location: ' . asset('media.php'), true, 301);
+header('Location: ' . asset('media'), true, 301);
 exit;
 
 try {
@@ -54,7 +54,7 @@ include __DIR__ . '/src/partials/page-header.php';
             <?php foreach ($categories as $key => $label):
                 $active = ($_GET['cat'] ?? '') === $key;
             ?>
-            <a href="<?= asset('insights.php' . ($key ? '?cat=' . urlencode($key) : '')) ?>" style="padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--mori-border,#E1E7EE);<?= $active?'background:var(--accent-color,#1ABC9C);color:#fff;border-color:var(--accent-color,#1ABC9C);':'background:#fff;color:var(--mori-text-soft,#5A6B7B);' ?>"><?= e($label) ?></a>
+            <a href="<?= asset('insights' . ($key ? '?cat=' . urlencode($key) : '')) ?>" style="padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;text-decoration:none;border:1px solid var(--mori-border,#E1E7EE);<?= $active?'background:var(--accent-color,#1ABC9C);color:#fff;border-color:var(--accent-color,#1ABC9C);':'background:#fff;color:var(--mori-text-soft,#5A6B7B);' ?>"><?= e($label) ?></a>
             <?php endforeach; ?>
         </div>
 
@@ -79,7 +79,7 @@ include __DIR__ . '/src/partials/page-header.php';
                     if ($catLabel === $catKey) { $catLabel = ucwords(str_replace('_', ' ', $cat)); }
                 ?>
                 <div class="col-xl-4 col-md-6" style="margin-bottom:24px;">
-                    <a href="<?= asset('insight.php?slug=' . e($ins['slug'])) ?>" class="insight-card wow fadeInUp" <?= $i%3>0?'data-wow-delay="0.'.($i%3).'s"':'' ?>>
+                    <a href="<?= asset('insight?slug=' . e($ins['slug'])) ?>" class="insight-card wow fadeInUp" <?= $i%3>0?'data-wow-delay="0.'.($i%3).'s"':'' ?>>
                         <div class="insight-meta">
                             <span><?= e($catLabel) ?></span>
                             <span class="date"><?= e(format_date($ins['publish_date'])) ?></span>
