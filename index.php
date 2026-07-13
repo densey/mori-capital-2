@@ -394,8 +394,7 @@ include __DIR__ . '/src/partials/header.php';
         </div>
     </div>
 
-    <?php if (\Mori\setting('hp_cine_enabled', '1') === '1'): ?>
-    <!-- Cinematic 3D Showcase (illustrative — toggle in Admin → Homepage Content) -->
+    <!-- Cinematic showcase -->
     <div class="mori-cinematic" id="moriCinematic">
         <div class="mori-cinematic__bg" aria-hidden="true">
             <div class="mori-cinematic__grid"></div>
@@ -438,40 +437,28 @@ include __DIR__ . '/src/partials/header.php';
                                 </svg>
                             </div>
                             <div class="tilt-layer tilt-mid">
-                                <div class="tilt-chart">
-                                    <div class="tilt-chart__head">
+                                <div class="tilt-chart tilt-process">
+                                    <div class="tilt-process__head"><?= e(t('cine.process.title')) ?></div>
+                                    <div class="tilt-process__step">
+                                        <span class="tilt-process__ico"><i class="fa-solid fa-magnifying-glass-chart"></i></span>
                                         <div>
-                                            <div class="lbl"><?= e(setting('hp_cine_fund_name', 'Mori Ottoman Fund')) ?> · NAV</div>
-                                            <div class="val"><?= e(setting('hp_cine_nav_display', '€ 142.86')) ?> <span class="up"><?= e(setting('hp_cine_ytd', '▲ 18.4% YTD')) ?></span></div>
-                                        </div>
-                                        <div class="tilt-chart__pills">
-                                            <span class="pill active">1Y</span>
-                                            <span class="pill">3Y</span>
-                                            <span class="pill">5Y</span>
-                                            <span class="pill">10Y</span>
+                                            <div class="tilt-process__t"><?= e(t('cine.process.s1_t')) ?></div>
+                                            <div class="tilt-process__d"><?= e(t('cine.process.s1_d')) ?></div>
                                         </div>
                                     </div>
-                                    <svg class="tilt-chart__svg" viewBox="0 0 560 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                                        <defs>
-                                            <linearGradient id="cineFill" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="0%" stop-color="#1ABC9C" stop-opacity="0.45"/>
-                                                <stop offset="100%" stop-color="#1ABC9C" stop-opacity="0"/>
-                                            </linearGradient>
-                                        </defs>
-                                        <g stroke="#5DADE2" stroke-width="0.4" opacity="0.18">
-                                            <line x1="0" y1="40" x2="560" y2="40"/>
-                                            <line x1="0" y1="90" x2="560" y2="90"/>
-                                            <line x1="0" y1="140" x2="560" y2="140"/>
-                                        </g>
-                                        <path d="M10,140 L60,128 L110,135 L160,118 L210,120 L260,98 L310,102 L360,82 L410,86 L460,68 L510,60 L550,46 L550,180 L10,180 Z" fill="url(#cineFill)"/>
-                                        <polyline points="10,140 60,128 110,135 160,118 210,120 260,98 310,102 360,82 410,86 460,68 510,60 550,46" fill="none" stroke="#1ABC9C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <circle cx="260" cy="98" r="4" fill="#1ABC9C"/>
-                                        <circle cx="260" cy="98" r="9" fill="none" stroke="#1ABC9C" stroke-width="1.2" opacity="0.55"/>
-                                        <circle cx="510" cy="60" r="3" fill="#5DADE2"/>
-                                        <circle cx="160" cy="118" r="3" fill="#5DADE2"/>
-                                    </svg>
-                                    <div class="tilt-chart__foot">
-                                        <span>Apr '25</span><span>Jul</span><span>Oct</span><span>Jan '26</span><span>Apr</span>
+                                    <div class="tilt-process__step">
+                                        <span class="tilt-process__ico"><i class="fa-solid fa-bullseye"></i></span>
+                                        <div>
+                                            <div class="tilt-process__t"><?= e(t('cine.process.s2_t')) ?></div>
+                                            <div class="tilt-process__d"><?= e(t('cine.process.s2_d')) ?></div>
+                                        </div>
+                                    </div>
+                                    <div class="tilt-process__step">
+                                        <span class="tilt-process__ico"><i class="fa-solid fa-shield-halved"></i></span>
+                                        <div>
+                                            <div class="tilt-process__t"><?= e(t('cine.process.s3_t')) ?></div>
+                                            <div class="tilt-process__d"><?= e(t('cine.process.s3_d')) ?></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -480,9 +467,8 @@ include __DIR__ . '/src/partials/header.php';
                                 <div><div class="chip-lbl"><?= e(setting('hp_cine_ccy_lbl', 'Multi-currency')) ?></div><div class="chip-val"><?= e(setting('hp_cine_ccy_val', 'EUR · USD · GBP')) ?></div></div>
                             </div>
                             <div class="tilt-layer tilt-chip tilt-chip--perf">
-                                <i class="fa-solid fa-arrow-trend-up"></i>
-                                <?php $cine10ySuffix = setting('hp_cine_10y_suffix', 'vs benchmark'); ?>
-                                <div><div class="chip-lbl"><?= e(setting('hp_cine_10y_lbl', '10Y Annualised')) ?></div><div class="chip-val"><?= e(setting('hp_cine_10y', '+11.7%')) ?><?php if (!empty($cine10ySuffix)): ?> <span style="color:#1ABC9C;font-size:11px;"><?= e($cine10ySuffix) ?></span><?php endif; ?></div></div>
+                                <i class="fa-solid fa-earth-europe"></i>
+                                <div><div class="chip-lbl"><?= e(t('cine.chip.exp_lbl')) ?></div><div class="chip-val"><?= e(t('cine.chip.exp_val')) ?></div></div>
                             </div>
                             <div class="tilt-layer tilt-chip tilt-chip--aum">
                                 <i class="fa-solid fa-shield-halved"></i>
@@ -494,7 +480,6 @@ include __DIR__ . '/src/partials/header.php';
             </div>
         </div>
     </div>
-    <?php endif; ?>
 
     <!-- Team -->
     <div class="page-team" style="padding:80px 0;">

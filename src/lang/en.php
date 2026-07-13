@@ -142,6 +142,17 @@ return [
     // Cinematic CTA button
     'cine.cta'                   => 'Discover the Mori Style',
 
+    // Cinematic showcase — disciplined-process card + chip
+    'cine.process.title'         => 'Our disciplined process',
+    'cine.process.s1_t'          => 'Research',
+    'cine.process.s1_d'          => 'Bottom-up company analysis and on-the-ground visits across EEMEA markets.',
+    'cine.process.s2_t'          => 'Conviction',
+    'cine.process.s2_d'          => 'High-conviction, benchmark-agnostic stock selection.',
+    'cine.process.s3_t'          => 'Risk management',
+    'cine.process.s3_d'          => 'Position sizing, liquidity and correlation overlays at portfolio level.',
+    'cine.chip.exp_lbl'          => 'EEMEA specialist',
+    'cine.chip.exp_val'          => 'Since 1998',
+
     // Page titles (DE locale-aware)
     'page.home.title'            => 'Mori Capital Management — Specialists in EEMEA Markets',
     'page.home.desc'             => 'Independent EEMEA-focused asset manager. Mori Eastern European Fund and Mori Ottoman Fund — research-led investing across Emerging Europe, the Middle East and Africa since 1998.',

@@ -166,14 +166,6 @@ include __DIR__ . '/partials/layout-start.php';
     <div class="a-card" style="margin-bottom:22px;">
         <div class="a-card__head"><h2><i class="fa-solid fa-film"></i> Cinematic Section</h2></div>
         <div class="a-card__body">
-            <?php $cineOn = (\Mori\setting('hp_cine_enabled', '1') ?? '1') === '1'; ?>
-            <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;background:var(--a-border-soft);padding:12px 14px;border-radius:8px;margin-bottom:16px;">
-                <!-- hidden 0 posts first; the checkbox posts 1 and overrides it when ticked -->
-                <input type="hidden" name="settings[hp_cine_enabled]" value="0">
-                <input type="checkbox" name="settings[hp_cine_enabled]" value="1" <?= $cineOn ? 'checked' : '' ?>>
-                <span>Show this section on the homepage</span>
-            </label>
-            <p style="font-size:12px;color:var(--a-muted);margin:-8px 0 16px;">The chart and figures below are illustrative (not live NAV data). Untick to hide the whole section from the homepage.</p>
             <div class="row">
                 <div><label>Eyebrow (EN)</label><input type="text" name="settings[hp_cine_eyebrow]" value="<?= hp('hp_cine_eyebrow', 'EEMEA in motion') ?>"></div>
                 <div><label>Eyebrow (DE)</label><input type="text" name="settings[hp_cine_eyebrow_de]" value="<?= hp('hp_cine_eyebrow_de', 'EEMEA in Bewegung') ?>"></div>
@@ -186,21 +178,11 @@ include __DIR__ . '/partials/layout-start.php';
             <textarea name="settings[hp_cine_desc]" rows="2"><?= hp('hp_cine_desc', 'Real-time portfolio analytics, on-the-ground research and active risk management — all converging into a single conviction-led process across Emerging European, Middle Eastern and African markets.') ?></textarea>
             <label>Description (DE)</label>
             <textarea name="settings[hp_cine_desc_de]" rows="2"><?= hp('hp_cine_desc_de', '') ?></textarea>
-            <div class="row" style="margin-top:12px;">
-                <div><label>Showcase fund name</label><input type="text" name="settings[hp_cine_fund_name]" value="<?= hp('hp_cine_fund_name', 'Mori Ottoman Fund') ?>"></div>
-                <div><label>Showcase NAV display</label><input type="text" name="settings[hp_cine_nav_display]" value="<?= hp('hp_cine_nav_display', '€ 142.86') ?>"></div>
-                <div><label>Showcase YTD %</label><input type="text" name="settings[hp_cine_ytd]" value="<?= hp('hp_cine_ytd', '▲ 18.4% YTD') ?>"></div>
-                <div><label>10Y annualised display</label><input type="text" name="settings[hp_cine_10y]" value="<?= hp('hp_cine_10y', '+11.7%') ?>"></div>
-            </div>
 
             <p style="font-size:12px;color:var(--a-muted);margin:18px 0 10px;font-weight:600;">Floating info chips around the showcase card</p>
             <div class="row">
                 <div><label>Currency chip label</label><input type="text" name="settings[hp_cine_ccy_lbl]" value="<?= hp('hp_cine_ccy_lbl', 'Multi-currency') ?>"></div>
                 <div><label>Currency chip value</label><input type="text" name="settings[hp_cine_ccy_val]" value="<?= hp('hp_cine_ccy_val', 'EUR · USD · GBP') ?>"><small style="font-size:11px;color:var(--a-muted);">Separate currencies with " · "</small></div>
-            </div>
-            <div class="row">
-                <div><label>10Y chip label</label><input type="text" name="settings[hp_cine_10y_lbl]" value="<?= hp('hp_cine_10y_lbl', '10Y Annualised') ?>"></div>
-                <div><label>10Y chip suffix</label><input type="text" name="settings[hp_cine_10y_suffix]" value="<?= hp('hp_cine_10y_suffix', 'vs benchmark') ?>"></div>
             </div>
             <div class="row">
                 <div><label>Regulatory chip label</label><input type="text" name="settings[hp_cine_aum_lbl]" value="<?= hp('hp_cine_aum_lbl', 'UCITS · Daily liquidity') ?>"></div>

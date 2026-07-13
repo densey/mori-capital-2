@@ -142,6 +142,17 @@ return [
     // Cinematic CTA button
     'cine.cta'                   => 'Entdecken Sie den Mori-Stil',
 
+    // Cinematic showcase — disciplined-process card + chip
+    'cine.process.title'         => 'Unser disziplinierter Prozess',
+    'cine.process.s1_t'          => 'Research',
+    'cine.process.s1_d'          => 'Fundamentale Unternehmensanalyse und Besuche vor Ort in den EEMEA-Märkten.',
+    'cine.process.s2_t'          => 'Überzeugung',
+    'cine.process.s2_d'          => 'Überzeugungsbasierte, benchmarkunabhängige Titelauswahl.',
+    'cine.process.s3_t'          => 'Risikomanagement',
+    'cine.process.s3_d'          => 'Positionsgrößen, Liquiditäts- und Korrelations-Overlays auf Portfolioebene.',
+    'cine.chip.exp_lbl'          => 'EEMEA-Spezialist',
+    'cine.chip.exp_val'          => 'Seit 1998',
+
     // Page titles (DE locale-aware)
     'page.home.title'            => 'Mori Capital Management — Spezialist für die EEMEA-Region',
     'page.home.desc'             => 'Unabhängiger EEMEA-fokussierter Vermögensverwalter. Mori Eastern European Fund und Mori Ottoman Fund — research-getriebenes Investieren in Emerging Europe, dem Nahen Osten und Afrika seit 1998.',

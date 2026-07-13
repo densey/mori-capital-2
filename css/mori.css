@@ -705,6 +705,21 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     margin-top: 4px;
 }
 
+/* Disciplined-process card (replaces the illustrative chart) */
+.tilt-process { justify-content: center; gap: 16px; }
+.tilt-process__head {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #5DADE2; margin-bottom: 2px;
+}
+.tilt-process__step { display: flex; align-items: flex-start; gap: 14px; }
+.tilt-process__ico {
+    flex-shrink: 0; width: 42px; height: 42px; border-radius: 10px;
+    background: rgba(26, 188, 156, .14); color: #1ABC9C;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.tilt-process__t { color: #fff; font-weight: 700; font-size: 15px; margin-bottom: 3px; }
+.tilt-process__d { color: rgba(255, 255, 255, .62); font-size: 12.5px; line-height: 1.5; }
+
 /* Floating chips */
 .tilt-chip {
     background: rgba(8, 18, 33, .9);
