@@ -202,9 +202,9 @@ include __DIR__ . '/src/partials/header.php';
                 </div>
 
                 <?php
-                    $aboutText = setting_i18n('hp_about_text', 'Founded in 1998 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets. We combine bottom-up stock picking with rigorous in-house research and active dialogue with company management.');
+                    $aboutText = setting_i18n('hp_about_text', 'Founded in 2015 and headquartered in Malta, Mori Capital Management is a dedicated investor in Emerging European, Middle Eastern and African equity markets. We combine bottom-up stock picking with rigorous in-house research and active dialogue with company management.');
                     $aboutQuote = setting_i18n('hp_about_quote', "In the EEMEA region, knowledge isn't found in screens — it's earned by walking the extra mile.");
-                    $statYears = setting('stat_years', '25');
+                    $statYears = setting('stat_years', '30');
                     $statSecurities = setting('stat_securities', '200');
                 ?>
                 <div class="col-xl-6">
@@ -310,7 +310,7 @@ include __DIR__ . '/src/partials/header.php';
                             </div>
                             <?php endforeach; ?>
                         </div>
-                        <p><?= e(setting_i18n('hp_funds_footer_note', 'Managed by portfolio managers with 20+ years of EEMEA experience.')) ?> &mdash; <a href="<?= asset('documents') ?>"><?= e(t('btn.view_fund_docs')) ?></a></p>
+                        <p><?= e(setting_i18n('hp_funds_footer_note', 'Managed by portfolio managers with 30+ years of EEMEA experience.')) ?> &mdash; <a href="<?= asset('documents') ?>"><?= e(t('btn.view_fund_docs')) ?></a></p>
                     </div>
                 </div>
             </div>
@@ -414,7 +414,7 @@ include __DIR__ . '/src/partials/header.php';
                         <div class="mori-cinematic__stats">
                             <div><span class="num"><?= e(setting('stat_markets', '15')) ?>+</span><span class="lbl"><?= e(t('stat.eemea_markets')) ?></span></div>
                             <div><span class="num"><?= e(setting('stat_securities', '200')) ?>+</span><span class="lbl"><?= e(t('stat.securities_tracked')) ?></span></div>
-                            <div><span class="num"><?= e(setting('stat_years', '25')) ?>+</span><span class="lbl"><?= e(t('stat.years_experience')) ?></span></div>
+                            <div><span class="num"><?= e(setting('stat_years', '30')) ?>+</span><span class="lbl"><?= e(t('stat.years_experience')) ?></span></div>
                         </div>
                     </div>
                 </div>
