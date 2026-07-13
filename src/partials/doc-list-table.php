@@ -13,6 +13,7 @@ use function Mori\e;
 use function Mori\asset;
 use function Mori\format_date;
 use function Mori\t;
+$docListIsDe = \Mori\I18n::locale() === 'de';
 ?>
 <?php if (empty($docs)): ?>
 <div style="background:#fff;border:1px dashed var(--mori-border,#E1E7EE);border-radius:10px;padding:48px;text-align:center;color:var(--mori-muted,#7A8B99);font-size:14px;">
@@ -36,7 +37,7 @@ use function Mori\t;
                     <div style="display:flex;align-items:flex-start;gap:12px;">
                         <i class="fa-regular fa-file-pdf" style="color:var(--accent-color,#1ABC9C);font-size:18px;margin-top:2px;"></i>
                         <div style="flex:1;">
-                            <div style="font-weight:600;color:var(--primary-color,#1B3A5C);"><?= e($d['title']) ?></div>
+                            <div style="font-weight:600;color:var(--primary-color,#1B3A5C);"><?= e($docListIsDe && !empty($d['title_de']) ? $d['title_de'] : $d['title']) ?></div>
                             <?php if (!empty($d['description'])): ?>
                             <div style="font-size:12.5px;color:var(--mori-text-soft,#5A6B7B);margin-top:4px;line-height:1.55;"><?= e($d['description']) ?></div>
                             <?php endif; ?>

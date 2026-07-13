@@ -27,6 +27,15 @@ try {
             AND COLUMN_NAME = 'show_on_fund_page'"
     ) > 0;
 } catch (\Throwable) {}
+$hasTitleDeCol = false;
+try {
+    $hasTitleDeCol = (int) $db->fetchColumn(
+        "SELECT COUNT(*) FROM information_schema.COLUMNS
+          WHERE TABLE_SCHEMA = DATABASE()
+            AND TABLE_NAME = 'documents'
+            AND COLUMN_NAME = 'title_de'"
+    ) > 0;
+} catch (\Throwable) {}
 
 // AJAX: toggle "show on fund detail page" flag
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle_fund_page') {
@@ -149,6 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'uploa
         if ($hasFundPageCol) {
             $docData['show_on_fund_page'] = isset($_POST['show_on_fund_page']) ? 1 : 0;
         }
+        if ($hasTitleDeCol) {
+            $docData['title_de'] = trim($_POST['title_de'] ?? '') ?: null;
+        }
         $id = $db->insert('documents', $docData);
 
         // Many-to-many share classes
@@ -228,6 +240,8 @@ include __DIR__ . '/partials/layout-start.php';
                 <div>
                     <label>Title *</label>
                     <input type="text" name="title" required placeholder="e.g. Mori Ottoman Fund — Q4 2025 Factsheet">
+                    <label style="margin-top:8px;">Title — DE <span style="font-weight:400;color:var(--a-muted);">(shown on the German site; leave blank to reuse EN)</span></label>
+                    <input type="text" name="title_de" placeholder="z. B. Mori Ottoman Fund — Factsheet Q4 2025">
                 </div>
                 <div>
                     <label>Document date</label>
