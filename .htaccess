@@ -31,12 +31,18 @@ Options -Indexes
     </IfModule>
 </FilesMatch>
 
-# Force HTTPS (uncomment after SSL is active in CyberPanel)
-# <IfModule mod_rewrite.c>
-#     RewriteEngine On
-#     RewriteCond %{HTTPS} off
-#     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
-# </IfModule>
+# Production domain handling
+# - old staging host 301-redirects to the live domain (path + query preserved)
+# - plain http is upgraded to https (SSL is active on mori-capital.com)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^mori\.vylence\.com$ [NC]
+    RewriteRule ^(.*)$ https://mori-capital.com/$1 [R=301,L]
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+</IfModule>
+# HSTS stays disabled for the first weeks of production — enable it in the
+# "Security headers" block below once HTTPS is confirmed stable.
 
 # Pretty URLs — route extension-less paths to .php (best-effort)
 <IfModule mod_rewrite.c>
