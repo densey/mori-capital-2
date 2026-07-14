@@ -38,6 +38,8 @@ Options -Indexes
     RewriteEngine On
     RewriteCond %{HTTP_HOST} ^mori\.vylence\.com$ [NC]
     RewriteRule ^(.*)$ https://mori-capital.com/$1 [R=301,L]
+    RewriteCond %{HTTP_HOST} ^www\.mori-capital\.com$ [NC]
+    RewriteRule ^(.*)$ https://mori-capital.com/$1 [R=301,L]
     RewriteCond %{HTTPS} off
     RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 </IfModule>
