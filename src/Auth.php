@@ -62,12 +62,18 @@ final class Auth
             return null;
         }
 
-        // Rehash if algorithm parameters changed
-        if (password_needs_rehash($user['password_hash'], PASSWORD_ARGON2ID)) {
-            $db->update('users',
-                ['password_hash' => password_hash($password, PASSWORD_ARGON2ID)],
-                ['id' => $user['id']]
-            );
+        // Opportunistic rehash to the strongest locally-available algorithm.
+        // Must never block a valid login: some hosts lack Argon2 entirely, and
+        // a failed rehash is a non-event (the old hash keeps working).
+        try {
+            if (password_needs_rehash($user['password_hash'], self::preferredAlgo())) {
+                $db->update('users',
+                    ['password_hash' => self::hash($password)],
+                    ['id' => $user['id']]
+                );
+            }
+        } catch (\Throwable $e) {
+            error_log('Password rehash skipped: ' . $e->getMessage());
         }
 
         session_regenerate_id(true);
@@ -144,13 +150,24 @@ final class Auth
         }
     }
 
+    /**
+     * Strongest password algorithm available on THIS PHP build. Shared-hosting
+     * PHP is often compiled without Argon2, in which case the PASSWORD_ARGON2ID
+     * constant does not exist at all — referencing it fatals. Fall back to
+     * bcrypt (PASSWORD_DEFAULT) there; password_verify() handles both formats.
+     */
+    public static function preferredAlgo(): string|int|null
+    {
+        return defined('PASSWORD_ARGON2ID') ? \PASSWORD_ARGON2ID : PASSWORD_DEFAULT;
+    }
+
     public static function hash(string $password): string
     {
-        return password_hash($password, PASSWORD_ARGON2ID, [
-            'memory_cost' => 65536,
-            'time_cost'   => 4,
-            'threads'     => 2,
-        ]);
+        $algo = self::preferredAlgo();
+        $opts = defined('PASSWORD_ARGON2ID') && $algo === \PASSWORD_ARGON2ID
+            ? ['memory_cost' => 65536, 'time_cost' => 4, 'threads' => 2]
+            : [];
+        return password_hash($password, $algo, $opts);
     }
 
     private static function fingerprint(): string
