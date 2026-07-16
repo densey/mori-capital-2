@@ -81,10 +81,16 @@ final class Auth
         $_SESSION[self::SESS_LAST] = time();
         $_SESSION[self::SESS_FP]   = self::fingerprint();
 
-        $db->update('users', [
-            'last_login_at' => date('Y-m-d H:i:s'),
-            'last_login_ip' => self::clientIp(),
-        ], ['id' => $user['id']]);
+        // Login metadata is nice-to-have — it must never block a valid login
+        // (e.g. strict-mode data-too-long or a missing column on a new host).
+        try {
+            $db->update('users', [
+                'last_login_at' => date('Y-m-d H:i:s'),
+                'last_login_ip' => substr(self::clientIp(), 0, 45),
+            ], ['id' => $user['id']]);
+        } catch (\Throwable $e) {
+            error_log('last-login update skipped: ' . $e->getMessage());
+        }
 
         AuditLog::log($user['id'], 'login', 'users', $user['id'], 'Successful login');
 
@@ -179,9 +185,17 @@ final class Auth
 
     public static function clientIp(): string
     {
-        return $_SERVER['HTTP_X_FORWARDED_FOR']
-            ?? $_SERVER['HTTP_X_REAL_IP']
-            ?? $_SERVER['REMOTE_ADDR']
-            ?? '';
+        // X-Forwarded-For may carry a comma-separated proxy chain
+        // ("client, proxy1, proxy2") behind load balancers — take the first
+        // hop and validate it, otherwise fall through. Always fits the
+        // VARCHAR(45) ip columns.
+        foreach (['HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR'] as $key) {
+            if (empty($_SERVER[$key])) continue;
+            $candidate = trim(explode(',', (string) $_SERVER[$key])[0]);
+            if (filter_var($candidate, FILTER_VALIDATE_IP) !== false) {
+                return $candidate;
+            }
+        }
+        return substr(trim((string) ($_SERVER['REMOTE_ADDR'] ?? '')), 0, 45);
     }
 }
