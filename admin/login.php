@@ -25,13 +25,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($_SESSION['_login_attempts'] > 8) {
             $error = 'Too many login attempts. Please try again later.';
         } else {
-            $user = Auth::attempt($email, $pass);
-            if ($user) {
-                $_SESSION['_login_attempts'] = 0;
-                redirect(asset('admin/dashboard.php'));
-            } else {
+            try {
+                $user = Auth::attempt($email, $pass);
+                if ($user) {
+                    $_SESSION['_login_attempts'] = 0;
+                    redirect(asset('admin/dashboard.php'));
+                }
                 $error = 'Invalid email or password.';
                 \Mori\AuditLog::log(null, 'login_failed', 'users', null, 'Email: ' . $email);
+            } catch (\Throwable $e) {
+                // TEMPORARY DIAGNOSTIC (was a blind 500): surface the real
+                // failure so it can be fixed, and keep a copy in the log.
+                // Revert to a generic message once the cause is resolved.
+                error_log('LOGIN FATAL: ' . $e::class . ': ' . $e->getMessage()
+                    . ' @ ' . $e->getFile() . ':' . $e->getLine());
+                $error = 'Login error — ' . $e::class . ': ' . $e->getMessage()
+                    . ' (' . basename($e->getFile()) . ':' . $e->getLine() . ')';
             }
         }
     }
@@ -80,5 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
+<!-- r-diag-1 -->
 </body>
 </html>
