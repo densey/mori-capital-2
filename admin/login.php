@@ -34,13 +34,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Invalid email or password.';
                 \Mori\AuditLog::log(null, 'login_failed', 'users', null, 'Email: ' . $email);
             } catch (\Throwable $e) {
-                // TEMPORARY DIAGNOSTIC (was a blind 500): surface the real
-                // failure so it can be fixed, and keep a copy in the log.
-                // Revert to a generic message once the cause is resolved.
+                // A login-path failure must never surface as a blind 500:
+                // log the real cause, show the user a safe generic message.
                 error_log('LOGIN FATAL: ' . $e::class . ': ' . $e->getMessage()
                     . ' @ ' . $e->getFile() . ':' . $e->getLine());
-                $error = 'Login error — ' . $e::class . ': ' . $e->getMessage()
-                    . ' (' . basename($e->getFile()) . ':' . $e->getLine() . ')';
+                $error = 'Sign-in failed due to a server error. Please try again — if it persists, contact the administrator.';
             }
         }
     }
@@ -89,6 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<!-- r-diag-1 -->
+<!-- r-diag-2 -->
 </body>
 </html>

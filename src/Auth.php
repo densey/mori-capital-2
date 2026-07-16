@@ -92,7 +92,7 @@ final class Auth
             error_log('last-login update skipped: ' . $e->getMessage());
         }
 
-        AuditLog::log($user['id'], 'login', 'users', $user['id'], 'Successful login');
+        AuditLog::log((int) $user['id'], 'login', 'users', (int) $user['id'], 'Successful login');
 
         unset($user['password_hash']);
         return $user;

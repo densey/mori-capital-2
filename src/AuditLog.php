@@ -5,9 +5,14 @@ namespace Mori;
 
 final class AuditLog
 {
-    public static function log(?int $userId, string $action, ?string $entity = null,
-                               ?int $entityId = null, ?string $details = null): void
+    // ids are int|string|null: some PDO builds (libmysqlclient, e.g. shared
+    // hosting) return every numeric column as a string, and with strict_types
+    // a "7" hitting an ?int parameter is a fatal TypeError instead of a log row.
+    public static function log(int|string|null $userId, string $action, ?string $entity = null,
+                               int|string|null $entityId = null, ?string $details = null): void
     {
+        $userId   = $userId   !== null ? (int) $userId   : null;
+        $entityId = $entityId !== null ? (int) $entityId : null;
         try {
             Database::instance()->insert('audit_log', [
                 'user_id'    => $userId,
