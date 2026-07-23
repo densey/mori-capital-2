@@ -138,6 +138,13 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
                             <div style="font-size:14px;font-weight:600;color:var(--primary-color,#1B3A5C);line-height:1.4;margin-bottom:4px;"><?= e($doc['title']) ?></div>
                             <div style="font-size:11px;color:var(--mori-muted,#7A8B99);"><?= e(format_date($doc['document_date'])) ?> · <?= e(format_bytes((int) $doc['file_size'])) ?></div>
                         </div>
+                        <span role="button" tabindex="0" class="pdfv-eye-chip" style="margin-top:2px;"
+                              data-pdf-preview data-pdf-url="<?= asset('api/download.php?id=' . (int)$doc['id'] . '&view=1') ?>"
+                              data-pdf-title="<?= e($doc['title']) ?>"
+                              data-pdf-download="<?= asset('api/download.php?id=' . (int)$doc['id']) ?>"
+                              title="<?= e(t('doc.preview')) ?>" aria-label="<?= e(t('doc.preview')) ?>">
+                            <i class="fa-regular fa-eye"></i>
+                        </span>
                     </div>
                 </a>
             </div>

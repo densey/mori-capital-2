@@ -214,5 +214,80 @@ if ($customFooter):
 <?= $customFooter ?>
 <?php endif; ?>
 
+
+<!-- PDF preview modal (eye buttons in document lists) -->
+<script>
+(function () {
+    var L = {
+        openTab:  <?= json_encode(\Mori\t('preview.open_tab')) ?>,
+        close:    <?= json_encode(\Mori\t('preview.close')) ?>,
+        download: <?= json_encode(\Mori\t('btn.download')) ?>
+    };
+    var overlay = null, frame = null, titleEl = null, dlBtn = null, tabBtn = null, spin = null;
+
+    function isMobile() {
+        return window.matchMedia('(max-width: 900px)').matches
+            || /iPad|iPhone|iPod/.test(navigator.userAgent);
+    }
+    function build() {
+        overlay = document.createElement('div');
+        overlay.className = 'pdfv-overlay';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.innerHTML =
+            '<div class="pdfv-panel">' +
+              '<div class="pdfv-head">' +
+                '<div class="pdfv-title"></div>' +
+                '<a class="pdfv-btn pdfv-btn--ghost pdfv-tab" target="_blank" rel="noopener" title="' + L.openTab + '"><i class="fa-solid fa-up-right-from-square"></i><span>' + L.openTab + '</span></a>' +
+                '<a class="pdfv-btn pdfv-btn--dl pdfv-dl" title="' + L.download + '"><i class="fa-solid fa-download"></i><span>' + L.download + '</span></a>' +
+                '<button type="button" class="pdfv-btn pdfv-btn--close" aria-label="' + L.close + '" title="' + L.close + '"><i class="fa-solid fa-xmark"></i></button>' +
+              '</div>' +
+              '<div class="pdfv-body">' +
+                '<div class="pdfv-spin"><i class="fa-solid fa-circle-notch fa-spin"></i></div>' +
+                '<iframe title="PDF"></iframe>' +
+              '</div>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        frame   = overlay.querySelector('iframe');
+        titleEl = overlay.querySelector('.pdfv-title');
+        dlBtn   = overlay.querySelector('.pdfv-dl');
+        tabBtn  = overlay.querySelector('.pdfv-tab');
+        spin    = overlay.querySelector('.pdfv-spin');
+        frame.addEventListener('load', function () { spin.classList.add('is-done'); });
+        overlay.querySelector('.pdfv-btn--close').addEventListener('click', close);
+        overlay.addEventListener('click', function (e) { if (e.target === overlay) close(); });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && overlay.classList.contains('is-open')) close();
+        });
+    }
+    function open(url, title, dlUrl) {
+        if (isMobile()) { window.open(url, '_blank', 'noopener'); return; }
+        if (!overlay) build();
+        titleEl.textContent = title || 'PDF';
+        tabBtn.href = url;
+        dlBtn.href = dlUrl || url;
+        spin.classList.remove('is-done');
+        frame.src = url;
+        overlay.classList.add('is-open');
+        document.body.classList.add('pdfv-lock');
+        overlay.querySelector('.pdfv-btn--close').focus();
+    }
+    function close() {
+        overlay.classList.remove('is-open');
+        document.body.classList.remove('pdfv-lock');
+        setTimeout(function () { if (frame) frame.src = 'about:blank'; }, 200);
+    }
+    document.addEventListener('click', function (e) {
+        var t = e.target.closest && e.target.closest('[data-pdf-preview]');
+        if (!t) return;
+        e.preventDefault();
+        e.stopPropagation();
+        open(t.getAttribute('data-pdf-url') || t.getAttribute('href'),
+             t.getAttribute('data-pdf-title') || '',
+             t.getAttribute('data-pdf-download') || '');
+    }, true);
+})();
+</script>
+
 </body>
 </html>

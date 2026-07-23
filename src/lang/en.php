@@ -29,6 +29,9 @@ return [
     'btn.contact_us'       => 'Contact us',
     'btn.send'             => 'Send',
     'btn.download'         => 'Download',
+    'doc.preview'          => 'Preview',
+    'preview.open_tab'     => 'Open in new tab',
+    'preview.close'        => 'Close',
     'btn.view_all'         => 'View all',
 
     // Sections

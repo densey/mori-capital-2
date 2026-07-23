@@ -14,12 +14,17 @@ try {
     $path = dirname(__DIR__) . '/uploads/documents/' . $doc['file_path'];
     if (!is_readable($path)) { http_response_code(404); exit('File missing on disk'); }
 
-    // Track download (non-blocking)
-    try { $db->query('UPDATE documents SET download_count = download_count + 1 WHERE id = :id', ['id' => $id]); }
-    catch (\Throwable) {}
+    // ?view=1 → serve inline for the in-page PDF preview; only real
+    // downloads bump the counter.
+    $inline = ($_GET['view'] ?? '') === '1';
 
-    header('Content-Type: ' . ($doc['mime_type'] ?: 'application/octet-stream'));
-    header('Content-Disposition: attachment; filename="' . basename($doc['file_name']) . '"');
+    if (!$inline) {
+        try { $db->query('UPDATE documents SET download_count = download_count + 1 WHERE id = :id', ['id' => $id]); }
+        catch (\Throwable) {}
+    }
+
+    header('Content-Type: ' . ($inline ? 'application/pdf' : ($doc['mime_type'] ?: 'application/octet-stream')));
+    header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment') . '; filename="' . basename($doc['file_name']) . '"');
     header('Content-Length: ' . filesize($path));
     header('Cache-Control: private, max-age=0, must-revalidate');
     header('Pragma: public');

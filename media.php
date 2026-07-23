@@ -105,6 +105,15 @@ include __DIR__ . '/src/partials/page-header.php';
                             </div>
                             <div style="font-size:15px;font-weight:600;color:var(--primary-color,#1B3A5C);line-height:1.4;"><?= e($title) ?></div>
                         </div>
+                        <?php if (!$ext && str_ends_with(strtolower(parse_url($url, PHP_URL_PATH) ?? ''), '.pdf')): ?>
+                        <span role="button" tabindex="0" class="pdfv-eye-chip" style="flex-shrink:0;font-size:14px;"
+                              data-pdf-preview data-pdf-url="<?= e($href) ?>"
+                              data-pdf-title="<?= e($title) ?>"
+                              data-pdf-download="<?= e($href) ?>"
+                              title="<?= e(t('doc.preview')) ?>" aria-label="<?= e(t('doc.preview')) ?>">
+                            <i class="fa-regular fa-eye"></i>
+                        </span>
+                        <?php endif; ?>
                         <div style="flex-shrink:0;display:inline-flex;align-items:center;gap:7px;color:var(--accent-color,#1ABC9C);font-size:13px;font-weight:600;white-space:nowrap;">
                             <span class="media-row__action"><?= e($meta['action']) ?></span>
                             <i class="fa-solid fa-arrow-right" style="font-size:11px;"></i>

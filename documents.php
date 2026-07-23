@@ -152,6 +152,13 @@ include __DIR__ . '/src/partials/page-header.php';
                                 <a href="<?= asset('api/download.php?id=' . (int)$d['id']) ?>" target="_blank" rel="noopener noreferrer" title="<?= e($d['title']) ?> · <?= e(format_date($d['document_date'])) ?> · <?= e(format_bytes((int)$d['file_size'])) ?>" style="display:inline-flex;align-items:center;gap:4px;color:var(--accent-color,#1ABC9C);font-weight:600;text-decoration:none;font-size:12.5px;">
                                     <i class="fa-regular fa-file-pdf"></i> PDF
                                 </a>
+                                <a href="<?= asset('api/download.php?id=' . (int)$d['id'] . '&view=1') ?>" target="_blank" rel="noopener noreferrer"
+                                   class="pdfv-eye-chip" style="margin-left:7px;"
+                                   data-pdf-preview data-pdf-title="<?= e($d['title']) ?>"
+                                   data-pdf-download="<?= asset('api/download.php?id=' . (int)$d['id']) ?>"
+                                   title="<?= e(t('doc.preview')) ?>" aria-label="<?= e(t('doc.preview')) ?>">
+                                    <i class="fa-regular fa-eye"></i>
+                                </a>
                                 <?php else: ?>
                                 <span style="color:var(--mori-muted,#7A8B99);font-size:12px;">—</span>
                                 <?php endif; ?>

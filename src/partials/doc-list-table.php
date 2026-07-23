@@ -31,13 +31,15 @@ $docListIsDe = \Mori\I18n::locale() === 'de';
         </thead>
         <?php endif; ?>
         <tbody>
-            <?php foreach ($docs as $d): ?>
+            <?php foreach ($docs as $d):
+                $docTitle = $docListIsDe && !empty($d['title_de']) ? $d['title_de'] : $d['title'];
+            ?>
             <tr style="border-top:1px solid var(--mori-border,#E1E7EE);">
                 <td style="padding:14px 18px;width:100%;">
                     <div style="display:flex;align-items:flex-start;gap:12px;">
                         <i class="fa-regular fa-file-pdf" style="color:var(--accent-color,#1ABC9C);font-size:18px;margin-top:2px;"></i>
                         <div style="flex:1;">
-                            <div style="font-weight:600;color:var(--primary-color,#1B3A5C);"><?= e($docListIsDe && !empty($d['title_de']) ? $d['title_de'] : $d['title']) ?></div>
+                            <div style="font-weight:600;color:var(--primary-color,#1B3A5C);"><?= e($docTitle) ?></div>
                             <?php if (!empty($d['description'])): ?>
                             <div style="font-size:12.5px;color:var(--mori-text-soft,#5A6B7B);margin-top:4px;line-height:1.55;"><?= e($d['description']) ?></div>
                             <?php endif; ?>
@@ -45,6 +47,13 @@ $docListIsDe = \Mori\I18n::locale() === 'de';
                     </div>
                 </td>
                 <td style="padding:14px 18px;text-align:right;white-space:nowrap;">
+                    <a href="<?= asset('api/download.php?id=' . (int)$d['id'] . '&view=1') ?>" target="_blank" rel="noopener noreferrer"
+                       class="pdf-preview-link" style="margin-right:6px;"
+                       data-pdf-preview data-pdf-title="<?= e($docTitle) ?>"
+                       data-pdf-download="<?= asset('api/download.php?id=' . (int)$d['id']) ?>"
+                       title="<?= e(t('doc.preview')) ?>" aria-label="<?= e(t('doc.preview')) ?>">
+                        <i class="fa-regular fa-eye"></i> <span><?= e(t('doc.preview')) ?></span>
+                    </a>
                     <a href="<?= asset('api/download.php?id=' . (int)$d['id']) ?>" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:6px;background:var(--accent-color,#1ABC9C);color:#fff;padding:8px 14px;border-radius:5px;font-size:12px;font-weight:600;text-decoration:none;">
                         <i class="fa-solid fa-download"></i> PDF
                     </a>

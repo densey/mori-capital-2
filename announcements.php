@@ -74,9 +74,16 @@ include __DIR__ . '/src/partials/page-header.php';
                 </div>
                 <?php endif; ?>
                 <?php if (!empty($a['doc_id'])): ?>
-                <div style="margin-top:14px;">
+                <div style="margin-top:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                     <a href="<?= asset('api/download.php?id=' . (int)$a['doc_id']) ?>" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent-color,#1ABC9C);color:#fff;padding:9px 16px;border-radius:6px;font-size:13px;font-weight:600;text-decoration:none;">
                         <i class="fa-regular fa-file-pdf"></i> <?= e($a['doc_title']) ?>
+                    </a>
+                    <a href="<?= asset('api/download.php?id=' . (int)$a['doc_id'] . '&view=1') ?>" target="_blank" rel="noopener noreferrer"
+                       class="pdf-preview-link"
+                       data-pdf-preview data-pdf-title="<?= e($a['doc_title']) ?>"
+                       data-pdf-download="<?= asset('api/download.php?id=' . (int)$a['doc_id']) ?>"
+                       title="<?= e(t('doc.preview')) ?>" aria-label="<?= e(t('doc.preview')) ?>">
+                        <i class="fa-regular fa-eye"></i> <span><?= e(t('doc.preview')) ?></span>
                     </a>
                 </div>
                 <?php endif; ?>
