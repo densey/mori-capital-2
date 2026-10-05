@@ -74,6 +74,14 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
     $showNavCol = false;
     foreach ($shareClasses as $scChk) { if (isset($latestNavs[(int) $scChk['id']])) { $showNavCol = true; break; } }
 ?>
+<style>
+    /* Phones: keep class, latest NAV, currency and status in view */
+    @media (max-width: 640px) {
+        .sc-table .sc-hide-sm { display: none; }
+        .sc-table .sc-show-sm { display: block !important; }
+        .sc-table th, .sc-table td { padding: 12px 10px !important; }
+    }
+</style>
 <div class="our-services" style="padding:60px 0;">
     <div class="container">
         <div class="section-title" style="margin-bottom:20px;">
@@ -81,16 +89,16 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
             <h2 style="font-size:clamp(22px,2.4vw,30px);"><?= e(t('fund.share_classes_title')) ?></h2>
         </div>
         <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;overflow:hidden;">
+            <table class="sc-table" style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border:1px solid var(--mori-border,#E1E7EE);border-radius:10px;overflow:hidden;">
                 <thead>
                     <tr style="background:var(--mori-bg-soft,#F5F7FA);">
                         <th style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_class')) ?></th>
-                        <th style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_isin')) ?></th>
-                        <th style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_currency')) ?></th>
                         <?php if ($showNavCol): ?>
                         <th style="text-align:right;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_nav')) ?></th>
                         <?php endif; ?>
-                        <th style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_inception')) ?></th>
+                        <th class="sc-hide-sm" style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_isin')) ?></th>
+                        <th class="sc-hide-sm" style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_currency')) ?></th>
+                        <th class="sc-hide-sm" style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_inception')) ?></th>
                         <th style="text-align:left;padding:14px 18px;font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;"><?= e(t('fund.col_status')) ?></th>
                     </tr>
                 </thead>
@@ -101,9 +109,7 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
                         if ($scStatusLabel === $scStatusKey) { $scStatusLabel = ucfirst((string)$sc['status']); }
                     ?>
                     <tr style="border-top:1px solid var(--mori-border,#E1E7EE);">
-                        <td style="padding:14px 18px;font-weight:600;color:var(--primary-color,#1B3A5C);"><?= e($sc['name']) ?></td>
-                        <td style="padding:14px 18px;font-family:monospace;color:var(--mori-text-soft,#5A6B7B);"><?= e($sc['isin'] ?? '—') ?></td>
-                        <td style="padding:14px 18px;"><?= e($sc['currency']) ?></td>
+                        <td style="padding:14px 18px;font-weight:600;color:var(--primary-color,#1B3A5C);"><?= e($sc['name']) ?><span class="sc-show-sm" style="display:none;font-size:11px;font-weight:500;color:var(--mori-muted,#7A8B99);margin-top:2px;"><?= e($sc['currency']) ?></span></td>
                         <?php if ($showNavCol): $ln = $latestNavs[(int) $sc['id']] ?? null; ?>
                         <td style="padding:14px 18px;text-align:right;white-space:nowrap;">
                             <?php if ($ln): ?>
@@ -114,7 +120,9 @@ if (!isset($fund) || !$fund) { echo '<div class="container" style="padding:80px 
                             <?php endif; ?>
                         </td>
                         <?php endif; ?>
-                        <td style="padding:14px 18px;"><?= e(format_date($sc['inception_date'], 'M Y')) ?></td>
+                        <td class="sc-hide-sm" style="padding:14px 18px;font-family:monospace;color:var(--mori-text-soft,#5A6B7B);"><?= e($sc['isin'] ?? '—') ?></td>
+                        <td class="sc-hide-sm" style="padding:14px 18px;"><?= e($sc['currency']) ?></td>
+                        <td class="sc-hide-sm" style="padding:14px 18px;"><?= e(format_date($sc['inception_date'], 'M Y')) ?></td>
                         <td style="padding:14px 18px;">
                             <span style="display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;<?= $sc['status']==='active'?'background:rgba(26,188,156,.12);color:#16A085;':'background:rgba(122,139,153,.12);color:var(--mori-muted,#7A8B99);' ?>"><?= e($scStatusLabel) ?></span>
                         </td>

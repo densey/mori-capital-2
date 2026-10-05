@@ -128,20 +128,14 @@ function fund_page_documents(int $fundId, int $limit = 12): array
 }
 
 /**
- * NAV per share for display: 2–4 decimals (trailing zeros beyond 2 trimmed),
- * locale separators — EN 1,234.5678 · DE 1.234,5678.
+ * NAV per share for display: always the stored 4 decimals (an official price
+ * keeps its trailing zeros), locale separators — EN 1,234.5600 · DE 1.234,5600.
  */
 function format_nav(float|int|string|null $value, ?string $locale = null): string
 {
     if ($value === null || $value === '') return '—';
-    $v = (float) $value;
-    $decimals = 2;
-    foreach ([2, 3, 4] as $d) {
-        $decimals = $d;
-        if (abs(round($v, $d) - round($v, 4)) < 0.000001) break;
-    }
     $de = ($locale ?? I18n::locale()) === 'de';
-    return number_format($v, $decimals, $de ? ',' : '.', $de ? '.' : ',');
+    return number_format((float) $value, 4, $de ? ',' : '.', $de ? '.' : ',');
 }
 
 /**

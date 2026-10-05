@@ -14,13 +14,18 @@
  *             Date | IE0002787442 | IE00B53RTW70 | …
  *           (column headers may be an ISIN, "Name (ISIN)" or the exact name)
  *
- * The parsing/validation half (readFile, analyze, jumpWarnings) is pure and
- * has no database dependency, so it can be unit-tested from the CLI.
+ * Design rule: when a value could be read two ways, the file is REJECTED with
+ * an explanation rather than guessed — a wrong price must never be published
+ * silently. The parsing/validation half (readFile, analyze, seriesWarnings) is
+ * pure and has no database dependency, so it can be unit-tested from the CLI.
  *
  * Portability notes (production runs PHP 8.1 on shared hosting):
  *   - pdo_mysql there returns every column as a string → all DB values are
  *     cast explicitly before use.
- *   - ZipArchive may be missing → .xlsx gives a clear "upload CSV" message.
+ *   - ZipArchive / SimpleXML may be missing → .xlsx gives a clear "upload CSV"
+ *     message and the template falls back to CSV.
+ *   - sys_get_temp_dir() may be outside open_basedir → a private folder under
+ *     uploads/ is used instead.
  */
 declare(strict_types=1);
 
@@ -30,19 +35,22 @@ final class NavImport
 {
     public const MAX_BYTES  = 15 * 1024 * 1024;   // upload size guard
     public const MAX_ROWS   = 200000;             // ~70 years of daily data × 11 classes
+    public const MAX_COLS   = 300;                // far more than any price file needs
     public const JUMP_WARN  = 0.15;               // flag NAV moves > 15% between consecutive points
     public const MAX_NAV    = 99999999999.9999;   // DECIMAL(15,4)
+    public const ARCHIVE_MAX_BYTES = 5 * 1024 * 1024;  // source files up to 5 MB are archived in the DB
+    public const STALE_MSG  = 'Prices were changed by someone else after you reviewed this file. Nothing was published — please review it again.';
 
-    private const NS_MAIN   = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
     private const NS_REL    = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+    private const NS_MAIN   = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
     private const NS_PKGREL = 'http://schemas.openxmlformats.org/package/2006/relationships';
 
     /** Header aliases → canonical field. Compared after normaliseHeader(). */
     private const HEADER_ALIASES = [
         'date' => [
             'date', 'nav date', 'valuation date', 'valuation day', 'price date', 'pricing date',
-            'dealing date', 'trade date', 'as of', 'as of date', 'as at', 'as at date',
-            'datum', 'bewertungsdatum', 'stichtag', 'nav datum',
+            'as of', 'as of date', 'as at', 'as at date',
+            'datum', 'bewertungsdatum', 'stichtag', 'nav datum', 'bewertungstag',
         ],
         'isin' => ['isin', 'isin code', 'isin number', 'isin nr', 'isin no'],
         'class' => [
@@ -50,14 +58,21 @@ final class NavImport
             'anteilsklasse', 'anteilklasse',
         ],
         'nav' => [
-            'nav', 'nav per share', 'nav share', 'nav per unit', 'net asset value',
-            'net asset value per share', 'price', 'nav price', 'unit price', 'share price',
+            'nav', 'nav per share', 'nav share', 'nav per unit', 'net asset value per share',
+            'net asset value', 'price', 'nav price', 'unit price', 'share price',
             'anteilwert', 'nettoinventarwert', 'nettoinventarwert je anteil', 'nav je anteil',
             'inventarwert', 'kurs',
         ],
-        'benchmark' => ['benchmark', 'benchmark value', 'benchmark index', 'index', 'index value', 'vergleichsindex'],
+        'benchmark' => ['benchmark', 'benchmark value', 'benchmark index', 'benchmark level', 'vergleichsindex'],
         'currency'  => ['currency', 'ccy', 'currency code', 'curr', 'wahrung', 'waehrung', 'wahrungscode'],
     ];
+    private const FIELD_LABELS = [
+        'date' => 'Date', 'isin' => 'ISIN', 'class' => 'Share class', 'nav' => 'NAV',
+        'benchmark' => 'Benchmark', 'currency' => 'Currency',
+    ];
+    /** Parenthesised hints that may be dropped from a column title ("Benchmark (optional)"). */
+    private const DROPPABLE_HINTS = ['optional', 'opt', 'required', 'eur', 'usd', 'gbp', 'chf', 'ccy', 'in eur', 'in usd', 'in gbp'];
+    private const EXCEL_ERRORS = ['#N/A', '#REF!', '#VALUE!', '#DIV/0!', '#NUM!', '#NAME?', '#NULL!', '#SPILL!', '#CALC!', '#GETTING_DATA', '#FORMULA'];
 
     // ======================================================================
     // 1. READING
@@ -65,7 +80,10 @@ final class NavImport
 
     /**
      * Read an uploaded file into rows.
-     * @return array{rows: list<array{n:int, cells:list<string>}>, source:string, delimiter:?string}
+     * Each row: n (sheet/file row number), cells (strings), and for .xlsx also
+     * types (cell type per column: n|s|str|inlineStr|b|e|d) and fmt
+     * (per column: 'date' | 'percent' when the cell has such a number format).
+     * @return array{rows: list<array{n:int, cells:list<string>, types?:array<int,string>, fmt?:array<int,string>}>, source:string, delimiter:?string, date1904:bool}
      */
     public static function readFile(string $path, string $originalName): array
     {
@@ -96,21 +114,38 @@ final class NavImport
         return self::readCsv($path);
     }
 
-    /** @return array{rows: list<array{n:int, cells:list<string>}>, source:string, delimiter:?string} */
+    /** True when this server can read (and so should hand out) .xlsx files. */
+    public static function xlsxSupported(): bool
+    {
+        return class_exists(\ZipArchive::class) && function_exists('simplexml_load_string');
+    }
+
     private static function readCsv(string $path): array
     {
         $raw = (string) file_get_contents($path);
 
         // Encoding: UTF-16 (Excel "Unicode Text"), UTF-8 BOM, or legacy Windows-1252.
-        if (str_starts_with($raw, "\xFF\xFE")) {
-            $raw = (string) mb_convert_encoding(substr($raw, 2), 'UTF-8', 'UTF-16LE');
-        } elseif (str_starts_with($raw, "\xFE\xFF")) {
-            $raw = (string) mb_convert_encoding(substr($raw, 2), 'UTF-8', 'UTF-16BE');
+        $mb = function_exists('mb_convert_encoding');
+        if (str_starts_with($raw, "\xFF\xFE") || str_starts_with($raw, "\xFE\xFF")) {
+            $enc = str_starts_with($raw, "\xFF\xFE") ? 'UTF-16LE' : 'UTF-16BE';
+            if ($mb) {
+                $raw = (string) mb_convert_encoding(substr($raw, 2), 'UTF-8', $enc);
+            } elseif (function_exists('iconv')) {
+                $raw = (string) iconv($enc, 'UTF-8', substr($raw, 2));
+            } else {
+                throw new \RuntimeException('This text file is saved as "Unicode/UTF-16", which this server cannot read. Please save it as "CSV UTF-8" instead.');
+            }
         } elseif (str_starts_with($raw, "\xEF\xBB\xBF")) {
             $raw = substr($raw, 3);
         }
-        if (!mb_check_encoding($raw, 'UTF-8')) {
-            $raw = (string) mb_convert_encoding($raw, 'UTF-8', 'Windows-1252');
+        if (!preg_match('//u', $raw)) {                      // not valid UTF-8 → assume Windows-1252
+            if ($mb) {
+                $raw = (string) mb_convert_encoding($raw, 'UTF-8', 'Windows-1252');
+            } elseif (function_exists('iconv')) {
+                $raw = (string) iconv('Windows-1252', 'UTF-8//IGNORE', $raw);
+            } else {
+                $raw = (string) utf8_encode($raw);
+            }
         }
         $raw = str_replace(["\r\n", "\r"], "\n", $raw);
 
@@ -126,6 +161,7 @@ final class NavImport
 
         $fh = fopen('php://temp', 'r+');
         fwrite($fh, $raw);
+        unset($raw);
         rewind($fh);
 
         $rows = [];
@@ -133,6 +169,10 @@ final class NavImport
         while (($cells = fgetcsv($fh, 0, $delim, '"', '')) !== false) {
             $n++;
             if ($cells === [null]) continue;                      // blank line
+            if (count($cells) > self::MAX_COLS) {
+                fclose($fh);
+                throw new \RuntimeException("Row {$n} has more than " . self::MAX_COLS . ' columns — this does not look like a price file.');
+            }
             $cells = array_map(fn($c) => self::cleanCell((string) $c), $cells);
             if (implode('', $cells) === '') continue;
             $rows[] = ['n' => $n, 'cells' => array_values($cells)];
@@ -143,7 +183,7 @@ final class NavImport
         }
         fclose($fh);
 
-        return ['rows' => $rows, 'source' => 'csv', 'delimiter' => $delim];
+        return ['rows' => $rows, 'source' => 'csv', 'delimiter' => $delim, 'date1904' => false];
     }
 
     /** Pick the delimiter from the header line (first non-empty, non-comment line). */
@@ -151,7 +191,7 @@ final class NavImport
     {
         foreach (explode("\n", $raw) as $line) {
             $t = trim($line);
-            if ($t === '' || str_starts_with($t, '#')) continue;
+            if ($t === '' || self::isComment($t)) continue;
             $unquoted = (string) preg_replace('/"[^"]*"/', '', $t);
             $best = ','; $bestCount = 0;
             foreach ([',', ';', "\t", '|'] as $cand) {
@@ -163,10 +203,20 @@ final class NavImport
         return ',';
     }
 
-    /** @return array{rows: list<array{n:int, cells:list<string>}>, source:string, delimiter:?string} */
+    /** "# …" comment line in a CSV — but never an Excel error value such as #N/A. */
+    private static function isComment(string $firstCell): bool
+    {
+        if (!str_starts_with($firstCell, '#')) return false;
+        $u = strtoupper($firstCell);
+        foreach (self::EXCEL_ERRORS as $err) {
+            if (str_starts_with($u, $err)) return false;
+        }
+        return true;
+    }
+
     private static function readXlsx(string $path): array
     {
-        if (!class_exists(\ZipArchive::class)) {
+        if (!self::xlsxSupported()) {
             throw new \RuntimeException('Excel files cannot be read on this server. Please save the file as CSV and upload that instead.');
         }
         $zip = new \ZipArchive();
@@ -175,9 +225,10 @@ final class NavImport
         }
 
         try {
-            [$sheetPath, $sharedPath] = self::xlsxLocateParts($zip);
-            $shared = $sharedPath ? self::xlsxSharedStrings($zip, $sharedPath) : [];
-            $sheet  = self::xlsxLoad($zip, $sheetPath);
+            $parts  = self::xlsxLocateParts($zip);
+            $shared = $parts['shared'] ? self::xlsxSharedStrings($zip, $parts['shared']) : [];
+            $styleKinds = $parts['styles'] ? self::xlsxStyleKinds($zip, $parts['styles']) : [];
+            $sheet  = self::xlsxLoad($zip, $parts['sheet']);
             if (!$sheet) {
                 throw new \RuntimeException('The first worksheet of the Excel file could not be read.');
             }
@@ -185,13 +236,12 @@ final class NavImport
 
             $rows = [];
             $auto = 0;
-            $sheetData = $sheet->children($ns)->sheetData;
-            foreach ($sheetData->children($ns)->row as $row) {
+            foreach ($sheet->children($ns)->sheetData->children($ns)->row as $row) {
                 $attr = $row->attributes();
                 $rn   = isset($attr['r']) ? (int) (string) $attr['r'] : $auto + 1;
                 $auto = $rn;
 
-                $cells = [];
+                $cells = $types = $fmt = [];
                 $col = 0;
                 foreach ($row->children($ns)->c as $c) {
                     $ca  = $c->attributes();
@@ -199,8 +249,15 @@ final class NavImport
                     if ($ref !== '' && preg_match('/^([A-Z]+)/i', $ref, $mm)) {
                         $col = self::colIndex(strtoupper($mm[1]));
                     }
-                    $type = isset($ca['t']) ? (string) $ca['t'] : '';
+                    if ($col > 16383) {
+                        throw new \RuntimeException("Row {$rn} refers to a column beyond Excel's last column (XFD) — the file appears to be damaged.");
+                    }
+                    if ($col >= self::MAX_COLS) {
+                        throw new \RuntimeException("Row {$rn} uses more than " . self::MAX_COLS . ' columns — this does not look like a price file.');
+                    }
+                    $type = isset($ca['t']) ? (string) $ca['t'] : 'n';
                     $kids = $c->children($ns);
+                    $hasV = isset($kids->v);
                     switch ($type) {
                         case 's':
                             $v = $shared[(int) (string) $kids->v] ?? '';
@@ -217,12 +274,18 @@ final class NavImport
                         default:                                     // n, str, d
                             $v = (string) $kids->v;
                     }
-                    // A formula whose result was never saved (some generators
-                    // skip it) must not be mistaken for an empty cell.
-                    if ($v === '' && isset($kids->f) && trim((string) $kids->f) !== '') {
-                        $v = '#FORMULA';
+                    // A formula whose result was never saved (some generators skip it)
+                    // must not be mistaken for an empty cell. A string formula with a
+                    // saved empty result (=IF(…;"";…)) IS legitimately empty.
+                    if (isset($kids->f) && trim((string) $kids->f) !== '') {
+                        if (!$hasV || ($v === '' && $type !== 'str')) {
+                            $v = '#FORMULA';
+                        }
                     }
                     $cells[$col] = self::cleanCell($v);
+                    $types[$col] = $type;
+                    $s = isset($ca['s']) ? (int) (string) $ca['s'] : 0;
+                    if (isset($styleKinds[$s])) $fmt[$col] = $styleKinds[$s];
                     $col++;
                 }
                 if (!$cells) continue;
@@ -230,26 +293,39 @@ final class NavImport
                 $dense = [];
                 for ($i = 0; $i <= $max; $i++) $dense[] = $cells[$i] ?? '';
                 if (implode('', $dense) === '') continue;
-                $rows[] = ['n' => $rn, 'cells' => $dense];
+                $rows[] = ['n' => $rn, 'cells' => $dense, 'types' => $types, 'fmt' => $fmt];
                 if (count($rows) > self::MAX_ROWS) {
                     throw new \RuntimeException('The file has more than ' . number_format(self::MAX_ROWS) . ' rows.');
                 }
             }
-            return ['rows' => $rows, 'source' => 'xlsx', 'delimiter' => null];
+            return ['rows' => $rows, 'source' => 'xlsx', 'delimiter' => null, 'date1904' => $parts['date1904']];
         } finally {
             $zip->close();
         }
     }
 
-    /** @return array{0:string, 1:?string} [first visible worksheet path, sharedStrings path] */
+    /** @return array{sheet:string, shared:?string, styles:?string, date1904:bool} */
     private static function xlsxLocateParts(\ZipArchive $zip): array
     {
-        $sheetPath  = 'xl/worksheets/sheet1.xml';
-        $sharedPath = $zip->locateName('xl/sharedStrings.xml') !== false ? 'xl/sharedStrings.xml' : null;
+        $out = [
+            'sheet'    => 'xl/worksheets/sheet1.xml',
+            'shared'   => $zip->locateName('xl/sharedStrings.xml') !== false ? 'xl/sharedStrings.xml' : null,
+            'styles'   => $zip->locateName('xl/styles.xml') !== false ? 'xl/styles.xml' : null,
+            'date1904' => false,
+        ];
 
         $wb   = self::xlsxLoad($zip, 'xl/workbook.xml');
         $rels = self::xlsxLoad($zip, 'xl/_rels/workbook.xml.rels');
-        if (!$wb || !$rels) return [$sheetPath, $sharedPath];
+        if (!$wb) return $out;
+        $wbNs = self::xmlNs($wb);
+
+        // Mac "1904 date system": serial 0 = 1904-01-01 instead of 1899-12-30.
+        $wbPr = $wb->children($wbNs)->workbookPr;
+        if ($wbPr !== null) {
+            $d = strtolower((string) ($wbPr->attributes()['date1904'] ?? ''));
+            $out['date1904'] = ($d === '1' || $d === 'true');
+        }
+        if (!$rels) return $out;
 
         $targets = [];
         foreach ($rels->children(self::xmlNs($rels))->Relationship as $r) {
@@ -257,12 +333,11 @@ final class NavImport
             $target = (string) ($a['Target'] ?? '');
             $target = str_starts_with($target, '/') ? ltrim($target, '/') : 'xl/' . $target;
             $targets[(string) ($a['Id'] ?? '')] = $target;
-            if (str_ends_with((string) ($a['Type'] ?? ''), '/sharedStrings')) {
-                $sharedPath = $target;
-            }
+            $typeAttr = (string) ($a['Type'] ?? '');
+            if (str_ends_with($typeAttr, '/sharedStrings')) $out['shared'] = $target;
+            if (str_ends_with($typeAttr, '/styles'))        $out['styles'] = $target;
         }
 
-        $wbNs   = self::xmlNs($wb);
         $sheets = $wb->children($wbNs)->sheets;
         if ($sheets !== null) {
             foreach ($sheets->children($wbNs)->sheet as $s) {
@@ -274,12 +349,12 @@ final class NavImport
                     if ($ra !== null && isset($ra['id'])) { $rid = (string) $ra['id']; break; }
                 }
                 if ($rid !== '' && isset($targets[$rid])) {
-                    $sheetPath = $targets[$rid];
+                    $out['sheet'] = $targets[$rid];
                 }
                 break;   // first visible sheet only
             }
         }
-        return [$sheetPath, $sharedPath];
+        return $out;
     }
 
     /** @return list<string> */
@@ -293,6 +368,46 @@ final class NavImport
             $out[] = self::xlsxRichText($si, $ns);
         }
         return $out;
+    }
+
+    /**
+     * Map cell style index → 'date' | 'percent' for styles whose number format
+     * is a date/time or a percentage (other styles are omitted).
+     * @return array<int,string>
+     */
+    private static function xlsxStyleKinds(\ZipArchive $zip, string $path): array
+    {
+        $xml = self::xlsxLoad($zip, $path);
+        if (!$xml) return [];
+        $ns = self::xmlNs($xml);
+        $custom = [];
+        $numFmts = $xml->children($ns)->numFmts;
+        if ($numFmts !== null) {
+            foreach ($numFmts->children($ns)->numFmt as $f) {
+                $a = $f->attributes();
+                $custom[(int) (string) ($a['numFmtId'] ?? -1)] = (string) ($a['formatCode'] ?? '');
+            }
+        }
+        $kinds = [];
+        $xfs = $xml->children($ns)->cellXfs;
+        if ($xfs === null) return [];
+        $i = 0;
+        foreach ($xfs->children($ns)->xf as $xf) {
+            $id = (int) (string) ($xf->attributes()['numFmtId'] ?? 0);
+            $kind = null;
+            if (in_array($id, [9, 10], true)) {
+                $kind = 'percent';
+            } elseif (($id >= 14 && $id <= 22) || ($id >= 45 && $id <= 47) || ($id >= 27 && $id <= 36) || ($id >= 50 && $id <= 58)) {
+                $kind = 'date';
+            } elseif (isset($custom[$id])) {
+                $code = (string) preg_replace(['/"[^"]*"/', '/\[[^\]]*\]/', '/\\\\./', '/_./', '/\*./'], '', $custom[$id]);
+                if (str_contains($code, '%'))              $kind = 'percent';
+                elseif (preg_match('/[ymdhs]/i', $code))  $kind = 'date';
+            }
+            if ($kind) $kinds[$i] = $kind;
+            $i++;
+        }
+        return $kinds;
     }
 
     /** Text of an <si>/<is> node: either a single <t> or rich-text runs <r><t>. */
@@ -312,11 +427,17 @@ final class NavImport
     {
         $stat = $zip->statName($name);
         if ($stat === false) return null;
-        if ((int) $stat['size'] > 80 * 1024 * 1024) {
-            throw new \RuntimeException('The Excel file is too large to process.');
+        $size = (int) $stat['size'];
+        $comp = max(1, (int) $stat['comp_size']);
+        if ($size > 40 * 1024 * 1024 || ($size > 10 * 1024 * 1024 && $size / $comp > 250)) {
+            throw new \RuntimeException('The Excel file is too large to process. Please upload only the price sheet, or a CSV.');
         }
         $data = $zip->getFromName($name);
         if ($data === false || $data === '') return null;
+        // Office Open XML never contains a DTD — refuse entity tricks outright.
+        if (stripos($data, '<!DOCTYPE') !== false || stripos($data, '<!ENTITY') !== false) {
+            throw new \RuntimeException('The Excel file contains unexpected content and was rejected.');
+        }
         $prev = libxml_use_internal_errors(true);
         $xml  = simplexml_load_string($data, \SimpleXMLElement::class, LIBXML_NONET | LIBXML_COMPACT);
         libxml_clear_errors();
@@ -333,6 +454,7 @@ final class NavImport
 
     private static function colIndex(string $letters): int
     {
+        if (strlen($letters) > 3) return PHP_INT_MAX;   // beyond XFD
         $n = 0;
         foreach (str_split($letters) as $ch) {
             $n = $n * 26 + (ord($ch) - 64);
@@ -352,22 +474,53 @@ final class NavImport
     // ======================================================================
 
     /**
+     * Split a currency code/symbol off a number. Case-sensitive on purpose:
+     * "GBp"/"GBX" (pence) must never be mistaken for "GBP" (pounds).
+     * @return array{0:string, 1:?string} [number part, currency: EUR|USD|GBP|CHF|GBX|null]
+     */
+    public static function stripCurrency(string $s): array
+    {
+        $s = self::cleanCell($s);
+        $map = ['€' => 'EUR', '$' => 'USD', '£' => 'GBP', 'GBp' => 'GBX', 'GBx' => 'GBX', 'GBX' => 'GBX'];
+        $re  = '(EUR|USD|GBP|CHF|GBp|GBx|GBX|€|\$|£)';
+        $ccy = null;
+        if (preg_match('/^' . $re . '\s*(.*)$/u', $s, $m)) {
+            $ccy = $map[$m[1]] ?? $m[1]; $s = $m[2];
+        } elseif (preg_match('/^(.*?)\s*' . $re . '$/u', $s, $m)) {
+            $ccy = $map[$m[2]] ?? $m[2]; $s = $m[1];
+        }
+        return [$s, $ccy];
+    }
+
+    /** "1,235" / "1.235": one separator followed by exactly three digits — thousands or decimals? */
+    public static function isAmbiguousNumber(string $s): bool
+    {
+        $s = str_replace([' ', "'", '’'], '', self::stripCurrency($s)[0]);
+        return (bool) preg_match('/^[+-]?\d{1,3}[.,]\d{3}$/', $s);
+    }
+
+    /**
      * Parse a price. Accepts 142.86 · 142,86 · 1,234.56 · 1.234,56 · 1 234,56 ·
      * 1'234.56 · "EUR 142.86" · 1.4286E2.
+     * @param ?string  $decimal  '.' or ',' — the file's decimal separator, used only
+     *                           to resolve "1,235"-style values (null = treat as decimal)
+     * @param ?string  $currency out: currency code found in the cell (EUR|USD|GBP|CHF|GBX)
      * @return float|null|false  null = empty cell, false = not a number
      */
-    public static function parseNumber(string $s): float|null|false
+    public static function parseNumber(string $s, ?string $decimal = null, ?string &$currency = null): float|null|false
     {
+        $currency = null;
         $s = self::cleanCell($s);
         if ($s === '' || $s === '-' || $s === '—') return null;
 
-        // strip currency codes / symbols around the number
-        $s = (string) preg_replace('/^(EUR|USD|GBP|CHF|€|\$|£)\s*/iu', '', $s);
-        $s = (string) preg_replace('/\s*(EUR|USD|GBP|CHF|€|\$|£)$/iu', '', $s);
+        [$s, $currency] = self::stripCurrency($s);
         $s = str_replace([' ', "'", '’'], '', $s);
 
         if (preg_match('/^[+-]?\d+(\.\d+)?(e[+-]?\d+)?$/i', $s)) {
-            return (float) $s;                                  // 142.86 · 1.4286E2
+            if ($decimal === ',' && preg_match('/^[+-]?\d{1,3}\.\d{3}$/', $s)) {
+                return (float) str_replace('.', '', $s);          // 1.235 in a comma-decimal file
+            }
+            return (float) $s;                                    // 142.86 · 1.4286E2
         }
         // Thousands separators must form proper 3-digit groups, otherwise the
         // value is rejected (so "12..3" or "1,23,4" never become a price).
@@ -378,6 +531,9 @@ final class NavImport
             return (float) (str_replace(',', '', $m[1]) . '.' . $m[2]);
         }
         if (preg_match('/^[+-]?\d+,\d+$/', $s)) {                               // 142,86
+            if ($decimal === '.' && preg_match('/^[+-]?\d{1,3},\d{3}$/', $s)) {
+                return (float) str_replace(',', '', $s);          // 1,235 in a point-decimal file
+            }
             return (float) str_replace(',', '.', $s);
         }
         if (preg_match('/^[+-]?\d{1,3}(?:,\d{3}){2,}$/', $s)) {                 // 1,234,567
@@ -392,16 +548,17 @@ final class NavImport
     /**
      * Parse a date to Y-m-d.
      * @param string $slashOrder 'dmy' (UK/EU, default) or 'mdy' (US) for a/b/yyyy dates
+     * @param bool   $date1904   Excel serials use the Mac 1904 date system
      * @return string|null|false null = empty, false = not a valid date
      */
-    public static function parseDate(string $s, string $slashOrder = 'dmy'): string|null|false
+    public static function parseDate(string $s, string $slashOrder = 'dmy', bool $date1904 = false): string|null|false
     {
         $s = self::cleanCell($s);
         if ($s === '') return null;
 
         // Excel serial date (e.g. 46298 or 46298.5). Range ≈ 1954 … 2119.
         if (preg_match('/^\d{5}(\.\d+)?$/', $s)) {
-            $serial = (int) floor((float) $s);
+            $serial = (int) floor((float) $s) + ($date1904 ? 1462 : 0);
             if ($serial >= 20000 && $serial <= 80000) {
                 return (new \DateTimeImmutable('1899-12-30'))->modify('+' . $serial . ' days')->format('Y-m-d');
             }
@@ -428,7 +585,7 @@ final class NavImport
         // Strict explicit formats only — never strtotime(), which would turn
         // words like "now" or "next monday" into a date.
         if (preg_match('/\d/', $s) && preg_match('/[a-zäöü]/iu', $s)) {
-            $t = mb_strtolower($s);
+            $t = function_exists('mb_strtolower') ? mb_strtolower($s) : strtolower($s);
             $de = [
                 'januar' => 'january', 'februar' => 'february', 'märz' => 'march', 'maerz' => 'march',
                 'mai' => 'may', 'juni' => 'june', 'juli' => 'july', 'oktober' => 'october',
@@ -456,19 +613,36 @@ final class NavImport
         return sprintf('%04d-%02d-%02d', $y, $m, $d);
     }
 
-    /** Lowercase, strip accents-ish noise, drop "(…)" hints and punctuation. */
+    private static function lower(string $s): string
+    {
+        return function_exists('mb_strtolower') ? mb_strtolower($s) : strtolower($s);
+    }
+
+    /** Lowercase, fold umlauts, drop only harmless "(…)" hints, collapse punctuation. */
     private static function normaliseHeader(string $h): string
     {
-        $h = mb_strtolower(self::cleanCell($h));
-        $h = strtr($h, ['ä' => 'a', 'ö' => 'o', 'ü' => 'u', 'ß' => 'ss']);
-        $h = (string) preg_replace('/\([^)]*\)/', ' ', $h);      // "Benchmark (optional)" → "benchmark"
+        $h = self::lower(self::cleanCell($h));
+        $h = strtr($h, ['ä' => 'a', 'ö' => 'o', 'ü' => 'u', 'ß' => 'ss', 'Ä' => 'a', 'Ö' => 'o', 'Ü' => 'u']);
+        // "Benchmark (optional)" → "benchmark"; but "NAV (previous day)" keeps its words
+        $h = (string) preg_replace_callback('/\(([^)]*)\)/', function ($m) {
+            $inner = trim((string) preg_replace('/[^a-z0-9]+/', ' ', $m[1]));
+            return in_array($inner, self::DROPPABLE_HINTS, true) ? ' ' : ' ' . $inner . ' ';
+        }, $h);
         $h = (string) preg_replace('/[^a-z0-9]+/', ' ', $h);
         return trim((string) preg_replace('/\s+/', ' ', $h));
     }
 
+    private static function canonicalField(string $norm): ?string
+    {
+        foreach (self::HEADER_ALIASES as $canon => $aliases) {
+            if (in_array($norm, $aliases, true)) return $canon;
+        }
+        return null;
+    }
+
     private static function normaliseName(string $n): string
     {
-        $n = mb_strtolower(self::cleanCell($n));
+        $n = self::lower(self::cleanCell($n));
         $n = (string) preg_replace('/[^a-z0-9]+/', ' ', $n);
         return trim($n);
     }
@@ -483,6 +657,18 @@ final class NavImport
         return (bool) preg_match('/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/', $s);
     }
 
+    private static function dotDecimalEvidence(string $v): bool
+    {
+        return (bool) (preg_match('/^[+-]?\d+\.\d{1,2}$/', $v) || preg_match('/^[+-]?\d+\.\d{4,}$/', $v)
+            || preg_match('/\d,\d{3}\.\d/', $v) || preg_match('/^[+-]?\d{4,}\.\d+$/', $v));
+    }
+
+    private static function commaDecimalEvidence(string $v): bool
+    {
+        return (bool) (preg_match('/^[+-]?\d+,\d{1,2}$/', $v) || preg_match('/^[+-]?\d+,\d{4,}$/', $v)
+            || preg_match('/\d\.\d{3},\d/', $v) || preg_match('/^[+-]?\d{4,},\d+$/', $v));
+    }
+
     // ======================================================================
     // 3. ANALYSIS (pure — no database)
     // ======================================================================
@@ -490,17 +676,20 @@ final class NavImport
     /**
      * Validate rows against the known share classes.
      *
-     * @param list<array{n:int, cells:list<string>}> $rows
+     * @param list<array{n:int, cells:list<string>, types?:array<int,string>, fmt?:array<int,string>}> $rows
      * @param list<array<string,mixed>> $classes  share_classes rows (id, name, isin, currency)
      * @param string $today  Y-m-d (server date) — later dates are rejected
+     * @param array{source?:string, delimiter?:?string, date1904?:bool} $opts  readFile() metadata
      * @return array{
      *   format: string, entries: list<array{sc:int, date:string, nav:float, bench:?float, row:int}>,
      *   errors: list<string>, warnings: list<string>, notes: list<string>,
      *   skipped_blank: int, has_benchmark: bool
      * }
      */
-    public static function analyze(array $rows, array $classes, string $today): array
+    public static function analyze(array $rows, array $classes, string $today, array $opts = []): array
     {
+        $source   = (string) ($opts['source'] ?? 'csv');
+        $date1904 = !empty($opts['date1904']);
         $res = [
             'format' => '', 'entries' => [], 'errors' => [], 'warnings' => [], 'notes' => [],
             'skipped_blank' => 0, 'has_benchmark' => false,
@@ -517,8 +706,10 @@ final class NavImport
         }
         $label = fn(int $id): string => (string) $byId[$id]['name'] . (!empty($byId[$id]['isin']) ? ' (' . $byId[$id]['isin'] . ')' : '');
 
-        // Drop comment rows ("# …")
-        $rows = array_values(array_filter($rows, fn($r) => !str_starts_with((string) ($r['cells'][0] ?? ''), '#')));
+        // Drop "# …" comment lines (CSV only — in Excel a leading "#" is an error value like #N/A)
+        if ($source !== 'xlsx') {
+            $rows = array_values(array_filter($rows, fn($r) => !self::isComment((string) ($r['cells'][0] ?? ''))));
+        }
         if (!$rows) {
             $res['errors'][] = 'The file contains no data.';
             return $res;
@@ -527,25 +718,48 @@ final class NavImport
         // ---- Header -------------------------------------------------------
         $header = $rows[0];
         $dataRows = array_slice($rows, 1);
-        $field = [];               // canonical field => column index
-        $unknownCols = [];         // index => original header text
+        $field = $fieldTitle = $unknownCols = $titled = [];
         foreach ($header['cells'] as $i => $h) {
             $norm = self::normaliseHeader($h);
             if ($norm === '') continue;
-            $matched = false;
-            foreach (self::HEADER_ALIASES as $canon => $aliases) {
-                if (in_array($norm, $aliases, true)) {
-                    if (!isset($field[$canon])) $field[$canon] = $i;
-                    $matched = true;
-                    break;
-                }
+            $titled[$i] = true;
+            $canon = self::canonicalField($norm);
+            if ($canon === null) { $unknownCols[$i] = $h; continue; }
+            if (isset($field[$canon])) {
+                $res['errors'][] = sprintf(
+                    'Columns "%s" and "%s" could both be the %s column. Delete or rename the one that should not be used, then upload again.',
+                    $fieldTitle[$canon], $h, self::FIELD_LABELS[$canon]
+                );
+                continue;
             }
-            if (!$matched) $unknownCols[$i] = $h;
+            $field[$canon] = $i;
+            $fieldTitle[$canon] = $h;
         }
+        if ($res['errors']) return $res;
 
         if (!isset($field['date'])) {
             $res['errors'][] = 'No "Date" column found in the first row. The first row must contain the column titles (e.g. Date, ISIN, NAV) — please use the template.';
             return $res;
+        }
+
+        // ---- Values outside the titled columns ------------------------------
+        // In a comma-separated file an unquoted "512,4568" becomes two cells; the
+        // extra cell shows up beyond (or under an empty) column title.
+        $width = count($header['cells']);
+        $stray = [];
+        foreach ($dataRows as $r) {
+            foreach ($r['cells'] as $i => $v) {
+                if ($v !== '' && ($i >= $width || empty($titled[$i]))) { $stray[] = (int) $r['n']; break; }
+            }
+        }
+        if ($stray) {
+            $list = implode(', ', array_slice($stray, 0, 8)) . (count($stray) > 8 ? ' …' : '');
+            if ($source === 'xlsx') {
+                $res['notes'][] = "Values in columns without a title were ignored (row {$list}).";
+            } else {
+                $res['errors'][] = "Row {$list}: there are more values than column titles. This usually means a number was written with a comma (e.g. 512,4568) in a comma-separated file. Put such numbers in quotes, save the file with semicolons, or upload the Excel file instead.";
+                return $res;
+            }
         }
 
         // ---- Layout ---------------------------------------------------------
@@ -570,6 +784,12 @@ final class NavImport
                     $id = $byIsin[$mm[1]] ?? null;
                     if ($id === null) {
                         $res['errors'][] = 'Column "' . $h . '": ISIN ' . $mm[1] . ' does not belong to any share class.';
+                        continue;
+                    }
+                    // A share-class name next to the ISIN must agree with it.
+                    $rest = self::normaliseName((string) str_ireplace($mm[1], ' ', $h));
+                    if ($rest !== '' && isset($byName[$rest]) && $byName[$rest] !== $id) {
+                        $res['errors'][] = 'Column "' . $h . '": the name is ' . $byId[$byName[$rest]]['name'] . ' but ISIN ' . $mm[1] . ' belongs to ' . $byId[$id]['name'] . '.';
                         continue;
                     }
                 } elseif (isset($byName[self::normaliseName($h)])) {
@@ -624,6 +844,31 @@ final class NavImport
         } elseif ($ambiguous && $dmyEvidence === null) {
             $res['notes'][] = 'Dates such as 03/10/2026 were read as DAY/MONTH/YEAR (3 October 2026). Check the dates in the summary below.';
         }
+        if ($date1904) {
+            $res['notes'][] = 'This workbook uses the Mac "1904 date system"; dates were converted accordingly.';
+        }
+
+        // ---- Decimal separator of the file (only matters for "1,235"-style values)
+        $numCols = $res['format'] === 'long'
+            ? array_values(array_filter([$field['nav'], $field['benchmark'] ?? null], fn($x) => $x !== null))
+            : array_keys($wideCols);
+        $dotEv = $commaEv = null;
+        foreach ($dataRows as $r) {
+            foreach ($numCols as $ci) {
+                if ($source === 'xlsx' && ($r['types'][$ci] ?? '') === 'n') continue;   // real numbers: unambiguous
+                $v = str_replace([' ', "'", '’'], '', self::stripCurrency((string) ($r['cells'][$ci] ?? ''))[0]);
+                if ($v === '') continue;
+                if (self::dotDecimalEvidence($v))   $dotEv   ??= $v;
+                if (self::commaDecimalEvidence($v)) $commaEv ??= $v;
+            }
+        }
+        $decimal = null;
+        if ($dotEv !== null && $commaEv === null)      $decimal = '.';
+        elseif ($commaEv !== null && $dotEv === null)  $decimal = ',';
+        elseif ($dotEv === null && $commaEv === null) {
+            $d = (string) ($opts['delimiter'] ?? '');
+            $decimal = $d === ';' ? ',' : ($d === ',' ? '.' : null);
+        }
 
         // ---- Rows -----------------------------------------------------------
         $entries = [];             // "sc|date" => entry
@@ -631,21 +876,54 @@ final class NavImport
         $decimalsNote = false;
         $addError = function (string $msg) use (&$errors) { $errors[] = $msg; };
 
-        $parseNav = function (string $raw, int $rowN, string $who) use ($addError, &$decimalsNote): float|null|false {
+        /** Parse a NAV / benchmark cell; returns rounded value, null (empty) or false (error reported). */
+        $parseValue = function (array $r, int $ci, string $who, int $sc, string $what) use ($source, $decimal, $addError, &$decimalsNote, $byId): float|null|false {
+            $raw  = (string) ($r['cells'][$ci] ?? '');
+            $rowN = (int) $r['n'];
+            $kind = $r['fmt'][$ci] ?? null;
+            if ($raw === '') return null;
             if ($raw === '#FORMULA') {
-                $addError("Row {$rowN}: the NAV for {$who} is a formula without a saved result — open the file in Excel, save it and upload it again (or paste the values as numbers).");
+                $addError("Row {$rowN}: the {$what} for {$who} is a formula without a saved result — open the file in Excel, save it and upload it again (or paste the values as numbers).");
                 return false;
             }
-            $nav = self::parseNumber($raw);
-            if ($nav === null) return null;
-            if ($nav === false) { $addError("Row {$rowN}: NAV \"{$raw}\" for {$who} is not a number."); return false; }
-            if ($nav <= 0)      { $addError("Row {$rowN}: NAV {$raw} for {$who} must be greater than zero."); return false; }
-            if ($nav > self::MAX_NAV) { $addError("Row {$rowN}: NAV {$raw} for {$who} is too large."); return false; }
-            if (preg_match('/[.,](\d{5,})$/', str_replace(' ', '', $raw))) $decimalsNote = true;
-            return $nav;
+            if (in_array(strtoupper($raw), self::EXCEL_ERRORS, true)) {
+                $addError("Row {$rowN}: the {$what} for {$who} is an Excel error ({$raw}).");
+                return false;
+            }
+            if ($kind === 'date' || $kind === 'percent') {
+                $addError("Row {$rowN}: the {$what} cell for {$who} is formatted as a " . ($kind === 'date' ? 'date' : 'percentage') . " in Excel. Format the column as a number and enter the {$what} again.");
+                return false;
+            }
+            $ccy = null;
+            if ($source === 'xlsx' && ($r['types'][$ci] ?? '') === 'n') {
+                if (!is_numeric($raw)) { $addError("Row {$rowN}: {$what} \"{$raw}\" for {$who} is not a number."); return false; }
+                $val = (float) $raw;
+            } else {
+                if ($decimal === null && self::isAmbiguousNumber($raw)) {
+                    $addError("Row {$rowN}: {$what} \"{$raw}\" for {$who} is ambiguous (thousands or decimals?). Write it with all decimals, e.g. 1235.0000 or 1.2350.");
+                    return false;
+                }
+                $val = self::parseNumber($raw, $decimal, $ccy);
+                if ($val === null) return null;
+                if ($val === false) { $addError("Row {$rowN}: {$what} \"{$raw}\" for {$who} is not a number."); return false; }
+            }
+            if ($ccy === 'GBX') {
+                $addError("Row {$rowN}: the {$what} for {$who} is given in pence (GBp/GBX). Enter prices in pounds (GBP).");
+                return false;
+            }
+            if ($ccy !== null && $what === 'NAV' && $ccy !== strtoupper((string) $byId[$sc]['currency'])) {
+                $addError("Row {$rowN}: the NAV for {$who} is marked {$ccy}, but this share class is priced in {$byId[$sc]['currency']}.");
+                return false;
+            }
+            $rounded = round($val, 4);
+            if ($what === 'NAV' && $rounded <= 0) { $addError("Row {$rowN}: NAV {$raw} for {$who} must be greater than zero."); return false; }
+            if (abs($rounded) > self::MAX_NAV)    { $addError("Row {$rowN}: {$what} {$raw} for {$who} is too large."); return false; }
+            if (abs($val - $rounded) > 1e-9) $decimalsNote = true;
+            return $rounded;
         };
-        $checkDate = function (string $raw, int $rowN) use ($slashOrder, $today, $addError): string|null|false {
-            $d = self::parseDate($raw, $slashOrder);
+        $checkDate = function (string $raw, int $rowN) use ($slashOrder, $date1904, $today, $addError): string|null|false {
+            if (in_array(strtoupper($raw), self::EXCEL_ERRORS, true)) { $addError("Row {$rowN}: the date is an Excel error ({$raw})."); return false; }
+            $d = self::parseDate($raw, $slashOrder, $date1904);
             if ($d === null) return null;
             if ($d === false) { $addError("Row {$rowN}: \"{$raw}\" is not a valid date (use YYYY-MM-DD, e.g. 2026-10-03)."); return false; }
             if ($d > $today)  { $addError("Row {$rowN}: date {$d} is in the future."); return false; }
@@ -683,7 +961,7 @@ final class NavImport
                     $isin = self::normaliseIsin($rawIsin);
                     $sc = $byIsin[$isin] ?? null;
                     if ($sc === null) {
-                        if (self::parseNumber($rawNav) === null) { $res['skipped_blank']++; continue; }
+                        if ($rawNav === '') { $res['skipped_blank']++; continue; }
                         $addError("Row {$n}: ISIN \"{$rawIsin}\" does not belong to any share class.");
                         continue;
                     }
@@ -694,17 +972,17 @@ final class NavImport
                 } elseif ($rawName !== '') {
                     $sc = $byName[self::normaliseName($rawName)] ?? null;
                     if ($sc === null) {
-                        if (self::parseNumber($rawNav) === null) { $res['skipped_blank']++; continue; }
+                        if ($rawNav === '') { $res['skipped_blank']++; continue; }
                         $addError("Row {$n}: share class \"{$rawName}\" not recognised — add the ISIN column to be safe.");
                         continue;
                     }
                 } else {
-                    if (self::parseNumber($rawNav) === null) { $res['skipped_blank']++; continue; }
+                    if ($rawNav === '') { $res['skipped_blank']++; continue; }
                     $addError("Row {$n}: no ISIN / share class given.");
                     continue;
                 }
 
-                $nav = $parseNav($rawNav, $n, $label($sc));
+                $nav = $parseValue($r, $field['nav'], $label($sc), $sc, 'NAV');
                 if ($nav === null) { $res['skipped_blank']++; continue; }
                 if ($nav === false) continue;
 
@@ -713,7 +991,12 @@ final class NavImport
                 if ($date === false) continue;
 
                 if (isset($field['currency'])) {
-                    $ccy = strtoupper($get($field['currency']));
+                    $rawCcy = $get($field['currency']);
+                    if (preg_match('/^(GBp|GBx|GBX|pence|p)$/', $rawCcy)) {
+                        $addError("Row {$n}: currency {$rawCcy} means pence — enter the NAV of {$label($sc)} in pounds (GBP).");
+                        continue;
+                    }
+                    $ccy = strtoupper($rawCcy);
                     if ($ccy !== '' && $ccy !== strtoupper((string) $byId[$sc]['currency'])) {
                         $addError("Row {$n}: currency {$ccy} does not match {$label($sc)}, which is priced in {$byId[$sc]['currency']}.");
                         continue;
@@ -722,9 +1005,8 @@ final class NavImport
 
                 $bench = null;
                 if (isset($field['benchmark'])) {
-                    $rawB = $get($field['benchmark']);
-                    $b = self::parseNumber($rawB);
-                    if ($b === false) { $addError("Row {$n}: benchmark \"{$rawB}\" is not a number."); continue; }
+                    $b = $parseValue($r, $field['benchmark'], $label($sc), $sc, 'benchmark');
+                    if ($b === false) continue;
                     $bench = $b;
                 }
                 $put($sc, $date, $nav, $bench, $n);
@@ -741,7 +1023,7 @@ final class NavImport
                 if ($date === false) continue;
 
                 foreach ($wideCols as $ci => $sc) {
-                    $nav = $parseNav($get($ci), $n, $label($sc));
+                    $nav = $parseValue($r, $ci, $label($sc), $sc, 'NAV');
                     if ($nav === null || $nav === false) continue;
                     $put($sc, $date, $nav, null, $n);
                 }
@@ -749,7 +1031,7 @@ final class NavImport
         }
 
         if ($decimalsNote) {
-            $res['notes'][] = 'Some NAVs have more than 4 decimal places — they are stored rounded to 4 decimals.';
+            $res['notes'][] = 'Some values have more than 4 decimal places — they are stored rounded to 4 decimals.';
         }
         $res['errors'] = $errors;
 
@@ -760,41 +1042,58 @@ final class NavImport
         if (!$errors && !$list) {
             $res['errors'][] = 'No prices found in the file — every NAV cell is empty.';
         }
+
+        // Date plausibility (prices are normally struck for the previous business day)
+        $dates = array_values(array_unique(array_column($list, 'date')));
+        if (in_array($today, $dates, true)) {
+            $res['notes'][] = 'Some prices are dated today (' . $today . '). If they are the previous business day\'s NAVs, correct the date before publishing.';
+        }
+        $weekend = array_values(array_filter($dates, fn($d) => (int) (new \DateTimeImmutable($d))->format('N') >= 6));
+        if ($weekend) {
+            $res['warnings'][] = 'Prices dated on a weekend: ' . implode(', ', array_slice($weekend, 0, 6)) . (count($weekend) > 6 ? ' …' : '') . ' — please check the dates.';
+        }
         return $res;
     }
 
     /**
-     * Flag suspicious NAV moves (typos, wrong decimal separator, wrong class).
-     * @param callable(int $scId, string $date): ?float $prevNav  stored NAV strictly before $date
+     * Flag suspicious NAV moves (typos, wrong decimal separator, wrong class) —
+     * in BOTH directions: against the previously published price, against a
+     * later published price (back-filled history), and between file dates.
+     *
+     * @param array<int, array<string,float>> $stored  share class id => [date => published NAV]
+     *        covering the file's date range plus the published neighbour on each side
      * @param array<int,string> $names  share class id => display label
      * @return list<string>
      */
-    public static function jumpWarnings(array $entries, callable $prevNav, array $names): array
+    public static function seriesWarnings(array $entries, array $stored, array $names): array
     {
         $out = [];
         $bySc = [];
         foreach ($entries as $e) $bySc[$e['sc']][] = $e;
         foreach ($bySc as $sc => $list) {
-            $prev = $prevNav((int) $sc, $list[0]['date']);
-            $prevDate = null;
-            $count = 0;
-            foreach ($list as $e) {
-                if ($prev !== null && $prev > 0) {
-                    $chg = $e['nav'] / $prev - 1;
+            $pts = [];
+            foreach ($stored[$sc] ?? [] as $d => $v) $pts[(string) $d] = ['v' => (float) $v, 'pub' => true];
+            foreach ($list as $e) $pts[$e['date']] = ['v' => (float) $e['nav'], 'pub' => false];
+            ksort($pts);
+            $prev = null; $prevDate = null; $count = 0;
+            foreach ($pts as $d => $p) {
+                if ($prev !== null && (!$prev['pub'] || !$p['pub']) && $prev['v'] > 0) {
+                    $chg = $p['v'] / $prev['v'] - 1;
                     if (abs($chg) > self::JUMP_WARN) {
                         if ($count < 3) {
                             $out[] = sprintf(
-                                '%s: NAV moves from %s to %s (%+.1f%%) on %s%s — please double-check (decimal separator, share class, currency).',
+                                '%s: NAV %s on %s%s → %s on %s%s (%+.1f%%) — please double-check (decimal separator, share class, currency).',
                                 $names[$sc] ?? ('#' . $sc),
-                                self::fmt($prev), self::fmt($e['nav']), $chg * 100, $e['date'],
-                                $prevDate ? '' : ' versus the last published price'
+                                self::fmt($prev['v']), $prevDate, $prev['pub'] ? ' (published)' : '',
+                                self::fmt($p['v']), $d, $p['pub'] ? ' (published)' : '',
+                                $chg * 100
                             );
                         }
                         $count++;
                     }
                 }
-                $prev = $e['nav'];
-                $prevDate = $e['date'];
+                $prev = $p;
+                $prevDate = (string) $d;
             }
             if ($count > 3) {
                 $out[] = ($names[$sc] ?? ('#' . $sc)) . ': ' . ($count - 3) . ' more large moves not listed.';
@@ -805,12 +1104,11 @@ final class NavImport
 
     private static function fmt(float $v): string
     {
-        $s = number_format($v, 4, '.', ',');
-        return rtrim(rtrim($s, '0'), '.') ?: '0';
+        return number_format($v, 4, '.', ',');
     }
 
     // ======================================================================
-    // 4. DATABASE: preview diff + apply
+    // 4. DATABASE: review diff, fingerprint, apply
     // ======================================================================
 
     /** All share classes with their fund name, in display order. */
@@ -824,8 +1122,38 @@ final class NavImport
     }
 
     /**
-     * Compare file entries with what is stored.
-     * @return array<int, array{rows:int, first:string, last:string, last_nav:float, new:int, changed:int, unchanged:int, existing_total:int, prev_nav:?float, prev_date:?string}>
+     * Published NAVs around the file's dates (for seriesWarnings):
+     * everything between the first and last file date, plus the nearest
+     * published price before and after.
+     * @return array<int, array<string,float>>
+     */
+    public static function storedWindow(Database $db, array $entries): array
+    {
+        $bySc = [];
+        foreach ($entries as $e) $bySc[$e['sc']][] = $e['date'];
+        $out = [];
+        foreach ($bySc as $sc => $dates) {
+            $first = min($dates); $last = max($dates);
+            $rows = $db->fetchAll('SELECT entry_date, nav FROM nav_entries WHERE share_class_id = :s AND entry_date BETWEEN :a AND :b',
+                ['s' => $sc, 'a' => $first, 'b' => $last]);
+            foreach ([
+                ['SELECT entry_date, nav FROM nav_entries WHERE share_class_id = :s AND entry_date < :d ORDER BY entry_date DESC LIMIT 1', $first],
+                ['SELECT entry_date, nav FROM nav_entries WHERE share_class_id = :s AND entry_date > :d ORDER BY entry_date ASC LIMIT 1', $last],
+            ] as [$sql, $d]) {
+                $row = $db->fetchOne($sql, ['s' => $sc, 'd' => $d]);
+                if ($row) $rows[] = $row;
+            }
+            foreach ($rows as $row) $out[(int) $sc][(string) $row['entry_date']] = (float) $row['nav'];
+        }
+        return $out;
+    }
+
+    /**
+     * Compare file entries with what is published.
+     * @return array<int, array{rows:int, first:string, last:string, last_nav:float, last_bench:?float,
+     *   new:int, changed:int, unchanged:int, existing_total:int,
+     *   prev_nav:?float, prev_date:?string, next_nav:?float, next_date:?string,
+     *   overwrites: list<array{date:string, old_nav:float, old_bench:?float, new_nav:float, new_bench:?float}>}>
      */
     public static function diff(Database $db, array $entries): array
     {
@@ -837,43 +1165,77 @@ final class NavImport
             $last  = $list[count($list) - 1]['date'];
             $stored = [];
             foreach ($db->fetchAll(
-                'SELECT entry_date, nav FROM nav_entries WHERE share_class_id = :s AND entry_date BETWEEN :a AND :b',
+                'SELECT entry_date, nav, benchmark_value FROM nav_entries WHERE share_class_id = :s AND entry_date BETWEEN :a AND :b',
                 ['s' => $sc, 'a' => $first, 'b' => $last]
             ) as $row) {
-                $stored[(string) $row['entry_date']] = (float) $row['nav'];
+                $stored[(string) $row['entry_date']] = [
+                    (float) $row['nav'],
+                    $row['benchmark_value'] === null ? null : (float) $row['benchmark_value'],
+                ];
             }
             $new = $changed = $unchanged = 0;
+            $overwrites = [];
             foreach ($list as $e) {
-                if (!array_key_exists($e['date'], $stored)) $new++;
-                elseif (abs($stored[$e['date']] - round($e['nav'], 4)) >= 0.00005) $changed++;
-                else $unchanged++;
+                if (!array_key_exists($e['date'], $stored)) { $new++; continue; }
+                [$oldNav, $oldBench] = $stored[$e['date']];
+                $navDiff   = abs($oldNav - round($e['nav'], 4)) >= 0.00005;
+                $benchDiff = $e['bench'] !== null && ($oldBench === null || abs($oldBench - round($e['bench'], 4)) >= 0.00005);
+                if ($navDiff || $benchDiff) {
+                    $changed++;
+                    $overwrites[] = ['date' => $e['date'], 'old_nav' => $oldNav, 'old_bench' => $oldBench, 'new_nav' => (float) $e['nav'], 'new_bench' => $e['bench']];
+                } else {
+                    $unchanged++;
+                }
             }
             $prev = $db->fetchOne(
                 'SELECT entry_date, nav FROM nav_entries WHERE share_class_id = :s AND entry_date < :d ORDER BY entry_date DESC LIMIT 1',
                 ['s' => $sc, 'd' => $first]
             );
+            $next = $db->fetchOne(
+                'SELECT entry_date, nav FROM nav_entries WHERE share_class_id = :s AND entry_date > :d ORDER BY entry_date ASC LIMIT 1',
+                ['s' => $sc, 'd' => $last]
+            );
+            $lastEntry = $list[count($list) - 1];
             $out[(int) $sc] = [
                 'rows' => count($list), 'first' => $first, 'last' => $last,
-                'last_nav' => (float) $list[count($list) - 1]['nav'],
+                'last_nav' => (float) $lastEntry['nav'], 'last_bench' => $lastEntry['bench'],
                 'new' => $new, 'changed' => $changed, 'unchanged' => $unchanged,
                 'existing_total' => (int) $db->fetchColumn('SELECT COUNT(*) FROM nav_entries WHERE share_class_id = :s', ['s' => $sc]),
                 'prev_nav'  => $prev ? (float) $prev['nav'] : null,
                 'prev_date' => $prev ? (string) $prev['entry_date'] : null,
+                'next_nav'  => $next ? (float) $next['nav'] : null,
+                'next_date' => $next ? (string) $next['entry_date'] : null,
+                'overwrites' => $overwrites,
             ];
         }
         return $out;
     }
 
-    /** Stored NAV strictly before a date (for jumpWarnings). */
-    public static function prevNavLookup(Database $db): callable
+    /**
+     * Fingerprint of the stored prices of the given share classes. Taken when the
+     * review is shown and checked again (under row locks) when publishing, so a
+     * concurrent change by someone else aborts the publish instead of being
+     * silently overwritten or deleted.
+     */
+    public static function fingerprint(Database $db, array $classIds, bool $lock = false): string
     {
-        return function (int $sc, string $date) use ($db): ?float {
-            $v = $db->fetchColumn(
-                'SELECT nav FROM nav_entries WHERE share_class_id = :s AND entry_date < :d ORDER BY entry_date DESC LIMIT 1',
-                ['s' => $sc, 'd' => $date]
-            );
-            return ($v === false || $v === null) ? null : (float) $v;
-        };
+        $ids = array_values(array_unique(array_map('intval', $classIds)));
+        sort($ids);
+        if (!$ids) return '';
+        $in = implode(',', $ids);
+        if ($lock) {
+            $db->pdo()->query("SELECT id FROM nav_entries WHERE share_class_id IN ({$in}) FOR UPDATE")->fetchAll();
+        }
+        // Order-independent per-row checksum: catches any changed, added or removed row
+        $rows = $db->fetchAll(
+            "SELECT share_class_id, COUNT(*) AS c, MIN(entry_date) AS f, MAX(entry_date) AS m,
+                    SUM(CRC32(CONCAT_WS('|', entry_date, nav, COALESCE(benchmark_value, '-')))) AS h
+               FROM nav_entries WHERE share_class_id IN ({$in}) GROUP BY share_class_id ORDER BY share_class_id"
+        );
+        $norm = array_map(fn($r) => [
+            (int) $r['share_class_id'], (int) $r['c'], (string) $r['f'], (string) $r['m'], (string) $r['h'],
+        ], $rows);
+        return hash('sha256', $in . '|' . json_encode($norm));
     }
 
     /**
@@ -882,21 +1244,59 @@ final class NavImport
      *   add     — insert new dates only, keep existing values
      *   replace — delete ALL stored NAVs of the share classes in the file first
      * A blank/absent benchmark never wipes a stored benchmark value.
-     * @return array{inserted:int, updated:int, unchanged:int, deleted:int}
+     *
+     * $ctx: expected_fingerprint (abort if stored prices changed since review),
+     *       user_id, file_name, file_path (archived with the previous values in
+     *       nav_import_log so every publish is traceable and reversible).
+     *
+     * @return array{inserted:int, updated:int, unchanged:int, deleted:int, log_id:?int,
+     *               classes: array<int, array{first:string,last:string,inserted:int,updated:int,unchanged:int,deleted:int}>}
      */
-    public static function apply(Database $db, array $entries, string $mode): array
+    public static function apply(Database $db, array $entries, string $mode, array $ctx = []): array
     {
         if (!in_array($mode, ['upsert', 'add', 'replace'], true)) {
             throw new \InvalidArgumentException('Unknown import mode.');
         }
-        return $db->transaction(function (Database $db) use ($entries, $mode): array {
+        return $db->transaction(function (Database $db) use ($entries, $mode, $ctx): array {
             $pdo = $db->pdo();
-            $deleted = 0;
-            if ($mode === 'replace') {
-                $ids = array_values(array_unique(array_map(fn($e) => (int) $e['sc'], $entries)));
-                if ($ids) {
-                    $deleted = (int) $pdo->exec('DELETE FROM nav_entries WHERE share_class_id IN (' . implode(',', $ids) . ')');
+            $ids = array_values(array_unique(array_map(fn($e) => (int) $e['sc'], $entries)));
+            sort($ids);
+
+            if (isset($ctx['expected_fingerprint'])) {
+                $now = self::fingerprint($db, $ids, true);
+                if (!hash_equals((string) $ctx['expected_fingerprint'], $now)) {
+                    throw new \RuntimeException(self::STALE_MSG);
                 }
+            }
+
+            // Capture what is about to be overwritten / deleted (for the import log)
+            $before = [];            // sc => [date => [nav, bench]]
+            if ($ids) {
+                $in = implode(',', $ids);
+                if ($mode === 'replace') {
+                    $rows = $db->fetchAll("SELECT share_class_id, entry_date, nav, benchmark_value FROM nav_entries WHERE share_class_id IN ({$in})");
+                } else {
+                    $dates = array_column($entries, 'date');
+                    $rows = $db->fetchAll(
+                        "SELECT share_class_id, entry_date, nav, benchmark_value FROM nav_entries
+                          WHERE share_class_id IN ({$in}) AND entry_date BETWEEN :a AND :b",
+                        ['a' => min($dates), 'b' => max($dates)]
+                    );
+                }
+                foreach ($rows as $r) {
+                    $before[(int) $r['share_class_id']][(string) $r['entry_date']] = [
+                        (string) $r['nav'], $r['benchmark_value'] === null ? null : (string) $r['benchmark_value'],
+                    ];
+                }
+            }
+
+            $classes = [];
+            $deleted = 0;
+            if ($mode === 'replace' && $ids) {
+                foreach ($ids as $id) {
+                    $classes[$id] = ['first' => '', 'last' => '', 'inserted' => 0, 'updated' => 0, 'unchanged' => 0, 'deleted' => count($before[$id] ?? [])];
+                }
+                $deleted = (int) $pdo->exec('DELETE FROM nav_entries WHERE share_class_id IN (' . implode(',', $ids) . ')');
             }
             $sql = 'INSERT INTO nav_entries (share_class_id, entry_date, nav, benchmark_value) VALUES (:s, :d, :n, :b) ';
             $sql .= $mode === 'add'
@@ -905,20 +1305,109 @@ final class NavImport
             $st = $pdo->prepare($sql);
 
             $ins = $upd = $same = 0;
+            $changes = [];           // sc => list of [date, old_nav, old_bench, new_nav, new_bench]
             foreach ($entries as $e) {
-                $st->execute([
-                    's' => (int) $e['sc'],
-                    'd' => (string) $e['date'],
-                    'n' => sprintf('%.4F', round((float) $e['nav'], 4)),
-                    'b' => $e['bench'] === null ? null : sprintf('%.4F', round((float) $e['bench'], 4)),
-                ]);
+                $sc = (int) $e['sc'];
+                $classes[$sc] ??= ['first' => $e['date'], 'last' => $e['date'], 'inserted' => 0, 'updated' => 0, 'unchanged' => 0, 'deleted' => 0];
+                if ($classes[$sc]['first'] === '' || $e['date'] < $classes[$sc]['first']) $classes[$sc]['first'] = $e['date'];
+                if ($e['date'] > $classes[$sc]['last']) $classes[$sc]['last'] = $e['date'];
+                $nav = sprintf('%.4F', round((float) $e['nav'], 4));
+                $bench = $e['bench'] === null ? null : sprintf('%.4F', round((float) $e['bench'], 4));
+                $st->execute(['s' => $sc, 'd' => (string) $e['date'], 'n' => $nav, 'b' => $bench]);
                 $rc = $st->rowCount();
-                if ($rc === 1) $ins++;
-                elseif ($rc === 2) $upd++;
-                else $same++;
+                if ($rc === 1) { $ins++; $classes[$sc]['inserted']++; }
+                elseif ($rc === 2) {
+                    $upd++; $classes[$sc]['updated']++;
+                    $old = $before[$sc][$e['date']] ?? [null, null];
+                    $changes[$sc][] = [$e['date'], $old[0], $old[1], $nav, $bench];
+                }
+                else { $same++; $classes[$sc]['unchanged']++; }
             }
-            return ['inserted' => $ins, 'updated' => $upd, 'unchanged' => $same, 'deleted' => $deleted];
+
+            $logId = self::writeLog($db, $mode, $ctx, $classes, $changes, $mode === 'replace' ? $before : []);
+
+            return ['inserted' => $ins, 'updated' => $upd, 'unchanged' => $same, 'deleted' => $deleted,
+                    'log_id' => $logId, 'classes' => $classes];
         });
+    }
+
+    /** Record the publish (with previous values and the source file) — never blocks publishing. */
+    private static function writeLog(Database $db, string $mode, array $ctx, array $classes, array $changes, array $deletedRows): ?int
+    {
+        try {
+            $exists = (int) $db->fetchColumn(
+                "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'nav_import_log'"
+            );
+            if (!$exists) return null;
+        } catch (\Throwable) {
+            return null;
+        }
+        $path = (string) ($ctx['file_path'] ?? '');
+        $content = ($path !== '' && is_readable($path)) ? (string) file_get_contents($path) : '';
+        $payload = [];
+        $tot = ['inserted' => 0, 'updated' => 0, 'unchanged' => 0, 'deleted' => 0];
+        foreach ($classes as $sc => $c) {
+            foreach ($tot as $k => $_) $tot[$k] += (int) $c[$k];
+            $payload[(string) $sc] = $c + [
+                'overwritten' => $changes[$sc] ?? [],
+                'deleted_rows' => isset($deletedRows[$sc])
+                    ? array_map(fn($d, $v) => [$d, $v[0], $v[1]], array_keys($deletedRows[$sc]), $deletedRows[$sc])
+                    : [],
+            ];
+        }
+        $n = count($classes);
+        $summary = sprintf('%d share class%s · %d new · %d updated · %d unchanged',
+            $n, $n === 1 ? '' : 'es', $tot['inserted'], $tot['updated'], $tot['unchanged'])
+            . ($tot['deleted'] ? ' · ' . $tot['deleted'] . ' deleted first' : '');
+        $name = (string) ($ctx['file_name'] ?? '');
+        $row = [
+            'user_id'      => isset($ctx['user_id']) ? (int) $ctx['user_id'] : null,
+            'file_name'    => function_exists('mb_substr') ? mb_substr($name, 0, 255) : substr($name, 0, 255),
+            'file_sha256'  => $content !== '' ? hash('sha256', $content) : str_repeat('0', 64),
+            // base64 text: binary-safe whatever the connection charset / driver
+            'file_base64'  => ($content !== '' && strlen($content) <= self::ARCHIVE_MAX_BYTES) ? base64_encode($content) : null,
+            'mode'         => $mode,
+            'summary'      => $summary,
+            'changes_json' => json_encode($payload, JSON_UNESCAPED_SLASHES) ?: null,
+        ];
+        // Fall back to smaller records if the server refuses a large one (max_allowed_packet)
+        $attempts = [$row, ['file_base64' => null] + $row, ['file_base64' => null, 'changes_json' => null] + $row];
+        foreach ($attempts as $attempt) {
+            try {
+                return $db->insert('nav_import_log', $attempt);
+            } catch (\Throwable $e) {
+                error_log('nav_import_log insert failed: ' . $e->getMessage());
+            }
+        }
+        return null;
+    }
+
+    /** Recent publishes for the admin screen (empty when the log table does not exist yet). */
+    public static function recentImports(Database $db, int $limit = 8): array
+    {
+        $limit = max(1, min($limit, 100));
+        try {
+            return $db->fetchAll(
+                'SELECT l.id, l.created_at, l.file_name, l.mode, l.summary, (l.file_base64 IS NOT NULL) AS has_file, u.name AS user_name
+                   FROM nav_import_log l LEFT JOIN users u ON u.id = l.user_id
+                  ORDER BY l.id DESC LIMIT ' . $limit
+            );
+        } catch (\Throwable) {
+            return [];
+        }
+    }
+
+    /** Archived source file of a publish, or null. @return array{name:string, content:string}|null */
+    public static function importFile(Database $db, int $id): ?array
+    {
+        try {
+            $r = $db->fetchOne('SELECT file_name, file_base64 FROM nav_import_log WHERE id = :id', ['id' => $id]);
+        } catch (\Throwable) {
+            return null;
+        }
+        if (!$r || $r['file_base64'] === null) return null;
+        $content = base64_decode((string) $r['file_base64'], true);
+        return $content === false ? null : ['name' => (string) $r['file_name'], 'content' => $content];
     }
 
     // ======================================================================
@@ -929,10 +1418,11 @@ final class NavImport
     {
         $candidates = [rtrim(sys_get_temp_dir(), '/\\') . '/mori-nav-import', dirname(__DIR__) . '/uploads/.nav-import'];
         foreach ($candidates as $dir) {
-            if (!is_dir($dir)) @mkdir($dir, 0700, true);
-            if (is_dir($dir) && is_writable($dir)) {
+            if (!@is_dir($dir)) @mkdir($dir, 0700, true);
+            if (@is_dir($dir) && @is_writable($dir)) {
                 if (str_contains($dir, '/uploads/') && !is_file($dir . '/.htaccess')) {
                     @file_put_contents($dir . '/.htaccess', "Require all denied\nDeny from all\n");
+                    @file_put_contents($dir . '/index.html', '');
                 }
                 return $dir;
             }
@@ -976,10 +1466,13 @@ final class NavImport
     // 6. TEMPLATES
     // ======================================================================
 
-    /** Most recent weekday on or before today. */
-    public static function lastBusinessDay(?string $today = null): string
+    /**
+     * The previous business day (NAVs are normally available the morning after
+     * the valuation day): yesterday, or Friday when today is Sat/Sun/Mon.
+     */
+    public static function previousBusinessDay(?string $today = null): string
     {
-        $d = new \DateTimeImmutable($today ?? 'today');
+        $d = (new \DateTimeImmutable($today ?? 'today'))->modify('-1 day');
         while ((int) $d->format('N') >= 6) $d = $d->modify('-1 day');
         return $d->format('Y-m-d');
     }
@@ -1008,20 +1501,27 @@ final class NavImport
     public static function sendTemplate(array $classes, string $layout, string $format): never
     {
         $layout = $layout === 'wide' ? 'wide' : 'long';
-        $date   = self::lastBusinessDay();
+        $date   = self::previousBusinessDay();
         [$header, $rows] = self::templateData($classes, $layout, $date);
         $base = $layout === 'wide' ? 'mori-nav-history-template' : 'mori-nav-prices-template';
 
-        if ($format === 'xlsx' && class_exists(\ZipArchive::class)) {
-            $tmp = tempnam(sys_get_temp_dir(), 'moriTpl');
-            self::writeXlsx($tmp, $header, $rows, self::instructions($layout));
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment; filename="' . $base . '.xlsx"');
-            header('Content-Length: ' . filesize($tmp));
-            header('Cache-Control: no-store');
-            readfile($tmp);
-            @unlink($tmp);
-            exit;
+        if ($format === 'xlsx' && self::xlsxSupported()) {
+            $tmp = null;
+            try {
+                $tmp = self::stashDir() . '/tpl-' . bin2hex(random_bytes(8)) . '.xlsx';
+                self::writeXlsx($tmp, $header, $rows, self::instructions($layout));
+                $size = filesize($tmp);
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment; filename="' . $base . '.xlsx"');
+                if ($size) header('Content-Length: ' . $size);
+                header('Cache-Control: no-store');
+                readfile($tmp);
+                @unlink($tmp);
+                exit;
+            } catch (\Throwable $e) {
+                if ($tmp) @unlink($tmp);
+                error_log('NAV xlsx template failed, serving CSV: ' . $e->getMessage());
+            }
         }
 
         header('Content-Type: text/csv; charset=UTF-8');
@@ -1046,16 +1546,19 @@ final class NavImport
             'Upload this file in the admin panel: Funds → Performance (NAV) → "Upload prices — all share classes".',
             'Only the FIRST sheet ("Prices") is read. This "How to use" sheet is ignored.',
             '',
+            'DATE: the template is pre-filled with the previous business day. Make sure it is the NAV (valuation)',
+            'date of the prices you enter — change it if not. Never re-use an old file without updating the date.',
+            '',
         ];
         $specific = $layout === 'wide' ? [
             'One row per date, one column per share class (ideal for loading a price history).',
             'Column titles must contain the ISIN — do not rename them.',
             'Leave a cell empty if there is no price for that share class on that date.',
-            'Date: a real Excel date or YYYY-MM-DD (e.g. 2026-10-03). Add as many rows as you like.',
+            'Date: a real Excel date or YYYY-MM-DD (e.g. 2026-10-02). Add as many rows as you like.',
         ] : [
             'One row per share class per date. The 11 share classes are pre-filled.',
-            '1. Check the Date (a real Excel date or YYYY-MM-DD, e.g. 2026-10-03).',
-            '2. Type each NAV per share in the NAV column (e.g. 142.8634).',
+            '1. Check the Date (a real Excel date or YYYY-MM-DD, e.g. 2026-10-02).',
+            '2. Type each NAV per share in the NAV column (e.g. 142.8634), in the share class currency (pounds, not pence).',
             '3. Rows with an empty NAV are skipped — so you can publish only some share classes.',
             'To add several dates in one go, copy the 11 rows below and change the date.',
             'Do not change the ISIN column — it is how prices are matched to share classes.',
@@ -1064,7 +1567,7 @@ final class NavImport
         return array_merge($common, $specific, [
             '',
             'Before anything is published you will see a summary to review (new / changed prices,',
-            'unusual moves). Nothing is saved until you click "Publish prices".',
+            'unusual moves, prices that would overwrite published ones). Nothing is saved until you click "Publish prices".',
         ]);
     }
 
@@ -1092,7 +1595,7 @@ final class NavImport
         $xml .= '<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/></sheetView></sheetViews>';
         $xml .= '<sheetFormatPr defaultRowHeight="15"/><cols>';
         foreach ($header as $i => $h) {
-            $w = max(12, min(48, mb_strlen($h) + 4));
+            $w = max(12, min(48, strlen($h) + 4));
             $xml .= '<col min="' . ($i + 1) . '" max="' . ($i + 1) . '" width="' . $w . '" customWidth="1"/>';
         }
         $xml .= '</cols><sheetData>';
@@ -1185,6 +1688,8 @@ final class NavImport
         $zip->addFromString('xl/worksheets/sheet1.xml', $xml);
         $zip->addFromString('xl/worksheets/sheet2.xml', $help);
         $zip->addFromString('xl/styles.xml', $styles);
-        $zip->close();
+        if (!$zip->close()) {
+            throw new \RuntimeException('Could not write the template file.');
+        }
     }
 }

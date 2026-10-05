@@ -141,7 +141,7 @@ include __DIR__ . '/src/partials/page-header.php';
                 ?>
                 <div style="background:var(--mori-bg-soft,#F5F7FA);border-radius:10px;padding:18px 20px;">
                     <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mori-muted,#7A8B99);font-weight:600;margin-bottom:6px;"><?= e($label) ?></div>
-                    <div style="font-size:18px;font-weight:700;color:<?= $color ?>;"><?= $ret !== null ? ($ret >= 0 ? '+' : '') . number_format($ret, 2) . '%' : '—' ?></div>
+                    <div style="font-size:18px;font-weight:700;color:<?= $color ?>;"><?= $ret !== null ? ($ret >= 0 ? '+' : '') . (\Mori\I18n::locale() === 'de' ? number_format($ret, 2, ',', '.') . ' %' : number_format($ret, 2) . '%') : '—' ?></div>
                 </div>
                 <?php endforeach; ?>
             </div>
@@ -160,19 +160,47 @@ include __DIR__ . '/src/partials/footer.php';
 var navData = <?= json_encode(array_map(fn($r) => ['x' => $r['entry_date'], 'y' => (float)$r['nav']], $navData)) ?>;
 var benchData = <?= json_encode(array_values(array_filter(array_map(fn($r) => $r['benchmark_value'] !== null ? ['x' => $r['entry_date'], 'y' => (float)$r['benchmark_value']] : null, $navData)))) ?>;
 var showBenchmark = <?= \Mori\setting('show_benchmark', '1') === '1' ? 'true' : 'false' ?>;
+var pageLang = <?= json_encode(\Mori\I18n::locale() === 'de' ? 'de' : 'en') ?>;
+var numLocale = pageLang === 'de' ? 'de-DE' : 'en-GB';
+var fmt2 = new Intl.NumberFormat(numLocale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+var fmt4 = new Intl.NumberFormat(numLocale, { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+var chartLocales = [{ name: 'en', options: {
+    months: ['January','February','March','April','May','June','July','August','September','October','November','December'],
+    shortMonths: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    days: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+    shortDays: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    toolbar: { exportToSVG: 'Download SVG', exportToPNG: 'Download PNG', menu: 'Menu', selection: 'Selection', selectionZoom: 'Selection Zoom', zoomIn: 'Zoom In', zoomOut: 'Zoom Out', pan: 'Panning', reset: 'Reset Zoom' }
+} }, { name: 'de', options: {
+    months: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+    shortMonths: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+    days: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+    shortDays: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+    toolbar: { exportToSVG: 'SVG speichern', exportToPNG: 'PNG speichern', menu: 'Menü', selection: 'Auswahl', selectionZoom: 'Auswahl vergrößern', zoomIn: 'Vergrößern', zoomOut: 'Verkleinern', pan: 'Verschieben', reset: 'Zoom zurücksetzen' }
+} }];
+var shortMonths = chartLocales[pageLang === 'de' ? 1 : 0].options.shortMonths;
+function fmtDay(ts) { var d = new Date(ts); return ('0' + d.getUTCDate()).slice(-2) + ' ' + shortMonths[d.getUTCMonth()] + ' ' + d.getUTCFullYear(); }
 if (navData.length > 0) {
     var series = [{name: 'NAV', data: navData}];
+    // Prices are daily: label days/months/years, never clock times
+    var xaxis = { type: 'datetime', labels: { style: { colors: '#7A8B99', fontSize: '11px' }, datetimeFormatter: { year: 'yyyy', month: "MMM 'yy", day: 'dd MMM', hour: 'dd MMM' } } };
+    var spanDays = Math.round((Date.parse(navData[navData.length - 1].x) - Date.parse(navData[0].x)) / 864e5);
+    if (spanDays > 0 && spanDays <= 12) {
+        // Only a few days of prices so far: exactly one tick per day (otherwise
+        // the chart would add 12-hour ticks and repeat each date)
+        xaxis.tickAmount = spanDays;
+        xaxis.labels.formatter = function (value, ts) { return ts === undefined ? value : fmtDay(ts).slice(0, -5); };
+    }
     if (showBenchmark && benchData.length > 0) series.push({name: 'Benchmark', data: benchData});
     var options = {
-        chart: { type: 'area', height: 420, fontFamily: 'Inter, sans-serif', toolbar: { show: false }, zoom: { enabled: true } },
+        chart: { type: 'area', height: 420, fontFamily: 'Inter, sans-serif', toolbar: { show: false }, zoom: { enabled: true }, locales: chartLocales, defaultLocale: pageLang },
         colors: ['#1ABC9C', '#1B3A5C'],
         series: series,
         stroke: { curve: 'smooth', width: 2.5 },
         fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.02, stops: [0, 95] } },
-        xaxis: { type: 'datetime', labels: { style: { colors: '#7A8B99', fontSize: '11px' } } },
-        yaxis: { labels: { style: { colors: '#7A8B99', fontSize: '11px' }, formatter: v => v.toFixed(2) } },
+        xaxis: xaxis,
+        yaxis: { labels: { style: { colors: '#7A8B99', fontSize: '11px' }, formatter: v => fmt2.format(v) } },
         grid: { borderColor: '#E1E7EE', strokeDashArray: 3 },
-        tooltip: { x: { format: 'MMM yyyy' }, y: { formatter: v => v.toFixed(4) } },
+        tooltip: { x: { formatter: v => fmtDay(v) }, y: { formatter: v => fmt4.format(v) } },
         legend: { position: 'top', horizontalAlign: 'left', fontSize: '13px', labels: { colors: '#5A6B7B' } },
     };
     var chart = new ApexCharts(document.querySelector('#perfChart'), options);

@@ -16,6 +16,18 @@ use function Mori\redirect;
 Auth::requireLogin();
 $db = Database::instance();
 $allClasses = NavImport::classes($db);
+$labels = [];
+foreach ($allClasses as $c) $labels[(int) $c['id']] = $c['name'] . ' (' . $c['isin'] . ')';
+
+// Uploads that were already published (so the Back button explains instead of erroring)
+$_SESSION['nav_import_done'] = array_filter(
+    (array) ($_SESSION['nav_import_done'] ?? []),
+    fn($m) => is_array($m) && ($m['at'] ?? 0) > time() - 21600
+);
+$alreadyPublished = function (string $token): ?string {
+    $d = $_SESSION['nav_import_done'][$token] ?? null;
+    return $d ? 'This file was already published at ' . date('H:i', (int) $d['at']) . ' — ' . $d['msg'] . '.' : null;
+};
 
 // ---------------------------------------------------------------------------
 // One-file upload for ALL share classes: template → upload → review → publish
@@ -26,6 +38,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET' && in_array($_GET['action'] ?? '', ['bu
     $layout = ($_GET['layout'] ?? '') === 'wide' ? 'wide' : 'long';
     $format = (($_GET['fmt'] ?? '') === 'csv' || ($_GET['action'] ?? '') === 'csv_template') ? 'csv' : 'xlsx';
     NavImport::sendTemplate($allClasses, $layout, $format);
+}
+
+// Download the original file of an earlier publish
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'import_file') {
+    $file = NavImport::importFile($db, (int) ($_GET['id'] ?? 0));
+    if (!$file) {
+        flash('error', 'That file is not available.');
+        redirect(asset('admin/performance.php'));
+    }
+    $safe = trim((string) preg_replace('/[^A-Za-z0-9._\- ()]+/', '_', basename($file['name']))) ?: 'nav-prices';
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $safe . '"');
+    header('Content-Length: ' . strlen($file['content']));
+    header('Cache-Control: no-store');
+    echo $file['content'];
+    exit;
 }
 
 // Step 1 — upload: keep the file, then show the review screen
@@ -61,6 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_confirm') {
     Csrf::requireValid();
     $token = (string) ($_POST['token'] ?? '');
+    if ($done = $alreadyPublished($token)) {
+        flash('info', $done);
+        redirect(asset('admin/performance.php'));
+    }
     $meta  = $_SESSION['nav_import'][$token] ?? null;
     $path  = $meta ? NavImport::stashPath($token) : null;
     if (!$meta || !$path) {
@@ -70,25 +102,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'bulk_
     $mode = in_array($_POST['mode'] ?? '', ['upsert', 'add', 'replace'], true) ? $_POST['mode'] : 'upsert';
     try {
         $read = NavImport::readFile($path, (string) $meta['name']);
-        $an   = NavImport::analyze($read['rows'], $allClasses, date('Y-m-d'));
+        $an   = NavImport::analyze($read['rows'], $allClasses, date('Y-m-d'), $read);
         if ($an['errors']) throw new \RuntimeException('The file contains errors — nothing was published.');
 
-        $res = NavImport::apply($db, $an['entries'], $mode);
+        // Overwriting prices that are already on the website needs an explicit tick
+        if ($mode === 'upsert' && ($_POST['confirm_overwrite'] ?? '') !== '1') {
+            $over = 0;
+            foreach (NavImport::diff($db, $an['entries']) as $d) $over += count($d['overwrites']);
+            if ($over > 0) {
+                throw new \RuntimeException($over . ' price' . ($over === 1 ? '' : 's') . ' already on the website would be overwritten. Tick the confirmation box (or choose "Keep it") and publish again.');
+            }
+        }
+        if ($mode === 'replace' && ($_POST['confirm_replace'] ?? '') !== '1') {
+            throw new \RuntimeException('"Replace all history" was not confirmed.');
+        }
+
+        $res = NavImport::apply($db, $an['entries'], $mode, [
+            'expected_fingerprint' => (string) ($_POST['fp'] ?? ''),
+            'user_id'   => Auth::userId(),
+            'file_name' => (string) $meta['name'],
+            'file_path' => $path,
+        ]);
         NavImport::unstash($token);
         unset($_SESSION['nav_import'][$token]);
 
-        $nClasses = count(array_unique(array_map(fn($x) => $x['sc'], $an['entries'])));
+        $nClasses = count($res['classes']);
         $msg = sprintf(
             'Prices published for %d share class%s — %d new, %d updated, %d unchanged',
             $nClasses, $nClasses === 1 ? '' : 'es', $res['inserted'], $res['updated'], $res['unchanged']
         );
         if ($mode === 'replace') $msg .= " ({$res['deleted']} previously stored entries were removed first)";
         if ($mode === 'add' && $res['unchanged'] > 0) $msg .= " ({$res['unchanged']} existing dates kept as they were)";
-        AuditLog::log(Auth::userId(), 'nav_bulk_imported', 'nav_entries', null, $meta['name'] . " | mode={$mode} | {$msg}");
+        $_SESSION['nav_import_done'][$token] = ['at' => time(), 'msg' => $msg];
+
+        // Audit trail: per share class what happened (full old values are in the import log)
+        $parts = [];
+        foreach ($res['classes'] as $sc => $c) {
+            $range = $c['first'] === '' ? '' : ($c['first'] === $c['last'] ? $c['first'] : $c['first'] . '..' . $c['last']);
+            $bits = [];
+            foreach (['inserted' => 'new', 'updated' => 'updated', 'unchanged' => 'unchanged', 'deleted' => 'deleted'] as $k => $w) {
+                if ($c[$k]) $bits[] = $c[$k] . ' ' . $w;
+            }
+            $parts[] = ($labels[$sc] ?? ('#' . $sc)) . ' ' . $range . ': ' . implode(', ', $bits);
+        }
+        $details = $meta['name'] . ' | mode=' . $mode . ($res['log_id'] ? ' | import log #' . $res['log_id'] : '') . ' | ' . implode('; ', $parts);
+        if (strlen($details) > 3000) $details = substr($details, 0, 2990) . ' …';
+        AuditLog::log(Auth::userId(), 'nav_bulk_imported', 'nav_entries', null, $details);
         flash('ok', $msg . '.');
         redirect(asset('admin/performance.php'));
     } catch (\Throwable $e) {
-        flash('error', 'Nothing was published: ' . $e->getMessage());
+        flash('error', ($e->getMessage() === NavImport::STALE_MSG ? '' : 'Nothing was published: ') . $e->getMessage());
         redirect(asset('admin/performance.php?bulk=' . $token));
     }
 }
@@ -160,6 +223,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'del_n
 $bulk = null;
 if (!empty($_GET['bulk'])) {
     $token = (string) $_GET['bulk'];
+    if ($done = $alreadyPublished($token)) {
+        flash('info', $done);
+        redirect(asset('admin/performance.php'));
+    }
     $meta  = $_SESSION['nav_import'][$token] ?? null;
     $path  = $meta ? NavImport::stashPath($token) : null;
     if (!$meta || !$path) {
@@ -169,16 +236,20 @@ if (!empty($_GET['bulk'])) {
     $bulk = ['token' => $token, 'name' => (string) $meta['name']];
     try {
         $read = NavImport::readFile($path, (string) $meta['name']);
-        $an   = NavImport::analyze($read['rows'], $allClasses, date('Y-m-d'));
-        $labels = [];
-        foreach ($allClasses as $c) $labels[(int) $c['id']] = $c['name'] . ' (' . $c['isin'] . ')';
+        $an   = NavImport::analyze($read['rows'], $allClasses, date('Y-m-d'), $read);
         $bulk += [
             'source'  => $read['source'],
             'rowsRead'=> max(0, count($read['rows']) - 1),
             'an'      => $an,
-            'diff'    => $an['errors'] ? [] : NavImport::diff($db, $an['entries']),
-            'jumps'   => $an['errors'] ? [] : NavImport::jumpWarnings($an['entries'], NavImport::prevNavLookup($db), $labels),
+            'diff'    => [],
+            'jumps'   => [],
+            'fp'      => '',
         ];
+        if (!$an['errors']) {
+            $bulk['diff']  = NavImport::diff($db, $an['entries']);
+            $bulk['jumps'] = NavImport::seriesWarnings($an['entries'], NavImport::storedWindow($db, $an['entries']), $labels);
+            $bulk['fp']    = NavImport::fingerprint($db, array_keys($bulk['diff']));
+        }
     } catch (\Throwable $e) {
         $bulk['fatal'] = $e->getMessage();
     }
@@ -192,6 +263,7 @@ $entryCounts = [];
 foreach ($db->fetchAll('SELECT share_class_id, COUNT(*) AS n FROM nav_entries GROUP BY share_class_id') as $r) {
     $entryCounts[(int) $r['share_class_id']] = (int) $r['n'];
 }
+$recentImports = $bulk ? [] : NavImport::recentImports($db, 8);
 
 $funds = $db->fetchAll('SELECT * FROM funds ORDER BY display_order');
 $selectedFundId = (int)($_GET['fund'] ?? 0);
@@ -214,6 +286,7 @@ $pct = function (?float $from, float $to): string {
 ?>
 
 <?php if ($ok = flash('ok')): ?><div class="a-alert ok"><i class="fa-solid fa-circle-check"></i> <?= e($ok) ?></div><?php endif; ?>
+<?php if ($info = flash('info')): ?><div class="a-alert info"><i class="fa-solid fa-circle-info"></i> <?= e($info) ?></div><?php endif; ?>
 <?php if ($err = flash('error')): ?><div class="a-alert error"><i class="fa-solid fa-triangle-exclamation"></i> <?= e($err) ?></div><?php endif; ?>
 
 <?php if ($bulk): /* ======================= REVIEW SCREEN ======================= */ ?>
@@ -223,7 +296,16 @@ $pct = function (?float $from, float $to): string {
     $canPublish = empty($bulk['fatal']) && $an && !$errors && !empty($an['entries']);
     $warnings = array_merge($an['warnings'] ?? [], $bulk['jumps'] ?? []);
     $deleteTotal = 0;
-    foreach (($bulk['diff'] ?? []) as $d) $deleteTotal += $d['existing_total'];
+    $overwrites = [];
+    foreach (($bulk['diff'] ?? []) as $sc => $d) {
+        $deleteTotal += $d['existing_total'];
+        foreach ($d['overwrites'] as $o) $overwrites[] = $o + ['sc' => (int) $sc];
+    }
+    usort($overwrites, fn($a, $b) => [$b['date'], $a['sc']] <=> [$a['date'], $b['sc']]);
+    $overDates = array_values(array_unique(array_column($overwrites, 'date')));
+    $hasBench = !empty($an['has_benchmark']);
+    $classById = [];
+    foreach ($allClasses as $c) $classById[(int) $c['id']] = $c;
 ?>
 <div class="a-card" style="margin-bottom:22px;border:2px solid var(--a-teal);">
     <div class="a-card__head">
@@ -277,7 +359,7 @@ $pct = function (?float $from, float $to): string {
             <table class="a-table">
                 <thead><tr>
                     <th>Share class</th><th>ISIN</th><th style="text-align:right;">Prices</th><th>Date(s) in file</th>
-                    <th style="text-align:right;">Latest NAV in file</th><th style="text-align:right;">Previous NAV</th><th style="text-align:right;">Change</th>
+                    <th style="text-align:right;">NAV in file<?= $hasBench ? ' / benchmark' : '' ?></th><th style="text-align:right;">Compared with</th><th style="text-align:right;">Change</th>
                     <th>Effect</th>
                 </tr></thead>
                 <tbody>
@@ -291,21 +373,39 @@ $pct = function (?float $from, float $to): string {
                         <td style="font-family:monospace;font-size:12px;"><?= e($c['isin']) ?></td>
                         <td colspan="6"><em>Not in this file — stays as it is</em><?= isset($latest[$id]) ? ' (currently ' . e(format_nav($latest[$id]['nav'], 'en')) . ' ' . e($c['currency']) . ', ' . e(format_date($latest[$id]['date'])) . ')' : '' ?></td>
                     </tr>
-                    <?php else: ?>
+                    <?php else:
+                        // What the file's price is compared with: the published price of the
+                        // same date (overwrite), else the previous one, else the next one (back-fill).
+                        $ref = null; $refNote = '';
+                        if ($d['rows'] === 1 && $d['overwrites']) {
+                            $ref = $d['overwrites'][0]['old_nav']; $refNote = 'published now for ' . format_date($d['last']);
+                        } elseif ($d['rows'] === 1 && $d['changed'] === 0 && $d['unchanged'] === 1) {
+                            $ref = $d['last_nav']; $refNote = 'already published (same)';
+                        } elseif ($d['prev_nav'] !== null) {
+                            $ref = $d['prev_nav']; $refNote = 'previous: ' . format_date($d['prev_date']);
+                        } elseif ($d['next_nav'] !== null) {
+                            $ref = $d['next_nav']; $refNote = 'next published: ' . format_date($d['next_date']);
+                        }
+                        $chg = ($d['rows'] === 1 && $ref !== null && $ref > 0) ? $d['last_nav'] / $ref - 1 : null;
+                        $big = $chg !== null && abs($chg) > NavImport::JUMP_WARN;
+                    ?>
                     <tr>
                         <td><strong><?= e($c['name']) ?></strong></td>
                         <td style="font-family:monospace;font-size:12px;"><?= e($c['isin']) ?></td>
                         <td style="text-align:right;"><?= (int) $d['rows'] ?></td>
                         <td><?= e(format_date($d['first'])) ?><?= $d['first'] !== $d['last'] ? ' → ' . e(format_date($d['last'])) : '' ?></td>
-                        <td style="text-align:right;font-family:monospace;"><strong><?= e(format_nav($d['last_nav'], 'en')) ?></strong> <small><?= e($c['currency']) ?></small></td>
-                        <td style="text-align:right;font-family:monospace;color:var(--a-muted);">
-                            <?= $d['prev_nav'] !== null ? e(format_nav($d['prev_nav'], 'en')) . '<br><small>' . e(format_date($d['prev_date'])) . '</small>' : '—' ?>
+                        <td style="text-align:right;font-family:monospace;">
+                            <strong><?= e(format_nav($d['last_nav'], 'en')) ?></strong> <small><?= e($c['currency']) ?></small>
+                            <?php if ($hasBench && $d['last_bench'] !== null): ?><br><small style="color:var(--a-muted);">benchmark <?= e(format_nav($d['last_bench'], 'en')) ?></small><?php endif; ?>
+                            <?php if ($d['rows'] > 1): ?><br><small style="color:var(--a-muted);">latest date in file</small><?php endif; ?>
                         </td>
-                        <?php $big = $d['rows'] === 1 && $d['prev_nav'] !== null && $d['prev_nav'] > 0 && abs($d['last_nav'] / $d['prev_nav'] - 1) > NavImport::JUMP_WARN; ?>
-                        <td style="text-align:right;font-family:monospace;<?= $big ? 'color:var(--a-danger);font-weight:700;' : '' ?>"><?= $big ? '<i class="fa-solid fa-triangle-exclamation"></i> ' : '' ?><?= e($d['rows'] === 1 ? $pct($d['prev_nav'], $d['last_nav']) : '') ?></td>
+                        <td style="text-align:right;font-family:monospace;color:var(--a-muted);">
+                            <?= $ref !== null ? e(format_nav($ref, 'en')) . '<br><small>' . e($refNote) . '</small>' : '—<br><small>no published price yet</small>' ?>
+                        </td>
+                        <td style="text-align:right;font-family:monospace;<?= $big ? 'color:var(--a-danger);font-weight:700;' : '' ?>"><?= $big ? '<i class="fa-solid fa-triangle-exclamation"></i> ' : '' ?><?= $chg !== null ? e(sprintf('%+.2f%%', $chg * 100)) : '' ?></td>
                         <td style="white-space:nowrap;">
                             <?php if ($d['new']): ?><span class="a-badge success"><?= (int) $d['new'] ?> new</span><?php endif; ?>
-                            <?php if ($d['changed']): ?><span class="a-badge warning"><?= (int) $d['changed'] ?> changed</span><?php endif; ?>
+                            <?php if ($d['changed']): ?><span class="a-badge warning"><?= (int) $d['changed'] ?> will overwrite</span><?php endif; ?>
                             <?php if ($d['unchanged']): ?><span class="a-badge muted"><?= (int) $d['unchanged'] ?> unchanged</span><?php endif; ?>
                         </td>
                     </tr>
@@ -318,16 +418,48 @@ $pct = function (?float $from, float $to): string {
         <?php endif; ?>
 
         <?php if ($canPublish): ?>
-        <form method="post" class="a-form" id="bulkPublish"
-              onsubmit="var m=this.querySelector('input[name=mode]:checked'); return !m || m.value!=='replace' || confirm('Replace all: this deletes ALL <?= (int) $deleteTotal ?> stored NAV entries of the share classes in this file before importing. Continue?');">
+        <form method="post" class="a-form" id="bulkPublish" data-overwrites="<?= count($overwrites) ?>" data-delete-total="<?= (int) $deleteTotal ?>">
             <?= Csrf::field() ?>
             <input type="hidden" name="action" value="bulk_confirm">
             <input type="hidden" name="token" value="<?= e($bulk['token']) ?>">
+            <input type="hidden" name="fp" value="<?= e($bulk['fp']) ?>">
+            <input type="hidden" name="confirm_replace" value="0">
+
+            <?php if ($overwrites): ?>
+            <div class="a-alert warn" id="overwriteBox" style="display:block;">
+                <strong><i class="fa-solid fa-triangle-exclamation"></i>
+                    <?= count($overwrites) ?> price<?= count($overwrites) === 1 ? ' that is' : 's that are' ?> already on the website would be overwritten
+                    (<?= e(implode(', ', array_map(fn($x) => format_date($x), array_slice($overDates, 0, 4)))) ?><?= count($overDates) > 4 ? ' …' : '' ?>).</strong>
+                <div style="font-size:12.5px;margin:4px 0 8px;">If you meant to publish a <em>new</em> day, check the date in your file. Choose "Keep it" below to add only new dates.</div>
+                <div style="overflow-x:auto;">
+                <table class="a-table" style="background:#fff;font-size:12.5px;">
+                    <thead><tr><th>Share class</th><th>Date</th><th style="text-align:right;">Published now</th><th style="text-align:right;">In file</th><th style="text-align:right;">Change</th></tr></thead>
+                    <tbody>
+                    <?php foreach (array_slice($overwrites, 0, 25) as $o): $cc = $classById[$o['sc']] ?? ['name' => '#' . $o['sc'], 'currency' => '']; ?>
+                        <tr>
+                            <td><?= e($cc['name']) ?></td>
+                            <td><?= e(format_date($o['date'])) ?></td>
+                            <td style="text-align:right;font-family:monospace;"><?= e(format_nav($o['old_nav'], 'en')) ?><?php if ($o['new_bench'] !== null && $o['old_bench'] !== $o['new_bench']): ?><br><small>bm <?= $o['old_bench'] === null ? '—' : e(format_nav($o['old_bench'], 'en')) ?></small><?php endif; ?></td>
+                            <td style="text-align:right;font-family:monospace;"><strong><?= e(format_nav($o['new_nav'], 'en')) ?></strong><?php if ($o['new_bench'] !== null && $o['old_bench'] !== $o['new_bench']): ?><br><small>bm <?= e(format_nav($o['new_bench'], 'en')) ?></small><?php endif; ?></td>
+                            <td style="text-align:right;font-family:monospace;"><?= e($pct($o['old_nav'], $o['new_nav'])) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if (count($overwrites) > 25): ?><tr><td colspan="5"><em>… and <?= count($overwrites) - 25 ?> more.</em></td></tr><?php endif; ?>
+                    </tbody>
+                </table>
+                </div>
+                <label style="display:flex;align-items:flex-start;gap:8px;margin-top:10px;cursor:pointer;font-weight:600;">
+                    <input type="checkbox" name="confirm_overwrite" value="1" id="confirmOverwrite">
+                    <span>Yes — replace these published prices with the values in this file (the old values are kept in the upload log).</span>
+                </label>
+            </div>
+            <?php endif; ?>
+
             <label style="font-weight:700;">If a date already has a price</label>
             <div style="background:var(--a-border-soft);padding:12px 16px;border-radius:8px;margin:8px 0 16px;">
                 <label style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;cursor:pointer;font-size:13px;font-weight:400;">
                     <input type="radio" name="mode" value="upsert" checked>
-                    <span><strong>Update it</strong> (recommended) — new dates are added, changed prices are corrected, nothing is deleted.</span>
+                    <span><strong>Update it</strong> (recommended) — new dates are added, changed prices are corrected<?= $overwrites ? ' (needs the tick above)' : '' ?>, nothing is deleted.</span>
                 </label>
                 <label style="display:flex;align-items:flex-start;gap:8px;padding:5px 0;cursor:pointer;font-size:13px;font-weight:400;">
                     <input type="radio" name="mode" value="add">
@@ -343,6 +475,30 @@ $pct = function (?float $from, float $to): string {
                 <button class="a-btn ghost lg" type="submit" form="bulkCancel">Cancel</button>
             </div>
         </form>
+        <script>
+        (function () {
+            var form = document.getElementById('bulkPublish');
+            form.addEventListener('submit', function (ev) {
+                var m = form.querySelector('input[name=mode]:checked');
+                var mode = m ? m.value : 'upsert';
+                var over = parseInt(form.dataset.overwrites || '0', 10);
+                var tick = document.getElementById('confirmOverwrite');
+                if (mode === 'upsert' && over > 0 && !(tick && tick.checked)) {
+                    ev.preventDefault();
+                    alert('Some prices in this file are already on the website. Tick the box to confirm overwriting them, or choose "Keep it".');
+                    if (tick) tick.focus();
+                    return;
+                }
+                if (mode === 'replace') {
+                    if (!confirm('Replace all: this deletes ALL ' + form.dataset.deleteTotal + ' stored NAV entries of the share classes in this file before importing. Continue?')) {
+                        ev.preventDefault();
+                        return;
+                    }
+                    form.querySelector('input[name=confirm_replace]').value = '1';
+                }
+            });
+        })();
+        </script>
         <?php else: ?>
             <button class="a-btn lg" type="submit" form="bulkCancel"><i class="fa-solid fa-rotate-left"></i> Upload a different file</button>
         <?php endif; ?>
@@ -388,7 +544,8 @@ $pct = function (?float $from, float $to): string {
                 <li><strong>Price history</strong> (one row per date): a <code>Date</code> column plus one column per share class whose title contains its ISIN.</li>
                 <li>Dates: real Excel dates, <code>2026-10-03</code>, <code>03/10/2026</code> (day/month/year), <code>03.10.2026</code> or <code>3 Oct 2026</code>. Future dates are rejected.</li>
                 <li>Numbers: <code>142.8634</code> or <code>142,8634</code>; thousands separators are fine. Stored with 4 decimals.</li>
-                <li>Nothing is saved unless the whole file is valid. Unusual moves (over 15% versus the previous price) are highlighted for checking.</li>
+                <li>Nothing is saved unless the whole file is valid. Unusual moves (over 15% versus neighbouring prices) are highlighted for checking.</li>
+                <li>Prices that are already on the website are only overwritten after you confirm them on the review screen. Every upload is logged with its original file and the previous values.</li>
             </ul>
         </details>
     </div>
@@ -417,6 +574,33 @@ $pct = function (?float $from, float $to): string {
         </table>
     </div>
 </div>
+
+<?php if ($recentImports): ?>
+<!-- Upload log -->
+<div class="a-card" style="margin-bottom:22px;">
+    <div class="a-card__head"><h2><i class="fa-solid fa-list-check"></i> Recent price uploads</h2></div>
+    <div class="a-card__body" style="padding:0;overflow-x:auto;">
+        <table class="a-table">
+            <thead><tr><th>Published</th><th>By</th><th>File</th><th>Mode</th><th>Result</th></tr></thead>
+            <tbody>
+            <?php foreach ($recentImports as $imp): ?>
+                <tr>
+                    <td style="white-space:nowrap;"><?= e(format_date((string) $imp['created_at'], 'd M Y H:i')) ?></td>
+                    <td><small><?= e((string) ($imp['user_name'] ?? '—')) ?></small></td>
+                    <td>
+                        <?php if ((int) $imp['has_file']): ?>
+                        <a href="<?= e(asset('admin/performance.php?action=import_file&id=' . (int) $imp['id'])) ?>"><i class="fa-solid fa-download"></i> <?= e((string) $imp['file_name']) ?></a>
+                        <?php else: ?><?= e((string) $imp['file_name']) ?><?php endif; ?>
+                    </td>
+                    <td><small><?= e(['upsert' => 'Update', 'add' => 'Keep existing', 'replace' => 'Replace all'][(string) $imp['mode']] ?? (string) $imp['mode']) ?></small></td>
+                    <td><small><?= e((string) ($imp['summary'] ?? '')) ?></small></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+<?php endif; ?>
 
 <!-- Selector -->
 <div class="a-card" style="margin-bottom:22px;" id="history">
@@ -454,7 +638,7 @@ $pct = function (?float $from, float $to): string {
                 <input type="hidden" name="action" value="add_nav">
                 <input type="hidden" name="share_class_id" value="<?= e($selectedScId) ?>">
                 <div class="row">
-                    <div><label>Date *</label><input type="date" name="entry_date" required value="<?= e(date('Y-m-d')) ?>"></div>
+                    <div><label>Date *</label><input type="date" name="entry_date" required value="<?= e(NavImport::previousBusinessDay()) ?>" max="<?= e(date('Y-m-d')) ?>"></div>
                     <div><label>NAV *</label><input type="number" name="nav" step="0.0001" min="0.0001" required></div>
                     <div><label>Benchmark</label><input type="number" name="benchmark_value" step="0.0001"></div>
                 </div>
