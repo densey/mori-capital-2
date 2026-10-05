@@ -327,6 +327,9 @@ return [
     'home.team_intro'            => 'Our funds are managed by an independent team with over 80 years of collective experience across Emerging European and Turkish capital markets, supported by a dedicated operations, compliance and risk function in Malta.',
 
     // Fund performance
+    'fund.col_nav'               => 'Latest NAV',
+    'performance.latest_nav'     => 'Latest NAV',
+    'nav.as_of'                  => 'as of :date',
     'performance.nav_evolution'  => 'NAV evolution',
     'performance.range_max'      => 'Max',
     'performance.no_data'        => 'No NAV data available yet for this share class.',

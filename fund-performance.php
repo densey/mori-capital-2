@@ -11,7 +11,12 @@ try {
     $funds = $db->fetchAll('SELECT * FROM funds WHERE status = "active" ORDER BY display_order');
     $selectedFundId = isset($_GET['fund']) ? (int)$_GET['fund'] : ($funds[0]['id'] ?? 0);
     $shareClasses = $selectedFundId ? $db->fetchAll('SELECT * FROM share_classes WHERE fund_id = :id ORDER BY display_order', ['id' => $selectedFundId]) : [];
-    $selectedScId = isset($_GET['class']) ? (int)$_GET['class'] : ($shareClasses[0]['id'] ?? 0);
+    $selectedScId = isset($_GET['class']) ? (int)$_GET['class'] : 0;
+    // Only accept a share class that belongs to the selected fund (otherwise the
+    // chart would show one fund's prices under the other fund's name).
+    if (!in_array($selectedScId, array_map(fn($c) => (int) $c['id'], $shareClasses), true)) {
+        $selectedScId = (int) ($shareClasses[0]['id'] ?? 0);
+    }
     $navData = $selectedScId ? $db->fetchAll(
         'SELECT entry_date, nav, benchmark_value FROM nav_entries WHERE share_class_id = :id ORDER BY entry_date ASC',
         ['id' => $selectedScId]
@@ -69,6 +74,17 @@ include __DIR__ . '/src/partials/page-header.php';
                         foreach ($funds as $f) { if ($f['id'] == $selectedFundId) { $selectedFund = $f; break; } }
                     ?>
                     <h2 style="font-size:20px;margin:0;"><?= e($selectedFund ? \Mori\I18n::fieldFor($selectedFund, 'name') : '—') ?></h2>
+                    <?php if (!empty($navData)):
+                        $lastNav = end($navData); reset($navData);
+                        $selClass = null;
+                        foreach ($shareClasses as $scx) { if ((int) $scx['id'] === (int) $selectedScId) { $selClass = $scx; break; } }
+                    ?>
+                    <div style="margin-top:8px;font-size:14px;color:var(--mori-text-soft,#5A6B7B);">
+                        <?= e(t('performance.latest_nav')) ?><?= $selClass ? ' · ' . e($selClass['name']) : '' ?>:
+                        <strong style="color:var(--primary-color,#1B3A5C);font-size:17px;font-variant-numeric:tabular-nums;"><?= e(($selClass['currency'] ?? '') . ' ' . \Mori\format_nav($lastNav['nav'])) ?></strong>
+                        <span style="font-size:12px;color:var(--mori-muted,#7A8B99);">(<?= e(t('nav.as_of', ['date' => \Mori\format_date($lastNav['entry_date'])])) ?>)</span>
+                    </div>
+                    <?php endif; ?>
                 </div>
                 <div style="display:flex;gap:4px;background:var(--mori-bg-soft,#F5F7FA);padding:4px;border-radius:999px;font-size:12px;font-weight:600;">
                     <button type="button" class="rng" data-range="1m" style="padding:6px 12px;border:none;background:transparent;border-radius:999px;cursor:pointer;color:var(--mori-text-soft,#5A6B7B);"><?= e(t('performance.range_1m')) ?></button>

@@ -127,6 +127,46 @@ function fund_page_documents(int $fundId, int $limit = 12): array
     }
 }
 
+/**
+ * NAV per share for display: 2–4 decimals (trailing zeros beyond 2 trimmed),
+ * locale separators — EN 1,234.5678 · DE 1.234,5678.
+ */
+function format_nav(float|int|string|null $value, ?string $locale = null): string
+{
+    if ($value === null || $value === '') return '—';
+    $v = (float) $value;
+    $decimals = 2;
+    foreach ([2, 3, 4] as $d) {
+        $decimals = $d;
+        if (abs(round($v, $d) - round($v, 4)) < 0.000001) break;
+    }
+    $de = ($locale ?? I18n::locale()) === 'de';
+    return number_format($v, $decimals, $de ? ',' : '.', $de ? '.' : ',');
+}
+
+/**
+ * Latest stored NAV per share class.
+ * @return array<int, array{nav: float, date: string}>  keyed by share_class_id
+ */
+function latest_navs(): array
+{
+    try {
+        $rows = Database::instance()->fetchAll(
+            'SELECT n.share_class_id, n.entry_date, n.nav
+               FROM nav_entries n
+               JOIN (SELECT share_class_id, MAX(entry_date) AS d FROM nav_entries GROUP BY share_class_id) m
+                 ON m.share_class_id = n.share_class_id AND m.d = n.entry_date'
+        );
+    } catch (\Throwable) {
+        return [];
+    }
+    $out = [];
+    foreach ($rows as $r) {
+        $out[(int) $r['share_class_id']] = ['nav' => (float) $r['nav'], 'date' => (string) $r['entry_date']];
+    }
+    return $out;
+}
+
 function format_bytes(int $bytes, int $precision = 1): string
 {
     $units = ['B', 'KB', 'MB', 'GB', 'TB'];

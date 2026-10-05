@@ -327,6 +327,9 @@ return [
     'home.team_intro'            => 'Unsere Fonds werden von einem unabhängigen Team mit über 80 Jahren kollektiver Erfahrung an den aufstrebenden europäischen und türkischen Kapitalmärkten verwaltet — unterstützt durch ein dediziertes Operations-, Compliance- und Risikoteam in Malta.',
 
     // Fund performance
+    'fund.col_nav'               => 'Aktueller NAV',
+    'performance.latest_nav'     => 'Aktueller NAV',
+    'nav.as_of'                  => 'Stand: :date',
     'performance.nav_evolution'  => 'NAV-Entwicklung',
     'performance.range_max'      => 'Max',
     'performance.no_data'        => 'Für diese Anteilsklasse sind noch keine NAV-Daten verfügbar.',

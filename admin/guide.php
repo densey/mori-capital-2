@@ -42,7 +42,7 @@ include __DIR__ . '/partials/layout-start.php';
         <li><a href="#team">Team Members</a></li>
         <li><a href="#translations">Translation Center</a></li>
         <li><a href="#funds">Funds &amp; Share Classes</a></li>
-        <li><a href="#performance">Performance (NAV) &mdash; CSV import &amp; benchmark toggle</a></li>
+        <li><a href="#performance">Performance (NAV) &mdash; publishing prices &amp; benchmark toggle</a></li>
         <li><a href="#documents">Documents (dropdown of 4 sub-pages, drag-reorder)</a></li>
         <li><a href="#announcements">Fund Announcements</a></li>
         <li><a href="#media">Media Library</a></li>
@@ -216,30 +216,34 @@ include __DIR__ . '/partials/layout-start.php';
 <div class="tip"><strong>Note:</strong> Fund names appear automatically in the website header, footer, and fund cards — no need to update them in multiple places.</div>
 
 <!-- 10. Performance -->
-<h2 id="performance">11. Performance (NAV) &mdash; CSV import &amp; benchmark toggle</h2>
+<h2 id="performance">11. Performance (NAV) &mdash; publishing prices &amp; benchmark toggle</h2>
 <img src="/docs/guide-screenshots/performance.png" class="screenshot" alt="Performance">
-<p>Go to <strong>Funds &rarr; Performance (NAV)</strong> to manage NAV history for each share class. The page has four cards: <em>Selector</em>, <em>Chart display</em>, <em>Bulk import (CSV)</em>, and the entries table at the bottom.</p>
+<p>Go to <strong>Funds &rarr; Performance (NAV)</strong>. Prices for <strong>all share classes are published from one file</strong>. Once published, the latest NAV of each share class appears on the fund pages (share-class table, &ldquo;Latest NAV&rdquo; column, with its date) and on the Performance page with the chart and cumulative returns &mdash; in both languages with the correct number format (EN <code>1,234.56</code> &middot; DE <code>1.234,56</code>).</p>
 
-<h3>Manual NAV entry</h3>
+<h3>Publishing prices &mdash; one file for all share classes</h3>
+<ol>
+    <li>In the <em>Upload prices &mdash; all share classes in one file</em> card, download the <strong>Daily prices template (.xlsx)</strong>. It already lists all 11 share classes (ISIN, name, currency) with the last business day as the date.</li>
+    <li>Type the <strong>NAV per share</strong> for each share class in the <code>NAV</code> column. Leave a NAV empty to skip that share class. To publish several days at once, copy the rows and change the date.</li>
+    <li>Upload the file and click <strong>Check file</strong>. Nothing is published yet.</li>
+    <li>The <strong>review screen</strong> shows every share class with the new price, the previous price, the % change and whether each price is <em>new</em>, <em>changed</em> or <em>unchanged</em>. Moves larger than 15% are highlighted in red &mdash; typically a misplaced decimal point or a price in the wrong row.</li>
+    <li>Click <strong>Publish prices</strong>. The whole file is saved in one go &mdash; if anything in the file is invalid, nothing is saved and every problem is listed with its row number.</li>
+</ol>
+<p>For loading a <strong>price history</strong>, use the <em>Price history template</em> instead: one row per date and one column per share class (column titles contain the ISIN &mdash; do not rename them).</p>
+<p>Accepted: Excel <code>.xlsx</code> or <code>.csv</code> (comma or semicolon). Dates may be real Excel dates, <code>2026-10-03</code>, <code>03/10/2026</code> (day/month/year), <code>03.10.2026</code> or <code>3 Oct 2026</code>. Numbers may use a decimal point or comma. Prices are matched by <strong>ISIN</strong>; an optional <code>Currency</code> column is checked against the share class. An optional <code>Benchmark</code> column is supported &mdash; an empty benchmark cell never deletes an existing benchmark value.</p>
+<p>On the review screen, choose what happens if a date already has a price:</p>
 <ul>
-    <li>Select a <strong>fund</strong> and <strong>share class</strong> at the top</li>
-    <li>Enter the <strong>date</strong> and <strong>NAV value</strong>, then click <strong>Add entry</strong></li>
+    <li><strong>Update it</strong> (default, recommended) &mdash; new dates are added, changed prices are corrected, nothing is deleted. Use this for daily prices and corrections.</li>
+    <li><strong>Keep it</strong> &mdash; only new dates are added; already-published prices are left untouched.</li>
+    <li><strong>Replace all history</strong> &mdash; deletes every stored price of the share classes <em>in the file</em> first (share classes not in the file are never touched). Only for a full reload of history.</li>
 </ul>
+<div class="warn"><strong>Replace all history is destructive:</strong> the review screen shows how many stored prices will be deleted and asks for confirmation. Every publish is recorded in the Audit Log, but there is no &ldquo;undo&rdquo;.</div>
+<p>The <em>Currently published prices</em> table on the same page shows the latest NAV and date of every share class at a glance.</p>
 
-<h3>Bulk CSV import</h3>
-<p>Click <strong>Download template</strong> at the top of the <em>Bulk import (CSV)</em> card to grab a ready-to-fill <code>mori-nav-template.csv</code> with the right columns and example rows. The required columns are:</p>
+<h3>Single entry &amp; history</h3>
 <ul>
-    <li><code>date</code> &mdash; in <code>YYYY-MM-DD</code> format</li>
-    <li><code>nav</code> &mdash; numeric value</li>
-    <li><code>benchmark</code> &mdash; optional, leave blank if not tracked</li>
+    <li>In <em>One share class &mdash; manual entry &amp; history</em>, select a <strong>fund</strong> and <strong>share class</strong></li>
+    <li>Use <strong>Add a single NAV</strong> for a one-off price, or delete an individual entry from the history table below</li>
 </ul>
-<p>When you upload, pick one of three modes that controls how existing data is handled:</p>
-<ul>
-    <li><strong>Update existing + add new</strong> (default, recommended) &mdash; if a date in the CSV already exists, its NAV is overwritten with the new value; new dates are inserted; nothing is deleted. Safe for monthly amendments.</li>
-    <li><strong>Add new only</strong> &mdash; existing dates are kept untouched, only brand-new dates are inserted.</li>
-    <li><strong>Replace all</strong> &mdash; wipes every NAV entry for that share class first, then imports the CSV. Use this when you want a complete clean slate (e.g. to clear placeholder demo numbers on first upload).</li>
-</ul>
-<div class="warn"><strong>Replace mode is destructive:</strong> all existing entries for the selected share class are deleted before the import runs. The deletion is audit-logged so you can see what was removed, but there is no &ldquo;undo&rdquo;.</div>
 
 <h3>Hiding the benchmark line</h3>
 <p>The <em>Chart display</em> card has a single checkbox: <strong>Show benchmark on the NAV chart</strong>. Untick it and the benchmark line disappears from every share-class chart on the public site. Your benchmark numbers stay in the database, so you can switch the display back on at any time. The cinematic chip on the homepage (&ldquo;vs benchmark&rdquo; text) is cleared separately from <a href="#homepage">Homepage Content &rarr; Cinematic Section &rarr; 10Y chip suffix</a>.</p>
