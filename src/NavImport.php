@@ -40,6 +40,7 @@ final class NavImport
     public const MAX_NAV    = 99999999999.9999;   // DECIMAL(15,4)
     public const ARCHIVE_MAX_BYTES = 5 * 1024 * 1024;  // source files up to 5 MB are archived in the DB
     public const STALE_MSG  = 'Prices were changed by someone else after you reviewed this file. Nothing was published — please review it again.';
+    public const LOG_MISSING_MSG = 'The upload log could not be written, so no published price was overwritten or deleted. If install.php has not been run since the last update, run it (it creates the upload log). To add only new dates now, choose "Keep it".';
 
     private const NS_REL    = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
     private const NS_MAIN   = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main';
@@ -72,7 +73,11 @@ final class NavImport
     ];
     /** Parenthesised hints that may be dropped from a column title ("Benchmark (optional)"). */
     private const DROPPABLE_HINTS = ['optional', 'opt', 'required', 'eur', 'usd', 'gbp', 'chf', 'ccy', 'in eur', 'in usd', 'in gbp'];
-    private const EXCEL_ERRORS = ['#N/A', '#REF!', '#VALUE!', '#DIV/0!', '#NUM!', '#NAME?', '#NULL!', '#SPILL!', '#CALC!', '#GETTING_DATA', '#FORMULA'];
+    private const EXCEL_ERRORS = [
+        '#N/A', '#REF!', '#VALUE!', '#DIV/0!', '#NUM!', '#NAME?', '#NULL!', '#SPILL!', '#CALC!', '#GETTING_DATA', '#FORMULA',
+        // German Excel writes the localised text into CSV exports
+        '#NV', '#BEZUG!', '#WERT!', '#ZAHL!', '#ÜBERLAUF!', '#KALK!',
+    ];
 
     // ======================================================================
     // 1. READING
@@ -158,6 +163,12 @@ final class NavImport
         if ($delim === null) {
             $delim = self::detectDelimiter($raw);
         }
+        // Refuse absurdly wide lines before fgetcsv() materialises them
+        foreach (explode("\n", $raw) as $i => $line) {
+            if (substr_count($line, $delim) >= self::MAX_COLS * 2) {
+                throw new \RuntimeException('Line ' . ($i + 1) . ' has more than ' . self::MAX_COLS . ' columns — this does not look like a price file.');
+            }
+        }
 
         $fh = fopen('php://temp', 'r+');
         fwrite($fh, $raw);
@@ -173,9 +184,10 @@ final class NavImport
                 fclose($fh);
                 throw new \RuntimeException("Row {$n} has more than " . self::MAX_COLS . ' columns — this does not look like a price file.');
             }
+            $width = count($cells);                               // raw field count, empty fields included
             $cells = array_map(fn($c) => self::cleanCell((string) $c), $cells);
             if (implode('', $cells) === '') continue;
-            $rows[] = ['n' => $n, 'cells' => array_values($cells)];
+            $rows[] = ['n' => $n, 'cells' => array_values($cells), 'w' => $width];
             if (count($rows) > self::MAX_ROWS) {
                 fclose($fh);
                 throw new \RuntimeException('The file has more than ' . number_format(self::MAX_ROWS) . ' rows.');
@@ -203,15 +215,13 @@ final class NavImport
         return ',';
     }
 
-    /** "# …" comment line in a CSV — but never an Excel error value such as #N/A. */
+    /**
+     * "# …" comment line in a CSV: a lone "#" or "#" followed by a space. Anything
+     * else starting with "#" (#N/A, #NV, #BEZUG!, #FORMULA …) is data and is validated.
+     */
     private static function isComment(string $firstCell): bool
     {
-        if (!str_starts_with($firstCell, '#')) return false;
-        $u = strtoupper($firstCell);
-        foreach (self::EXCEL_ERRORS as $err) {
-            if (str_starts_with($u, $err)) return false;
-        }
-        return true;
+        return (bool) preg_match('/^#(\s|$)/', $firstCell);
     }
 
     private static function readXlsx(string $path): array
@@ -737,6 +747,17 @@ final class NavImport
         }
         if ($res['errors']) return $res;
 
+        // A currency in the NAV column title, e.g. "NAV (EUR)" or "NAV (GBp)"
+        $navTitleCcy = null;
+        if (isset($field['nav'])) {
+            $t = (string) $fieldTitle['nav'];
+            if (preg_match('/\((?:in\s+)?(GBp|GBx|GBX|pence|Pence|PENCE)\)/', $t)) {
+                $res['errors'][] = 'The NAV column "' . $t . '" is in pence. Enter prices in pounds (GBP) and rename the column to "NAV".';
+                return $res;
+            }
+            if (preg_match('/\((?:in\s+)?(EUR|USD|GBP|CHF)\)/i', $t, $mm)) $navTitleCcy = strtoupper($mm[1]);
+        }
+
         if (!isset($field['date'])) {
             $res['errors'][] = 'No "Date" column found in the first row. The first row must contain the column titles (e.g. Date, ISIN, NAV) — please use the template.';
             return $res;
@@ -745,9 +766,13 @@ final class NavImport
         // ---- Values outside the titled columns ------------------------------
         // In a comma-separated file an unquoted "512,4568" becomes two cells; the
         // extra cell shows up beyond (or under an empty) column title.
+        // A CSV row with MORE fields than the title row (even if the extra field is
+        // empty) means a value was split — e.g. "512,4568" typed into the template.
         $width = count($header['cells']);
+        $headerW = (int) ($header['w'] ?? $width);
         $stray = [];
         foreach ($dataRows as $r) {
+            if ($source !== 'xlsx' && (int) ($r['w'] ?? count($r['cells'])) > $headerW) { $stray[] = (int) $r['n']; continue; }
             foreach ($r['cells'] as $i => $v) {
                 if ($v !== '' && ($i >= $width || empty($titled[$i]))) { $stray[] = (int) $r['n']; break; }
             }
@@ -862,13 +887,12 @@ final class NavImport
                 if (self::commaDecimalEvidence($v)) $commaEv ??= $v;
             }
         }
+        // No evidence either way → null: a "1,235"-style value is then rejected as
+        // ambiguous (the delimiter is NOT a safe hint: German tools also write
+        // comma-separated files with quoted decimal commas).
         $decimal = null;
         if ($dotEv !== null && $commaEv === null)      $decimal = '.';
         elseif ($commaEv !== null && $dotEv === null)  $decimal = ',';
-        elseif ($dotEv === null && $commaEv === null) {
-            $d = (string) ($opts['delimiter'] ?? '');
-            $decimal = $d === ';' ? ',' : ($d === ',' ? '.' : null);
-        }
 
         // ---- Rows -----------------------------------------------------------
         $entries = [];             // "sc|date" => entry
@@ -877,7 +901,7 @@ final class NavImport
         $addError = function (string $msg) use (&$errors) { $errors[] = $msg; };
 
         /** Parse a NAV / benchmark cell; returns rounded value, null (empty) or false (error reported). */
-        $parseValue = function (array $r, int $ci, string $who, int $sc, string $what) use ($source, $decimal, $addError, &$decimalsNote, $byId): float|null|false {
+        $parseValue = function (array $r, int $ci, string $who, int $sc, string $what) use ($source, $decimal, $addError, &$decimalsNote, $byId, $navTitleCcy, $field): float|null|false {
             $raw  = (string) ($r['cells'][$ci] ?? '');
             $rowN = (int) $r['n'];
             $kind = $r['fmt'][$ci] ?? null;
@@ -909,6 +933,10 @@ final class NavImport
             }
             if ($ccy === 'GBX') {
                 $addError("Row {$rowN}: the {$what} for {$who} is given in pence (GBp/GBX). Enter prices in pounds (GBP).");
+                return false;
+            }
+            if ($what === 'NAV' && $navTitleCcy !== null && $ci === ($field['nav'] ?? -1) && $navTitleCcy !== strtoupper((string) $byId[$sc]['currency'])) {
+                $addError("Row {$rowN}: the NAV column is titled in {$navTitleCcy}, but {$who} is priced in {$byId[$sc]['currency']}.");
                 return false;
             }
             if ($ccy !== null && $what === 'NAV' && $ccy !== strtoupper((string) $byId[$sc]['currency'])) {
@@ -1325,6 +1353,10 @@ final class NavImport
             }
 
             $logId = self::writeLog($db, $mode, $ctx, $classes, $changes, $mode === 'replace' ? $before : []);
+            // Published prices are only overwritten or deleted when their old values were recorded
+            if ($logId === null && ($upd > 0 || $deleted > 0)) {
+                throw new \RuntimeException(self::LOG_MISSING_MSG);
+            }
 
             return ['inserted' => $ins, 'updated' => $upd, 'unchanged' => $same, 'deleted' => $deleted,
                     'log_id' => $logId, 'classes' => $classes];
@@ -1334,14 +1366,7 @@ final class NavImport
     /** Record the publish (with previous values and the source file) — never blocks publishing. */
     private static function writeLog(Database $db, string $mode, array $ctx, array $classes, array $changes, array $deletedRows): ?int
     {
-        try {
-            $exists = (int) $db->fetchColumn(
-                "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'nav_import_log'"
-            );
-            if (!$exists) return null;
-        } catch (\Throwable) {
-            return null;
-        }
+        if (!self::logAvailable($db)) return null;
         $path = (string) ($ctx['file_path'] ?? '');
         $content = ($path !== '' && is_readable($path)) ? (string) file_get_contents($path) : '';
         $payload = [];
@@ -1370,8 +1395,15 @@ final class NavImport
             'summary'      => $summary,
             'changes_json' => json_encode($payload, JSON_UNESCAPED_SLASHES) ?: null,
         ];
-        // Fall back to smaller records if the server refuses a large one (max_allowed_packet)
-        $attempts = [$row, ['file_base64' => null] + $row, ['file_base64' => null, 'changes_json' => null] + $row];
+        // Never send a row bigger than the server accepts (max_allowed_packet): an
+        // oversized packet drops the connection instead of failing the INSERT.
+        try { $packet = (int) $db->fetchColumn('SELECT @@max_allowed_packet'); } catch (\Throwable) { $packet = 0; }
+        $budget = $packet > 0 ? $packet - 262144 : 4 * 1024 * 1024;
+        $size = fn(array $r): int => array_sum(array_map(fn($v) => strlen((string) $v), $r));
+        $attempts = array_values(array_filter(
+            [$row, ['file_base64' => null] + $row],
+            fn($a) => $size($a) <= $budget
+        ));
         foreach ($attempts as $attempt) {
             try {
                 return $db->insert('nav_import_log', $attempt);
@@ -1380,6 +1412,21 @@ final class NavImport
             }
         }
         return null;
+    }
+
+    /** True when the nav_import_log table exists (created by install.php / migration). */
+    public static function logAvailable(Database $db): bool
+    {
+        static $known = null;
+        if ($known === true) return true;
+        try {
+            $known = (int) $db->fetchColumn(
+                "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'nav_import_log'"
+            ) > 0;
+        } catch (\Throwable) {
+            $known = false;
+        }
+        return $known;
     }
 
     /** Recent publishes for the admin screen (empty when the log table does not exist yet). */
@@ -1397,17 +1444,28 @@ final class NavImport
         }
     }
 
-    /** Archived source file of a publish, or null. @return array{name:string, content:string}|null */
+    /**
+     * Archived source file of a publish, or null. Read in chunks: pdo_mysql built on
+     * libmysqlclient silently cuts long text columns at 1 MiB. The checksum
+     * guarantees that only the complete, original file is ever handed out.
+     * @return array{name:string, content:string}|null
+     */
     public static function importFile(Database $db, int $id): ?array
     {
         try {
-            $r = $db->fetchOne('SELECT file_name, file_base64 FROM nav_import_log WHERE id = :id', ['id' => $id]);
+            $r = $db->fetchOne('SELECT file_name, file_sha256, LENGTH(file_base64) AS len FROM nav_import_log WHERE id = :id', ['id' => $id]);
+            if (!$r || $r['len'] === null) return null;
+            $len = (int) $r['len'];
+            $b64 = '';
+            for ($off = 1; $off <= $len; $off += 524288) {
+                $b64 .= (string) $db->fetchColumn('SELECT SUBSTRING(file_base64, :o, 524288) FROM nav_import_log WHERE id = :id', ['o' => $off, 'id' => $id]);
+            }
         } catch (\Throwable) {
             return null;
         }
-        if (!$r || $r['file_base64'] === null) return null;
-        $content = base64_decode((string) $r['file_base64'], true);
-        return $content === false ? null : ['name' => (string) $r['file_name'], 'content' => $content];
+        $content = base64_decode($b64, true);
+        if ($content === false || !hash_equals((string) $r['file_sha256'], hash('sha256', $content))) return null;
+        return ['name' => (string) $r['file_name'], 'content' => $content];
     }
 
     // ======================================================================

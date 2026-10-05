@@ -183,13 +183,18 @@ if (navData.length > 0) {
     var series = [{name: 'NAV', data: navData}];
     // Prices are daily: label days/months/years, never clock times
     var xaxis = { type: 'datetime', labels: { style: { colors: '#7A8B99', fontSize: '11px' }, datetimeFormatter: { year: 'yyyy', month: "MMM 'yy", day: 'dd MMM', hour: 'dd MMM' } } };
-    var spanDays = Math.round((Date.parse(navData[navData.length - 1].x) - Date.parse(navData[0].x)) / 864e5);
-    if (spanDays > 0 && spanDays <= 12) {
+    var firstTs = Date.parse(navData[0].x), lastTs = Date.parse(navData[navData.length - 1].x);
+    var spanDays = Math.round((lastTs - firstTs) / 864e5);
+    if (spanDays <= 12) {
         // Only a few days of prices so far: exactly one tick per day (otherwise
         // the chart would add 12-hour ticks and repeat each date)
+        if (spanDays === 0) { xaxis.min = firstTs - 864e5; xaxis.max = lastTs + 864e5; spanDays = 2; }
         xaxis.tickAmount = spanDays;
         xaxis.labels.formatter = function (value, ts) { return ts === undefined ? value : fmtDay(ts).slice(0, -5); };
     }
+    // Enough decimals on the price axis that neighbouring labels differ
+    var navVals = navData.map(p => p.y), navRange = Math.max.apply(null, navVals) - Math.min.apply(null, navVals);
+    var fmtAxis = navRange > 0 && navRange < 0.05 ? fmt4 : (navRange > 0 && navRange < 0.5 ? new Intl.NumberFormat(numLocale, { minimumFractionDigits: 3, maximumFractionDigits: 3 }) : fmt2);
     if (showBenchmark && benchData.length > 0) series.push({name: 'Benchmark', data: benchData});
     var options = {
         chart: { type: 'area', height: 420, fontFamily: 'Inter, sans-serif', toolbar: { show: false }, zoom: { enabled: true }, locales: chartLocales, defaultLocale: pageLang },
@@ -198,7 +203,8 @@ if (navData.length > 0) {
         stroke: { curve: 'smooth', width: 2.5 },
         fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.02, stops: [0, 95] } },
         xaxis: xaxis,
-        yaxis: { labels: { style: { colors: '#7A8B99', fontSize: '11px' }, formatter: v => fmt2.format(v) } },
+        yaxis: { labels: { style: { colors: '#7A8B99', fontSize: '11px' }, formatter: v => fmtAxis.format(v) } },
+        dataLabels: { enabled: false },
         grid: { borderColor: '#E1E7EE', strokeDashArray: 3 },
         tooltip: { x: { formatter: v => fmtDay(v) }, y: { formatter: v => fmt4.format(v) } },
         legend: { position: 'top', horizontalAlign: 'left', fontSize: '13px', labels: { colors: '#5A6B7B' } },
@@ -222,7 +228,8 @@ if (navData.length > 0) {
             case '5y': from = new Date(now); from.setFullYear(now.getFullYear()-5); break;
             default:   from = new Date(navData[0].x);
         }
-        chart.zoomX(from.getTime(), now.getTime());
+        // Never zoom out to before the first published price (empty chart area)
+        if (spanDays > 12) chart.zoomX(Math.max(from.getTime(), firstTs), now.getTime());
     }));
 }
 </script>

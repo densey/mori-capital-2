@@ -296,6 +296,7 @@ $pct = function (?float $from, float $to): string {
     $canPublish = empty($bulk['fatal']) && $an && !$errors && !empty($an['entries']);
     $warnings = array_merge($an['warnings'] ?? [], $bulk['jumps'] ?? []);
     $deleteTotal = 0;
+    $logOk = NavImport::logAvailable($db);
     $overwrites = [];
     foreach (($bulk['diff'] ?? []) as $sc => $d) {
         $deleteTotal += $d['existing_total'];
@@ -425,6 +426,10 @@ $pct = function (?float $from, float $to): string {
             <input type="hidden" name="fp" value="<?= e($bulk['fp']) ?>">
             <input type="hidden" name="confirm_replace" value="0">
 
+            <?php if (!$logOk && ($overwrites || $deleteTotal)): ?>
+            <div class="a-alert error"><i class="fa-solid fa-circle-exclamation"></i>
+                <strong>The upload log is not set up yet</strong> — run <code>install.php</code> once (database update). Until then published prices cannot be overwritten or deleted, so "Update it" and "Replace all history" will be refused. Choose <strong>Keep it</strong> to publish only the new dates.</div>
+            <?php endif; ?>
             <?php if ($overwrites): ?>
             <div class="a-alert warn" id="overwriteBox" style="display:block;">
                 <strong><i class="fa-solid fa-triangle-exclamation"></i>
@@ -450,7 +455,7 @@ $pct = function (?float $from, float $to): string {
                 </div>
                 <label style="display:flex;align-items:flex-start;gap:8px;margin-top:10px;cursor:pointer;font-weight:600;">
                     <input type="checkbox" name="confirm_overwrite" value="1" id="confirmOverwrite">
-                    <span>Yes — replace these published prices with the values in this file (the old values are kept in the upload log).</span>
+                    <span>Yes — replace these published prices with the values in this file<?= $logOk ? ' (the old values are kept in the upload log)' : '' ?>.</span>
                 </label>
             </div>
             <?php endif; ?>
@@ -543,7 +548,7 @@ $pct = function (?float $from, float $to): string {
                 <li><strong>Daily prices</strong> (one row per share class): columns <code>Date</code>, <code>ISIN</code>, <code>NAV</code>; optional <code>Share class</code>, <code>Currency</code> (checked against the share class) and <code>Benchmark</code>. Rows with an empty NAV are skipped.</li>
                 <li><strong>Price history</strong> (one row per date): a <code>Date</code> column plus one column per share class whose title contains its ISIN.</li>
                 <li>Dates: real Excel dates, <code>2026-10-03</code>, <code>03/10/2026</code> (day/month/year), <code>03.10.2026</code> or <code>3 Oct 2026</code>. Future dates are rejected.</li>
-                <li>Numbers: <code>142.8634</code> or <code>142,8634</code>; thousands separators are fine. Stored with 4 decimals.</li>
+                <li>Numbers: <code>142.8634</code> or <code>142,8634</code>; thousands separators are fine. Stored with 4 decimals. In CSV files write all 4 decimals (<code>10.9420</code>, not <code>10.942</code>) — a value that could also mean ten thousand is rejected unless the rest of the file shows which separator is used.</li>
                 <li>Nothing is saved unless the whole file is valid. Unusual moves (over 15% versus neighbouring prices) are highlighted for checking.</li>
                 <li>Prices that are already on the website are only overwritten after you confirm them on the review screen. Every upload is logged with its original file and the previous values.</li>
             </ul>
