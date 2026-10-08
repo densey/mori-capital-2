@@ -185,28 +185,57 @@ if (navData.length > 0) {
     var xaxis = { type: 'datetime', labels: { style: { colors: '#7A8B99', fontSize: '11px' }, datetimeFormatter: { year: 'yyyy', month: "MMM 'yy", day: 'dd MMM', hour: 'dd MMM' } } };
     var firstTs = Date.parse(navData[0].x), lastTs = Date.parse(navData[navData.length - 1].x);
     var spanDays = Math.round((lastTs - firstTs) / 864e5);
-    if (spanDays <= 12) {
-        // Only a few days of prices so far: exactly one tick per day (otherwise
-        // the chart would add 12-hour ticks and repeat each date)
-        if (spanDays === 0) { xaxis.min = firstTs - 864e5; xaxis.max = lastTs + 864e5; spanDays = 2; }
-        xaxis.tickAmount = spanDays;
-        xaxis.labels.formatter = function (value, ts) { return ts === undefined ? value : fmtDay(ts).slice(0, -5); };
+    var DAY = 864e5, SHORT_SPAN = 21, MIN_ZOOM = 14 * DAY;
+    var shortHistory = spanDays <= SHORT_SPAN;
+    if (shortHistory) {
+        // Up to three weeks of prices: one tick per calendar day, and a label
+        // only where a price was published — one date per valuation day, no
+        // clock times and no labels for weekends/holidays without a price.
+        var navDays = {};
+        navData.forEach(function (p) { navDays[p.x] = true; });
+        // One empty day either side keeps the first/last date label inside the chart
+        xaxis.min = firstTs - DAY;
+        xaxis.max = lastTs + DAY;
+        xaxis.tickAmount = spanDays + 2;
+        xaxis.axisTicks = { show: false };
+        xaxis.labels.formatter = function (value, ts) {
+            if (ts === undefined) return value;
+            var day = new Date(Math.round(ts / DAY) * DAY);
+            return navDays[day.toISOString().slice(0, 10)] ? fmtDay(day.getTime()).slice(0, -5) : '';
+        };
     }
-    // Enough decimals on the price axis that neighbouring labels differ
-    var navVals = navData.map(p => p.y), navRange = Math.max.apply(null, navVals) - Math.min.apply(null, navVals);
-    var fmtAxis = navRange > 0 && navRange < 0.05 ? fmt4 : (navRange > 0 && navRange < 0.5 ? new Intl.NumberFormat(numLocale, { minimumFractionDigits: 3, maximumFractionDigits: 3 }) : fmt2);
     if (showBenchmark && benchData.length > 0) series.push({name: 'Benchmark', data: benchData});
+    // Enough decimals on the price axis that neighbouring labels differ
+    var navVals = [];
+    series.forEach(function (sr) { sr.data.forEach(function (p) { navVals.push(p.y); }); });
+    var navRange = Math.max.apply(null, navVals) - Math.min.apply(null, navVals);
+    var fmt3 = new Intl.NumberFormat(numLocale, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    var fmtAxis = navRange > 0 && navRange < 0.005 ? fmt4 : (navRange > 0 && navRange < 0.05 ? fmt3 : fmt2);
     var options = {
-        chart: { type: 'area', height: 420, fontFamily: 'Inter, sans-serif', toolbar: { show: false }, zoom: { enabled: true }, locales: chartLocales, defaultLocale: pageLang },
+        chart: {
+            type: 'area', height: 420, fontFamily: 'Inter, sans-serif', toolbar: { show: false },
+            zoom: { enabled: !shortHistory }, locales: chartLocales, defaultLocale: pageLang,
+            events: {
+                // Never zoom in closer than two weeks (the axis would need clock times)
+                beforeZoom: function (ctx, opt) {
+                    var a = opt.xaxis.min, b = opt.xaxis.max;
+                    if (b - a < MIN_ZOOM) { var mid = (a + b) / 2; a = mid - MIN_ZOOM / 2; b = mid + MIN_ZOOM / 2; }
+                    if (a < firstTs) { b += firstTs - a; a = firstTs; }
+                    if (b > lastTs) { a -= b - lastTs; b = lastTs; }
+                    return { xaxis: { min: Math.max(a, firstTs), max: b } };
+                }
+            }
+        },
         colors: ['#1ABC9C', '#1B3A5C'],
         series: series,
         stroke: { curve: 'smooth', width: 2.5 },
         fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.4, opacityTo: 0.02, stops: [0, 95] } },
         xaxis: xaxis,
-        yaxis: { labels: { style: { colors: '#7A8B99', fontSize: '11px' }, formatter: v => fmtAxis.format(v) } },
-        dataLabels: { enabled: false },
+        yaxis: { labels: { style: { colors: '#7A8B99', fontSize: '11px' }, formatter: function (v) { return fmtAxis.format(v); } } },
+        // Price on each point only while there are few points (NAV line only, locale-formatted)
+        dataLabels: { enabled: navData.length <= 15, enabledOnSeries: [0], formatter: function (v) { return v == null ? '' : fmt4.format(v); } },
         grid: { borderColor: '#E1E7EE', strokeDashArray: 3 },
-        tooltip: { x: { formatter: v => fmtDay(v) }, y: { formatter: v => fmt4.format(v) } },
+        tooltip: { x: { formatter: function (v) { return fmtDay(v); } }, y: { formatter: function (v) { return fmt4.format(v); } } },
         legend: { position: 'top', horizontalAlign: 'left', fontSize: '13px', labels: { colors: '#5A6B7B' } },
     };
     var chart = new ApexCharts(document.querySelector('#perfChart'), options);
@@ -229,7 +258,7 @@ if (navData.length > 0) {
             default:   from = new Date(navData[0].x);
         }
         // Never zoom out to before the first published price (empty chart area)
-        if (spanDays > 12) chart.zoomX(Math.max(from.getTime(), firstTs), now.getTime());
+        if (!shortHistory) chart.zoomX(Math.max(from.getTime(), firstTs), now.getTime());
     }));
 }
 </script>
