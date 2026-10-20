@@ -120,6 +120,7 @@ $year = date('Y');
                             <li><a href="<?= asset('legal') ?>"><?= e(t('footer.legal_disclaimer')) ?></a></li>
                             <li><a href="<?= asset('privacy') ?>"><?= e(t('footer.privacy_policy')) ?></a></li>
                             <li><a href="<?= asset('cookies') ?>"><?= e(t('footer.cookie_policy')) ?></a></li>
+                            <li><a href="<?= asset('how-to-complain') ?>"><?= e(t('footer.how_to_complain')) ?></a></li>
                         </ul>
                     </div>
                 </div>

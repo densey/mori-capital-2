@@ -17,6 +17,16 @@ try {
     ) ?? $db->fetchOne('SELECT * FROM pages WHERE slug = :s AND locale = "en"', ['s' => $slug]);
 } catch (\Throwable) { $pageData = null; }
 
+// ?embed=1 — only the page text (used by the "Legal & Regulatory Disclaimer"
+// pop-up in the investor gate, so it always shows the same wording as the page)
+if (isset($_GET['embed'])) {
+    header('Content-Type: text/html; charset=UTF-8');
+    header('X-Robots-Tag: noindex');
+    header('Cache-Control: no-cache');
+    echo $pageData['body'] ?? ('<p>' . e(t('legal.not_published')) . '</p>');
+    exit;
+}
+
 $page = [
     'title'       => $pageData['meta_title'] ?? $defaultTitle,
     'description' => $pageData['meta_description'] ?? '',

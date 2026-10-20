@@ -955,6 +955,92 @@ header.main-header .header-sticky.active .main-menu ul li.submenu > a:after {
     .mori-gate__buttons { grid-template-columns: 1fr; }
 }
 
+/* "Legal & Regulatory Disclaimer" link inside the gate's confirmation box */
+.mori-gate__legal-link {
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    color: var(--primary-color);
+}
+.mori-gate__legal-link:hover,
+.mori-gate__legal-link:focus { color: var(--accent-color); text-decoration: underline; }
+
+/* Legal & Regulatory Disclaimer pop-up — shown above the gate */
+.mori-legal-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 10010;
+    background: rgba(8, 18, 33, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.mori-legal-modal[hidden] { display: none; }
+.mori-legal-modal__panel {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 30px 80px rgba(8, 18, 33, .4);
+    width: 100%;
+    max-width: 760px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.mori-legal-modal__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 26px 14px;
+    border-bottom: 1px solid var(--divider-color);
+}
+.mori-legal-modal__title {
+    color: var(--primary-color);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0;
+}
+.mori-legal-modal__x {
+    background: none;
+    border: none;
+    font-size: 28px;
+    line-height: 1;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 0 4px;
+}
+.mori-legal-modal__x:hover { color: var(--primary-color); }
+.mori-legal-modal__body {
+    overflow-y: auto;
+    padding: 18px 26px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-color);
+    -webkit-overflow-scrolling: touch;
+}
+.mori-legal-modal__body h2 { color: var(--primary-color); font-size: 18px; margin: 20px 0 10px; }
+.mori-legal-modal__body h2:first-child { margin-top: 0; }
+.mori-legal-modal__body h3 { color: var(--primary-color); font-size: 16px; margin: 18px 0 8px; }
+.mori-legal-modal__body p { margin-bottom: 12px; }
+.mori-legal-modal__body ul { padding-left: 22px; margin-bottom: 14px; }
+.mori-legal-modal__body a { color: var(--accent-color); }
+.mori-legal-modal__body strong { color: var(--primary-color); }
+.mori-legal-modal__foot {
+    padding: 14px 26px 20px;
+    border-top: 1px solid var(--divider-color);
+    display: flex;
+    justify-content: flex-end;
+}
+.mori-legal-modal__foot .mori-gate__btn { min-width: 140px; }
+@media (max-width: 480px) {
+    .mori-legal-modal { padding: 10px; }
+    .mori-legal-modal__head, .mori-legal-modal__body, .mori-legal-modal__foot { padding-left: 18px; padding-right: 18px; }
+    .mori-legal-modal__foot .mori-gate__btn { width: 100%; }
+}
+
 /* ==========================================================================
    Cookie Consent Banner
    ========================================================================== */

@@ -30,6 +30,7 @@ $static = [
     '/legal'                  => ['yearly',  '0.3'],
     '/privacy'                => ['yearly',  '0.3'],
     '/cookies'                => ['yearly',  '0.3'],
+    '/how-to-complain'        => ['yearly',  '0.3'],
 ];
 foreach ($static as $path => [$freq, $prio]) {
     foreach (['en', 'de'] as $loc) {

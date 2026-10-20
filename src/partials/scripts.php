@@ -3,6 +3,16 @@ use Mori\Csrf;
 use function Mori\e;
 use function Mori\asset;
 use function Mori\t;
+
+$gateLang = \Mori\I18n::locale();
+$gateLegalUrl = asset('legal') . '?lang=' . $gateLang;
+// "…and I have read & understood the Legal & Regulatory Disclaimer." — the
+// disclaimer words open a pop-up with the text of the Legal & Disclaimer page.
+$gateConfirmHtml = str_replace(
+    '__LEGAL_LINK__',
+    '<a href="' . e($gateLegalUrl) . '" class="mori-gate__legal-link" id="moriGateLegalLink" target="_blank" rel="noopener">' . e(t('gate.confirm_link')) . '</a>',
+    e(t('gate.confirm', ['link' => '__LEGAL_LINK__']))
+);
 ?>
 
 <!-- ===== Investor Gate Modal (first-visit disclaimer) ===== -->
@@ -15,7 +25,7 @@ use function Mori\t;
 
         <label class="mori-gate__check">
             <input type="checkbox" id="moriGateConfirm">
-            <span><?= e(t('gate.confirm')) ?></span>
+            <span><?= $gateConfirmHtml ?></span>
         </label>
 
         <div class="mori-gate__buttons">
@@ -26,6 +36,20 @@ use function Mori\t;
         <button type="button" class="mori-gate__decline" id="moriGateDecline"><?= e(t('gate.decline')) ?></button>
 
         <div class="mori-gate__msg-decline"><?= e(t('gate.decline_msg')) ?></div>
+    </div>
+</div>
+
+<!-- ===== Legal & Regulatory Disclaimer pop-up (opened from the gate) ===== -->
+<div class="mori-legal-modal" id="moriLegalModal" role="dialog" aria-modal="true" aria-labelledby="moriLegalTitle" hidden>
+    <div class="mori-legal-modal__panel">
+        <div class="mori-legal-modal__head">
+            <h2 class="mori-legal-modal__title" id="moriLegalTitle"><?= e(t('gate.legal_title')) ?></h2>
+            <button type="button" class="mori-legal-modal__x" data-legal-close aria-label="<?= e(t('gate.legal_close')) ?>">&times;</button>
+        </div>
+        <div class="mori-legal-modal__body legal-content" id="moriLegalBody" tabindex="0"><p><?= e(t('gate.legal_loading')) ?></p></div>
+        <div class="mori-legal-modal__foot">
+            <button type="button" class="mori-gate__btn mori-gate__btn--primary" data-legal-close><?= e(t('gate.legal_close')) ?></button>
+        </div>
     </div>
 </div>
 
@@ -138,9 +162,58 @@ use function Mori\t;
         confirm.addEventListener('change', syncButtons);
         btnPro.addEventListener('click', function () { if (confirm.checked) closeGate('professional'); });
         btnRet.addEventListener('click', function () { if (confirm.checked) closeGate('retail'); });
-        decline.addEventListener('click', function () { gate.classList.add('declined'); });
+        decline.addEventListener('click', leaveSite);
         syncButtons();
         openGate();
+    }
+
+    // "I am a U.S. person or a UK retail investor — leave the site": go back to
+    // the previous page in the browser history; if there is none (new tab,
+    // bookmark, typed address), or going back does not work, show a page that
+    // only says the funds are not available.
+    function leaveSite() {
+        gate.classList.add('declined');
+        var landing = <?= json_encode(asset('access-restricted') . '?lang=' . $gateLang) ?>;
+        if (window.history.length > 1) {
+            window.history.back();
+            setTimeout(function () { window.location.replace(landing); }, 1500);
+        } else {
+            window.location.replace(landing);
+        }
+    }
+
+    // Legal & Regulatory Disclaimer pop-up (same text as the Legal & Disclaimer page)
+    var legalLink  = document.getElementById('moriGateLegalLink');
+    var legalModal = document.getElementById('moriLegalModal');
+    var legalBody  = document.getElementById('moriLegalBody');
+    var legalLoaded = false;
+    function openLegal(ev) {
+        if (!legalModal || !window.fetch) return;      // no JS support: the link opens the page in a new tab
+        ev.preventDefault();
+        ev.stopPropagation();
+        legalModal.hidden = false;
+        legalModal.classList.add('show');
+        var closeBtn = legalModal.querySelector('.mori-legal-modal__x');
+        if (closeBtn) closeBtn.focus();
+        if (legalLoaded) return;
+        fetch(legalLink.getAttribute('href') + '&embed=1', { credentials: 'same-origin' })
+            .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+            .then(function (html) { legalBody.innerHTML = html; legalBody.scrollTop = 0; legalLoaded = true; })
+            .catch(function () {
+                legalBody.innerHTML = '<p>' + <?= json_encode(e(t('gate.legal_error'))) ?> + ' <a href="' + legalLink.getAttribute('href') + '" target="_blank" rel="noopener">' + <?= json_encode(e(t('gate.legal_open'))) ?> + '</a></p>';
+            });
+    }
+    function closeLegal() {
+        if (!legalModal || legalModal.hidden) return;
+        legalModal.classList.remove('show');
+        legalModal.hidden = true;
+        if (legalLink) legalLink.focus();
+    }
+    if (legalLink && legalModal) {
+        legalLink.addEventListener('click', openLegal);
+        legalModal.querySelectorAll('[data-legal-close]').forEach(function (b) { b.addEventListener('click', closeLegal); });
+        legalModal.addEventListener('click', function (e) { if (e.target === legalModal) closeLegal(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLegal(); });
     }
 
     var cookieBanner = document.getElementById('moriCookie');

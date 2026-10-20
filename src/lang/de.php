@@ -55,11 +55,20 @@ return [
     'gate.eyebrow'         => 'Wichtige Information',
     'gate.title'           => 'Bitte bestätigen Sie, bevor Sie fortfahren',
     'gate.intro'           => 'Die Informationen auf dieser Website richten sich an Einwohner von Jurisdiktionen, in denen Mori Capital Management Ltd. zur Bewerbung ihrer Fonds berechtigt ist. Die Fonds sind nicht unter dem U.S. Investment Advisers Act von 1940 registriert und stehen US-Personen nicht zur Verfügung. Im Vereinigten Königreich richtet sich diese Website ausschließlich an professionelle und institutionelle Anleger; die Fonds stehen Privatanlegern im Vereinigten Königreich nicht zur Verfügung. Die frühere Wertentwicklung ist kein verlässlicher Indikator für künftige Ergebnisse; der Wert der Anlagen kann sowohl fallen als auch steigen.',
-    'gate.confirm'         => 'Ich bestätige, dass ich keine US-Person und kein Privatanleger im Vereinigten Königreich bin und den rechtlichen und aufsichtsrechtlichen Hinweis gelesen und verstanden habe.',
-    'gate.btn_retail'      => 'Privatanleger',
-    'gate.btn_pro'         => 'Professionell / Institutionell',
+    'gate.confirm'         => 'Ich bestätige, dass ich keine US-Person und kein Privatanleger im Vereinigten Königreich bin und den :link gelesen und verstanden habe.',
+    'gate.btn_retail'      => 'Privatanleger außerhalb der USA und des Vereinigten Königreichs',
+    'gate.btn_pro'         => 'Professioneller/institutioneller Anleger außerhalb der USA',
     'gate.decline'         => 'Ich bin eine US-Person oder ein britischer Privatanleger — Seite verlassen',
     'gate.decline_msg'     => 'Entschuldigung — die auf dieser Seite beschriebenen Fonds stehen US-Personen sowie Privatanlegern im Vereinigten Königreich nicht zur Verfügung. Bitte konsultieren Sie Ihren lokalen Finanzberater für in Ihrer Jurisdiktion verfügbare Produkte.',
+    'gate.confirm_link' => 'rechtlichen und aufsichtsrechtlichen Hinweis',
+    'gate.legal_title' => 'Rechtlicher und aufsichtsrechtlicher Hinweis',
+    'gate.legal_close' => 'Schließen',
+    'gate.legal_loading' => 'Wird geladen…',
+    'gate.legal_error' => 'Der Hinweis konnte hier nicht geladen werden.',
+    'gate.legal_open' => 'In neuem Tab öffnen',
+    'gate.restricted_title' => 'Zugang eingeschränkt',
+    'gate.restricted_mistake' => 'Versehentlich ausgewählt?',
+    'gate.restricted_return' => 'Zurück zur Website',
 
     // Cookie banner
     'cookie.text'          => 'Wir verwenden Cookies für wesentliche Funktionen und anonyme Traffic-Analyse. Siehe unsere Cookie-Richtlinie für Details.',
@@ -77,7 +86,7 @@ return [
 
     // Compliance
     'disclaimer.title'     => 'Wichtige Information',
-    'disclaimer.body'      => 'Mori Capital Management Ltd. ist von der Malta Financial Services Authority (MFSA) unter der Firmenreferenz C66999 autorisiert und reguliert und ist berechtigt, Wertpapierdienstleistungen gemäß der MiFID-Richtlinie zu erbringen. Diese Website dient ausschließlich Informationszwecken und stellt weder ein Angebot zum Verkauf noch eine Aufforderung zum Kauf von Wertpapieren oder Finanzprodukten dar. Die beschriebenen Fonds sind auf Nicht-US-Personen und professionelle Anleger beschränkt und sind nicht unter dem U.S. Investment Advisers Act von 1940 registriert. Die frühere Wertentwicklung ist kein verlässlicher Indikator für künftige Ergebnisse. Der Wert der Anlagen und die daraus erzielten Erträge können sowohl fallen als auch steigen. Anleger sollten den Fondsprospekt, das KIID/PRIIPs-KID und die jüngsten Finanzberichte vor einer Anlage lesen.',
+    'disclaimer.body'      => 'Mori Capital Management Ltd. ist von der Malta Financial Services Authority (MFSA) unter der Firmenreferenz C66999 autorisiert und reguliert und ist berechtigt, Wertpapierdienstleistungen gemäß der MiFID-Richtlinie zu erbringen. Diese Website dient ausschließlich Informationszwecken und stellt weder ein Angebot zum Verkauf noch eine Aufforderung zum Kauf von Wertpapieren oder Finanzprodukten dar. Die beschriebenen Fonds stehen US-Anlegern sowie Privatanlegern im Vereinigten Königreich nicht zur Verfügung. Die Fonds sind nicht unter dem U.S. Investment Advisers Act von 1940 registriert. Die frühere Wertentwicklung ist kein verlässlicher Indikator für künftige Ergebnisse. Der Wert der Anlagen und die daraus erzielten Erträge können sowohl fallen als auch steigen. Anleger sollten den Fondsprospekt, das KIID/PRIIPs-KID und die jüngsten Finanzberichte vor einer Anlage lesen.',
 
     // Statistics labels
     'stat.years_expertise'    => 'Jahre EEMEA-Expertise',
@@ -173,6 +182,7 @@ return [
     'legal.default_title'        => 'Rechtliches & Haftungsausschluss',
     'privacy.default_title'      => 'Datenschutzerklärung',
     'cookies.default_title'      => 'Cookie-Richtlinie',
+    'complaints.default_title' => 'Beschwerde einreichen',
 
     // Footer extras
     'footer.phone_label'         => 'Telefon',
@@ -180,6 +190,7 @@ return [
     'footer.legal_disclaimer'    => 'Rechtliche Hinweise',
     'footer.privacy_policy'      => 'Datenschutzrichtlinie',
     'footer.cookie_policy'       => 'Cookie-Richtlinie',
+    'footer.how_to_complain' => 'Beschwerde einreichen',
 
     // Mobile tabbar
     'tabbar.home'                => 'Start',

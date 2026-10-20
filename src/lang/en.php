@@ -55,11 +55,20 @@ return [
     'gate.eyebrow'         => 'Important Information',
     'gate.title'           => 'Please confirm before you continue',
     'gate.intro'           => 'The information on this website is intended for residents of jurisdictions where Mori Capital Management Ltd. is authorised to promote its funds. The funds are not registered under the U.S. Investment Advisers Act of 1940 and are not available to U.S. persons. In the United Kingdom, this website is directed only at professional and institutional investors; the funds are not available to retail investors in the United Kingdom. Past performance is not a reliable indicator of future results; the value of investments can fall as well as rise.',
-    'gate.confirm'         => 'I confirm that I am not a U.S. person and that I am not a retail investor in the United Kingdom, and I have read & understood the Legal & Regulatory Disclaimer.',
-    'gate.btn_retail'      => 'Retail Investor',
-    'gate.btn_pro'         => 'Professional / Institutional',
+    'gate.confirm'         => 'I confirm that I am not a U.S. person and that I am not a retail investor in the United Kingdom, and I have read & understood the :link.',
+    'gate.btn_retail'      => 'Non-US / Non-UK Retail Investor',
+    'gate.btn_pro'         => 'Non-US Professional/Institutional Investor',
     'gate.decline'         => 'I am a U.S. person or a UK retail investor — leave the site',
     'gate.decline_msg'     => 'Sorry — the funds described on this site are not available to U.S. persons or to retail investors in the United Kingdom. Please consult your local financial adviser for products available in your jurisdiction.',
+    'gate.confirm_link' => 'Legal & Regulatory Disclaimer',
+    'gate.legal_title' => 'Legal & Regulatory Disclaimer',
+    'gate.legal_close' => 'Close',
+    'gate.legal_loading' => 'Loading…',
+    'gate.legal_error' => 'The disclaimer could not be loaded here.',
+    'gate.legal_open' => 'Open it in a new tab',
+    'gate.restricted_title' => 'Access restricted',
+    'gate.restricted_mistake' => 'Selected this by mistake?',
+    'gate.restricted_return' => 'Return to the website',
 
     // Cookie banner
     'cookie.text'          => 'We use cookies to provide essential site functionality and to analyse traffic anonymously. See our Cookie Policy for details.',
@@ -77,7 +86,7 @@ return [
 
     // Compliance
     'disclaimer.title'     => 'Important information',
-    'disclaimer.body'      => 'Mori Capital Management Ltd. is authorised and regulated by the Malta Financial Services Authority (MFSA) under Firm Reference C66999, and is authorised to provide investment services under the MiFID directive. This website is for informational purposes only and does not constitute an offer to sell, or a solicitation of an offer to buy, any security or financial product. The funds described are restricted to non-U.S. persons and professional investors and are not registered under the U.S. Investment Advisers Act of 1940. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them can fall as well as rise. Investors should read the fund prospectus, KIID/PRIIPs KID and the latest financial reports before investing.',
+    'disclaimer.body'      => 'Mori Capital Management Ltd. is authorised and regulated by the Malta Financial Services Authority (MFSA) under Firm Reference C66999, and is authorised to provide investment services under the MiFID directive. This website is for informational purposes only and does not constitute an offer to sell, or a solicitation of an offer to buy, any security or financial product. The funds described are not available to U.S. investors or U.K. retail investors. The funds are not registered under the U.S. Investment Advisers Act of 1940. Past performance is not a reliable indicator of future results. The value of investments and the income derived from them can fall as well as rise. Investors should read the fund prospectus, KIID/PRIIPs KID and the latest financial reports before investing.',
 
     // Statistics labels
     'stat.years_expertise'    => 'Years of EEMEA expertise',
@@ -173,6 +182,7 @@ return [
     'legal.default_title'        => 'Legal & Disclaimer',
     'privacy.default_title'      => 'Privacy Policy',
     'cookies.default_title'      => 'Cookie Policy',
+    'complaints.default_title' => 'How to Complain',
 
     // Footer extras
     'footer.phone_label'         => 'Phone',
@@ -180,6 +190,7 @@ return [
     'footer.legal_disclaimer'    => 'Legal & Disclaimer',
     'footer.privacy_policy'      => 'Privacy Policy',
     'footer.cookie_policy'       => 'Cookie Policy',
+    'footer.how_to_complain' => 'How to Complain',
 
     // Mobile tabbar
     'tabbar.home'                => 'Home',
